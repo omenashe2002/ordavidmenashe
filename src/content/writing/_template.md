@@ -12,10 +12,14 @@ date: 2026-10-12   # year-month-day. It is only the date shown; a later date doe
 description: "One or two sentences. They appear in the list of articles and when the link is shared."
 tags: [Law]   # one or more of: Crypto, AI, Law, Other. Example with two: [Crypto, Law]
 draft: false   # true keeps the article off the website while you write it (the file is still visible on GitHub)
+# Optional: to show this article as a large panel on the Home and Writing pages, remove the # from the next line.
+# featured: true
+# Optional: a short line above the title, for example: Forthcoming in the Fordham Journal. Remove the # to use it.
+# kicker: "A short line above the title"
 ---
 
 Write your article here. Leave a blank line between paragraphs.
 
 ## A heading
 
-Use two pound signs for a heading. See sample-article.md for quotations, lists, links and footnotes.
+Use two pound signs for a heading. For a footnote, write [^1] in the text and a line [^1]: your note further down.

@@ -1,0 +1,18 @@
+---
+import PostList from './PostList.astro';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+}
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="related" aria-labelledby="keep-reading">
+      <h2 class="section-head" id="keep-reading">Keep reading</h2>
+      <PostList posts={posts} level={3} />
+    </section>
+  )
+}

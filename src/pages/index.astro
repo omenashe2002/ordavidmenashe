@@ -10,7 +10,8 @@ import portrait from '../assets/or-menashe.jpg';
 
 const posts = await getPosts();
 const featured = posts.filter((post) => post.data.featured).slice(0, 2);
-const latest = posts.filter((post) => !post.data.featured).slice(0, 3);
+const shown = new Set(featured.map((post) => post.id));
+const latest = posts.filter((post) => !shown.has(post.id)).slice(0, 3);
 
 // The words at the top of the page come from src/content/pages/home.md.
 const home = await getEntry('pages', 'home');
