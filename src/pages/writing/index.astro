@@ -1,21 +1,40 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostList from '../../components/PostList.astro';
+import FeaturedPiece from '../../components/FeaturedPiece.astro';
 import TagFilter from '../../components/TagFilter.astro';
 import { getPosts, tagsInUse } from '../../lib/posts';
 
 const posts = await getPosts();
 const tags = tagsInUse(posts);
+const featured = posts.filter((post) => post.data.featured).slice(0, 2);
+// The "Selected writing" panels only make sense when there is other writing to set them apart from.
+const showFeatured = featured.length > 0 && posts.length > featured.length;
 ---
 
-<BaseLayout title="Writing" description="Articles on crypto, AI, and law by Or Menashe.">
-  <h1>Writing</h1>
-  {tags.length > 0 && <TagFilter posts={posts} tags={tags} />}
-  {
-    posts.length > 0 ? (
-      <PostList posts={posts} />
-    ) : (
-      <p class="placeholder">Articles will appear here.</p>
-    )
-  }
+<BaseLayout title="Writing" description="Articles on digital assets, DeFi, AI, and law by Or Menashe." wide>
+  <div class="writing-page">
+    <h1>Writing</h1>
+    {
+      showFeatured && (
+        <section class="selected" aria-labelledby="selected-writing">
+          <h2 class="section-head" id="selected-writing">Selected writing</h2>
+          <div class="featured-grid" data-count={featured.length}>
+            {featured.map((post) => <FeaturedPiece post={post} />)}
+          </div>
+        </section>
+      )
+    }
+    <section aria-labelledby={showFeatured ? 'all-writing' : undefined}>
+      {showFeatured && <h2 class="section-head" id="all-writing">All writing</h2>}
+      {tags.length > 0 && <TagFilter posts={posts} tags={tags} />}
+      {
+        posts.length > 0 ? (
+          <PostList posts={posts} level={showFeatured ? 3 : 2} />
+        ) : (
+          <p class="placeholder">Articles will appear here.</p>
+        )
+      }
+    </section>
+  </div>
 </BaseLayout>

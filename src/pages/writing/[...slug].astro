@@ -2,31 +2,47 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Tags from '../../components/Tags.astro';
-import { getPosts, formatDate, readingMinutes } from '../../lib/posts';
+import TableOfContents from '../../components/TableOfContents.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
+import { getPosts, formatDate, readingMinutes, relatedPosts, tableOfContents } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, related: relatedPosts(post, posts) } }));
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, related } = Astro.props;
+const { Content, headings } = await render(post);
 const minutes = readingMinutes(post.body);
+// A contents list is shown for long pieces with at least three sections.
+const toc = tableOfContents(headings);
+const showToc = minutes >= 6 && toc.length >= 3;
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} type="article" publishedTime={post.data.date}>
-  <article>
+<BaseLayout title={post.data.title} description={post.data.description} type="article" publishedTime={post.data.date} wide>
+  <article class="article">
     <header class="post-header">
+      {post.data.kicker && <p class="kicker">{post.data.kicker}</p>}
       <h1>{post.data.title}</h1>
+      <p class="dek">{post.data.description}</p>
       <div class="post-meta">
         <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date)}</time>
-        <Tags tags={post.data.tags} />
         <span>{minutes} min read</span>
+        <Tags tags={post.data.tags} />
       </div>
     </header>
-    <div class="prose">
-      <Content />
+    <div class:list={['article-body', { 'has-toc': showToc }]}>
+      <div class="article-main">
+        {showToc && <TableOfContents items={toc} variant="inline" />}
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+      {showToc && <TableOfContents items={toc} variant="rail" />}
     </div>
   </article>
-  <p class="more-link"><a href="/writing/">&larr; All writing</a></p>
+  <div class="article-end">
+    <RelatedPosts posts={related} />
+    <p class="more-link"><a href="/writing/">&larr; All writing</a></p>
+  </div>
 </BaseLayout>

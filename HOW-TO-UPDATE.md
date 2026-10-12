@@ -30,6 +30,8 @@ Write your article here. Leave a blank line between paragraphs.
 - **kicker** (optional): a short line above a featured title, such as `kicker: "Forthcoming in the Fordham Journal"`. It only appears on the Home page panel.
 - **draft**: `true` keeps the article off the website while you write. The file is still visible on GitHub. `false` publishes it.
 
+A few things happen on their own: the reading time, a contents list beside (or above, on a phone) any long article with at least three `## Heading` sections, and a "Keep reading" list of other articles at the bottom, chosen by shared topics.
+
 In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. The sample article shows each one.
 
 ## Add a video

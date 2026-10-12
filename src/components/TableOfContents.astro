@@ -1,0 +1,87 @@
+---
+import type { TocItem } from '../lib/posts';
+
+interface Props {
+  items: TocItem[];
+  /** "rail": a list beside the article on wide screens. "inline": a collapsed list above the article on narrow ones. */
+  variant: 'rail' | 'inline';
+}
+const { items, variant } = Astro.props;
+---
+
+{
+  variant === 'rail' ? (
+    <nav class="toc toc-rail" aria-label="Contents">
+      <p class="toc-title">Contents</p>
+      <ol>
+        {items.map((item) => (
+          <li>
+            <a href={`#${item.slug}`}>{item.text}</a>
+            {item.children.length > 0 && (
+              <ol>
+                {item.children.map((child) => (
+                  <li>
+                    <a href={`#${child.slug}`}>{child.text}</a>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  ) : (
+    <details class="toc toc-inline">
+      <summary>Contents</summary>
+      <nav aria-label="Contents">
+        <ol>
+          {items.map((item) => (
+            <li>
+              <a href={`#${item.slug}`}>{item.text}</a>
+              {item.children.length > 0 && (
+                <ol>
+                  {item.children.map((child) => (
+                    <li>
+                      <a href={`#${child.slug}`}>{child.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
+  )
+}
+
+<script>
+  // Marks the section being read in the wide-screen list. Without JavaScript the list still works as links.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-rail a')];
+  const sections = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+  if (links.length > 0) {
+    let waiting = false;
+    const update = () => {
+      waiting = false;
+      let current = -1;
+      sections.forEach((section, index) => {
+        if (section && section.getBoundingClientRect().top <= window.innerHeight * 0.3) current = index;
+      });
+      links.forEach((link, index) => {
+        if (index === current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!waiting) {
+          waiting = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>

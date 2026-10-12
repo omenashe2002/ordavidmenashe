@@ -1,6 +1,6 @@
 ---
 import Tags from './Tags.astro';
-import { formatDate, type Post } from '../lib/posts';
+import { formatDate, readingMinutes, type Post } from '../lib/posts';
 
 interface Props {
   posts: Post[];
@@ -15,14 +15,17 @@ const Heading = level === 3 ? 'h3' : 'h2';
   {
     posts.map((post) => (
       <li>
-        <Heading>
-          <a href={`/writing/${post.id}/`}>{post.data.title}</a>
-        </Heading>
-        <div class="post-meta">
+        <p class="post-when">
           <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date)}</time>
+          <span>{readingMinutes(post.body)} min read</span>
+        </p>
+        <div class="post-what">
+          <Heading>
+            <a href={`/writing/${post.id}/`}>{post.data.title}</a>
+          </Heading>
+          <p class="summary">{post.data.description}</p>
           <Tags tags={post.data.tags} />
         </div>
-        <p class="summary">{post.data.description}</p>
       </li>
     ))
   }
