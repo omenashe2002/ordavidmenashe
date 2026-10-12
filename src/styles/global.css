@@ -695,6 +695,8 @@ p {
     background: ButtonText;
   }
   .video-play::after {
+    border-top-color: ButtonText;
+    border-bottom-color: ButtonText;
     border-left-color: Canvas;
   }
 }
@@ -1384,6 +1386,17 @@ button.button {
 }
 .video-card .summary {
   margin: 0;
+}
+
+/* Windows high-contrast mode draws no backgrounds, so give buttons and the "now" panel an outline */
+@media (forced-colors: active) {
+  .button,
+  button.button {
+    border: 1px solid ButtonText;
+  }
+  .now {
+    border: 1px solid CanvasText;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

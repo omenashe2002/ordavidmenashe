@@ -11,7 +11,7 @@ const { Content } = await render(page);
 
 // "What I'm working on now" is its own small file, so it is easy to refresh: src/content/pages/now.md
 const now = await getEntry('pages', 'now');
-const Now = now ? (await render(now)).Content : undefined;
+const Now = now?.body?.trim() ? (await render(now)).Content : undefined;
 const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
 ---
 

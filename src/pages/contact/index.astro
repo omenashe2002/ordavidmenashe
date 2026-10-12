@@ -5,7 +5,7 @@ import { SITE } from '../../site';
 // "https://www.linkedin.com/in/name" is shown as "linkedin.com/in/name".
 const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
 // The signup form is shown only once a newsletter service's form address has been added in src/site.ts.
-const signup = SITE.newsletter.startsWith('https://') ? SITE.newsletter : undefined;
+const signup = SITE.newsletter.trim() || undefined; // already checked at build time by checkSiteSettings()
 ---
 
 <BaseLayout title="Contact" description="How to reach Or Menashe." wide>
