@@ -1,0 +1,10 @@
+---
+import { SITE } from '../site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <p class="disclaimer">{SITE.disclaimer}</p>
+  <p class="copyright">&copy; {year} {SITE.name}</p>
+</footer>
