@@ -1,14 +1,83 @@
-/* Step 1: a plain, readable starting point. Step 2 refines the typography and colors. */
-:root {
-  --bg: #fbfaf7;
-  --text: #1b1b1b;
-  --muted: #5f5f5f;
-  --accent: #1f2a44;
-  --rule: #dcd8cf;
-  --measure: 40rem;
-  color-scheme: light;
+/* ------------------------------------------------------------------
+   Fonts: EB Garamond, bundled with the site (no requests to Google).
+   Only the Latin letters are downloaded unless a page needs more.
+------------------------------------------------------------------- */
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2')
+    format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/eb-garamond/files/eb-garamond-latin-ext-wght-normal.woff2')
+    format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-italic.woff2')
+    format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/eb-garamond/files/eb-garamond-latin-ext-wght-italic.woff2')
+    format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* ------------------------------------------------------------------
+   Colors. To change the whole look of the site, change these values.
+   (Dark mode switches on automatically when a visitor's device is set to dark.)
+------------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  --bg: #faf6ee; /* warm paper */
+  --surface: #f2ecdf; /* slightly darker paper, for code and quotes */
+  --text: #1d1b17; /* ink */
+  --muted: #5c564b; /* secondary text */
+  --rule: #ddd5c4; /* thin dividing lines */
+  --accent: #964a1c; /* copper: links, active page, topic tags */
+  --accent-strong: #6e3410; /* links on hover */
+
+  --measure: 38rem; /* width of the reading column */
+  --font-body: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16140f;
+    --surface: #1f1c16;
+    --text: #ece7db;
+    --muted: #a8a193;
+    --rule: #3a362c;
+    --accent: #e3a273;
+    --accent-strong: #f0c09b;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Base
+------------------------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -17,6 +86,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -29,28 +99,65 @@ body {
   flex-direction: column;
   background: var(--bg);
   color: var(--text);
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 1.125rem;
-  line-height: 1.65;
+  font-family: var(--font-body);
+  /* Garamond is small for its size, so the text is set a little larger than usual. */
+  font-size: clamp(1.25rem, 1.15rem + 0.5vw, 1.4rem);
+  line-height: 1.55;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
   flex: 1;
-  padding: 1.5rem 0 3rem;
+  padding: 1rem 0 3.5rem;
 }
 
-h1 {
-  font-size: 2rem;
-  line-height: 1.2;
-  margin: 0 0 0.75rem;
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 a {
   color: var(--accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+a:hover {
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.1em;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.1rem);
+  letter-spacing: -0.01em;
+  margin: 2rem 0 1rem;
+}
+
+p {
+  margin: 0 0 1.05em;
+  text-wrap: pretty;
 }
 
 .lede {
-  font-size: 1.25rem;
+  font-size: 1.15em;
+  font-style: italic;
   color: var(--muted);
 }
 
@@ -71,51 +178,184 @@ a {
   z-index: 10;
 }
 
+/* ------------------------------------------------------------------
+   Header and navigation
+------------------------------------------------------------------- */
 .site-header {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem 1.5rem;
-  padding: 1.5rem 0 1rem;
+  align-items: center;
+  column-gap: 1.5rem;
+  padding: 0.75rem 0 0;
   border-bottom: 1px solid var(--rule);
 }
 
 .site-name {
-  font-size: 1.25rem;
-  font-weight: bold;
+  padding: 0.5rem 0;
   color: var(--text);
+  font-size: 1.3em;
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.09em;
   text-decoration: none;
+}
+.site-name:hover {
+  color: var(--accent);
 }
 
 .site-header ul {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
+  column-gap: clamp(0.9rem, 3.8vw, 1.6rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Each link is at least 44px tall, so it is easy to tap on a phone. */
 .site-header nav a {
+  display: inline-block;
+  padding: 0.7rem 0 0.55rem;
+  border-bottom: 2px solid transparent;
   color: var(--muted);
+  font-size: 1em;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.07em;
   text-decoration: none;
-  font-size: 1rem;
 }
-.site-header nav a:hover,
+.site-header nav a:hover {
+  color: var(--text);
+}
 .site-header nav a[aria-current='page'] {
   color: var(--text);
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
+  border-bottom-color: var(--accent);
 }
 
+/* ------------------------------------------------------------------
+   Footer
+------------------------------------------------------------------- */
 .site-footer {
   border-top: 1px solid var(--rule);
   padding: 1.25rem 0 2rem;
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.82em;
   line-height: 1.5;
 }
 .site-footer p {
   margin: 0 0 0.35rem;
+}
+.site-footer .disclaimer {
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------
+   Articles (the page for a single post). Used from step 3 on.
+------------------------------------------------------------------- */
+.post-header {
+  margin-bottom: 2rem;
+}
+.post-header h1 {
+  margin-bottom: 0.6rem;
+}
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 1rem;
+  margin: 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-style: normal;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.08em;
+}
+.tags a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.tags a:hover {
+  text-decoration: underline;
+}
+
+/* Everything inside an article's body text */
+.prose h2 {
+  font-size: 1.55em;
+  font-weight: 600;
+  margin: 2.2em 0 0.5em;
+}
+.prose h3 {
+  font-size: 1.2em;
+  font-style: italic;
+  font-weight: 500;
+  margin: 1.8em 0 0.4em;
+}
+.prose ul,
+.prose ol {
+  margin: 0 0 1.05em;
+  padding-left: 1.4em;
+}
+.prose li {
+  margin-bottom: 0.3em;
+}
+.prose blockquote {
+  margin: 1.5em 0;
+  padding: 0 0 0 1.25em;
+  border-left: 2px solid var(--accent);
+}
+.prose blockquote p {
+  margin-bottom: 0.6em;
+}
+.prose hr {
+  width: 30%;
+  margin: 2.5em auto;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+.prose code {
+  padding: 0.08em 0.3em;
+  border-radius: 3px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+}
+.prose pre {
+  overflow-x: auto;
+  margin: 0 0 1.2em;
+  padding: 1em;
+  border-radius: 4px;
+  background: var(--surface);
+  font-size: 0.85em;
+  line-height: 1.45;
+}
+.prose pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+.prose img,
+.prose video {
+  max-width: 100%;
+  height: auto;
+}
+.prose table {
+  width: 100%;
+  margin: 0 0 1.2em;
+  border-collapse: collapse;
+  font-size: 0.92em;
+}
+.prose th,
+.prose td {
+  padding: 0.4em 0.6em;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
 }
