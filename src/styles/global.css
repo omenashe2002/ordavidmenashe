@@ -60,7 +60,23 @@
   --accent: #964a1c; /* copper: links, active page, topic tags */
   --accent-strong: #6e3410; /* links on hover */
 
+  --button-bg: var(--text); /* the main call-to-action button */
+  --button-fg: var(--bg);
+
   --measure: 38rem; /* width of the reading column */
+  --wide: 75rem; /* width of wide pages such as Home */
+  --gutter: clamp(1.25rem, 4vw, 3.5rem); /* space at the left and right edges of the screen */
+
+  /* A spacing scale. Pages use these steps so the rhythm stays consistent. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.25rem;
+  --space-7: 3.5rem;
+  --section: clamp(3.5rem, 7vw, 6.5rem); /* space between big sections of a page */
+
   --font-body: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
@@ -74,6 +90,8 @@
     --rule: #3a362c;
     --accent: #e3a273;
     --accent-strong: #f0c09b;
+    --button-bg: var(--accent);
+    --button-fg: #1a130c;
   }
 }
 
@@ -92,9 +110,7 @@ html {
 }
 
 body {
-  margin: 0 auto;
-  padding: 0 1.25rem;
-  max-width: calc(var(--measure) + 2.5rem);
+  margin: 0;
   min-height: 100vh;
   min-height: 100dvh; /* on phones, keeps the footer inside the visible screen */
   display: flex;
@@ -111,9 +127,19 @@ body {
   overflow-wrap: break-word; /* long URLs, citations and addresses wrap instead of scrolling sideways */
 }
 
+/* Page widths: .wrap is the wide frame (header, footer, Home); .measure is the reading column inside it. */
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--wide));
+  margin-inline: auto;
+}
+.measure {
+  width: min(100%, var(--measure));
+  margin-inline: auto;
+}
+
 main {
   flex: 1;
-  padding: 1rem 0 3.5rem;
+  padding: var(--space-4) 0 var(--section);
 }
 
 ::selection {
@@ -128,6 +154,7 @@ main {
 
 a {
   color: var(--accent);
+  transition: color 0.18s ease, text-decoration-color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
   text-decoration-line: underline;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.18em;
@@ -190,7 +217,7 @@ p {
   justify-content: space-between;
   align-items: center;
   column-gap: 1.5rem;
-  padding: 0.75rem 0 0;
+  padding: 1.1rem 0 0;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -239,8 +266,12 @@ p {
    Footer
 ------------------------------------------------------------------- */
 .site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
   border-top: 1px solid var(--rule);
-  padding: 1.25rem 0 2rem;
+  padding: var(--space-5) 0 var(--space-6);
   color: var(--muted);
   font-size: 0.82em;
   line-height: 1.5;
@@ -248,8 +279,25 @@ p {
 .site-footer p {
   margin: 0 0 0.35rem;
 }
+.site-footer .footer-main {
+  max-width: 42rem;
+}
 .site-footer .disclaimer {
   font-style: italic;
+}
+.site-footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-footer a {
+  color: var(--muted);
+}
+.site-footer a:hover {
+  color: var(--accent);
 }
 
 /* ------------------------------------------------------------------
@@ -616,4 +664,249 @@ p {
 /* Small capitals in legal citations (converted from Word) */
 .prose .smallcaps {
   font-variant-caps: small-caps;
+}
+
+/* ------------------------------------------------------------------
+   Home page: hero, background row, selected writing
+------------------------------------------------------------------- */
+.eyebrow {
+  margin: 0 0 var(--space-5);
+  color: var(--accent);
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.16em;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  gap: clamp(2rem, 6vw, 5.5rem);
+  align-items: center;
+  padding: clamp(2rem, 6vw, 5.5rem) 0 clamp(2.25rem, 5vw, 4.5rem);
+}
+.hero h1 {
+  margin: 0 0 var(--space-5);
+  font-size: clamp(2.6rem, 1.3rem + 4.8vw, 5rem);
+  line-height: 1.03;
+  letter-spacing: -0.018em;
+}
+.hero-intro {
+  max-width: 31em;
+  color: var(--muted);
+  font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.55rem);
+  line-height: 1.5;
+}
+.hero-intro p {
+  margin-bottom: 0.8em;
+}
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  margin: var(--space-6) 0 0;
+}
+.button {
+  display: inline-block;
+  padding: 0.8rem 1.7rem;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+}
+.button:hover {
+  background: var(--accent-strong);
+  color: var(--button-fg);
+}
+
+.portrait {
+  justify-self: end;
+  width: 100%;
+  max-width: 27rem;
+  margin: 0;
+}
+.portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 22%;
+  /* The photo's light grey backdrop melts into the warm paper color. */
+  mix-blend-mode: multiply;
+  filter: sepia(0.1) contrast(1.02);
+}
+@media (prefers-color-scheme: dark) {
+  .portrait img {
+    mix-blend-mode: normal;
+    border-radius: 2px;
+    filter: brightness(0.9) contrast(1.04);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+}
+
+.proof {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5) 0;
+  margin: 0;
+  padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+}
+.proof li {
+  padding: 0 var(--space-5);
+  border-left: 1px solid var(--rule);
+  line-height: 1.3;
+}
+.proof li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.proof-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--muted);
+  font-size: 0.92em;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+}
+.proof-text {
+  display: block;
+}
+
+.selected,
+.latest {
+  margin-top: var(--section);
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin: 0 0 var(--space-6);
+  color: var(--muted);
+  font-size: 1em;
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.16em;
+}
+.section-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.featured-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+.featured-grid[data-count='2'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.featured {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-6) var(--space-7);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border: 1px solid transparent;
+  background: var(--surface);
+  transition: border-color 0.2s ease;
+}
+.featured:hover {
+  border-color: var(--accent);
+}
+.featured-grid[data-count='2'] .featured {
+  grid-template-columns: minmax(0, 1fr);
+}
+.featured-kicker {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--accent);
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+}
+.featured-meta {
+  margin: 0;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.5;
+}
+.featured h3 {
+  margin: 0 0 var(--space-4);
+  font-size: clamp(1.7rem, 1.15rem + 1.7vw, 2.65rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+.featured h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.featured h3 a::after {
+  content: '';
+  position: absolute;
+  inset: 0; /* the whole panel is one big link */
+}
+.featured:hover h3 a {
+  color: var(--accent);
+}
+.featured-summary {
+  max-width: 36em;
+  margin-bottom: var(--space-4);
+}
+.featured-tags {
+  margin-bottom: var(--space-4);
+  color: var(--accent);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+.featured-cta {
+  margin: 0;
+  color: var(--accent);
+}
+.featured-cta span {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.featured:hover .featured-cta span {
+  transform: translateX(4px);
+}
+
+@media (max-width: 54rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .portrait {
+    justify-self: start;
+    max-width: 17rem;
+  }
+  .proof {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .proof li:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .featured,
+  .featured-grid[data-count='2'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 40rem) {
+  .featured-grid[data-count='2'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* People who ask their device to reduce motion get no animated effects. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

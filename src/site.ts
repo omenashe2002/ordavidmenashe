@@ -8,7 +8,7 @@ export type Tag = (typeof TAGS)[number];
 // quotation marks and the comma at the end of the line, or the site will not build.
 export const SITE = {
   name: 'Or Menashe',
-  tagline: 'Writing on crypto, AI, and law.',
+  tagline: 'Law, digital assets, and AI',
   description:
     'Long-form writing and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
   email: 'ordavidmenashe@gmail.com',

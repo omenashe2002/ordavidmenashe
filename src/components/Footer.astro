@@ -4,7 +4,14 @@ import { SITE } from '../site';
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <p class="disclaimer">{SITE.disclaimer}</p>
-  <p class="copyright">&copy; {year} {SITE.name}</p>
+<footer class="site-footer wrap">
+  <div class="footer-main">
+    <p class="disclaimer">{SITE.disclaimer}</p>
+    <p class="copyright">&copy; {year} {SITE.name}</p>
+  </div>
+  <ul>
+    <li><a href={`mailto:${SITE.email}`}>Email</a></li>
+    <li><a href={SITE.linkedin}>LinkedIn</a></li>
+    <li><a href="/rss.xml">RSS</a></li>
+  </ul>
 </footer>

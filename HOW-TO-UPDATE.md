@@ -26,6 +26,8 @@ Write your article here. Leave a blank line between paragraphs.
 - **title** and **description**: in quotation marks. If the text itself contains quotation marks, use curly ones (“like this”) inside.
 - **date**: year-month-day. It is only the date shown. A later date does not delay publishing.
 - **tags**: one or more of Crypto, AI, Law, Other, in square brackets: `[Law, Crypto]`.
+- **featured** (optional): add the line `featured: true` to show the article as a large panel under "Selected writing" on the Home page. The two most recent featured articles are shown. Delete the line to stop featuring it.
+- **kicker** (optional): a short line above a featured title, such as `kicker: "Forthcoming in the Fordham Journal"`. It only appears on the Home page panel.
 - **draft**: `true` keeps the article off the website while you write. The file is still visible on GitHub. `false` publishes it.
 
 In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. The sample article shows each one.
@@ -46,7 +48,9 @@ draft: false
 
 ## Edit or delete something
 
-- **About page and Home introduction:** open `src/content/pages/about.md` or `home.md`, click the pencil icon, edit only the text below the second line of three dashes, and click **Commit changes**.
+- **About page:** open `src/content/pages/about.md`, click the pencil icon, edit only the text below the second line of three dashes, and click **Commit changes**.
+- **Top of the Home page:** open `src/content/pages/home.md` and click the pencil icon. Between the two lines of dashes: `eyebrow:` is the small line above the headline, `headline:` is the big headline, `buttonText:` and `buttonLink:` are the dark button and where it goes, and `linkText:` and `linkLink:` are the quieter link beside it. Under `credentials:` each background item has a `label:` (small) and a `text:` (larger); copy a pair of lines to add one, or delete a pair to remove one. Change only the words between quotation marks. The sentence under the headline is the text below the second line of dashes.
+- **Your photo:** open `src`, then `assets`, click **Add file**, then **Upload files**, and drop in a new photo named exactly `or-menashe.jpg`. It replaces the old one. A portrait-shaped JPEG at least 1000 pixels wide works best. Remember the repository is public, so the photo is public too.
 - **Email and LinkedIn:** the lines that start with `email:` and `linkedin:` in `src/site.ts`. Change only the words between the single quotation marks, and keep both quotation marks and the comma.
 - **Delete:** open the file, click the trash can icon, and commit. Before you launch, delete `sample-article.md` and `sample-video.md`.
 
@@ -60,11 +64,12 @@ draft: false
 | Phrase | Where | Change it |
 |---|---|---|
 | "third-year law student" | `about.md` and `home.md` | when you graduate |
-| "forthcoming" | `about.md` and `home.md` | when the note is published |
-| "This semester I am a law clerk at the Wyoming Stable Token Commission" | `about.md` | when that role ends |
+| "J.D. expected May 2027" | `home.md` (the `credentials:` list) | after you graduate |
+| "forthcoming" | `about.md`, and the `kicker:` line of the featured article | when the note is published |
+| "This semester I am a law clerk at the Wyoming Stable Token Commission" | `about.md`, and `home.md` (`credentials:`) | when that role ends |
 | "In the spring I will join the DeFi Education Fund" | `about.md` | when you start |
 | "This past summer, as a law clerk at Fidelity National Financial" | `about.md` | next summer |
-| "student ambassador for Harvey" | `about.md` | when that role ends |
+| "student ambassador for Harvey" | `about.md`, and `home.md` (`credentials:`) | when that role ends |
 | "expected May 2027" | `about.md` | after you graduate |
 | "a law student at Fordham Law" | `about.md` (top) and `src/site.ts` | when you graduate |
 
