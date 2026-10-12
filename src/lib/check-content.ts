@@ -20,6 +20,14 @@ function listFiles(dir: string): string[] {
   });
 }
 
+/** A title like "Why "decentralized" matters" confuses the settings reader; say how to fix it. */
+function quotationProblem(value: string): 'double' | 'single' | undefined {
+  const text = value.replace(/\s+#.*$/, '').trim();
+  if (text.length > 1 && text.startsWith('"') && text.endsWith('"') && /(^|[^\\])"/.test(text.slice(1, -1))) return 'double';
+  if (text.length > 1 && text.startsWith("'") && text.endsWith("'") && text.slice(1, -1).replace(/''/g, '').includes("'")) return 'single';
+  return undefined;
+}
+
 function checkDate(file: string, raw: string) {
   const value = raw.replace(/\s+#.*$/, '').trim().replace(/^["']|["']$/g, '');
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
@@ -53,8 +61,41 @@ export function checkContentFolder(folder: string) {
       if (!setting) continue;
       const [, key, value] = setting;
       if (key === 'date') checkDate(file, value);
-      else if (value && !/^["'[{|>]/.test(value) && /:(\s|$)/.test(value)) {
+      else if (quotationProblem(value) === 'double') {
+        fail(file, `The ${key} has a quotation mark inside its quotation marks. Use curly quotes inside (\u201clike this\u201d), or wrap the whole ${key} in single quotation marks.`);
+      } else if (quotationProblem(value) === 'single') {
+        fail(file, `The ${key} has an apostrophe inside single quotation marks. Wrap the whole ${key} in double quotation marks instead.`);
+      } else if (value && !/^["'[{|>]/.test(value) && /:(\s|$)/.test(value)) {
         fail(file, `The ${key} contains a colon, so it must be wrapped in quotation marks, like this: ${key}: "${value}"`);
+      }
+    }
+  }
+}
+
+const CONTENT_FOLDERS = new Set(['writing', 'videos', 'pages']);
+const ALLOWED_TOP_LEVEL_MARKDOWN = new Set(['readme.md', 'how-to-update.md']);
+
+/** Stops the build when an article or video was saved somewhere the site never looks. */
+export function checkContentPlaces() {
+  const content = path.resolve('src/content');
+  if (fs.existsSync(content)) {
+    for (const entry of fs.readdirSync(content, { withFileTypes: true })) {
+      if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
+      if (!entry.isDirectory() || !CONTENT_FOLDERS.has(entry.name)) {
+        fail(
+          path.join(content, entry.name),
+          'This is in the wrong place, so it would never be published. Articles go in src/content/writing, videos in src/content/videos, and the About and Home text in src/content/pages. Move it, or check the folder name for a typo.',
+        );
+      }
+    }
+  }
+  for (const folder of [process.cwd(), path.resolve('src')]) {
+    for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
+      if (entry.isFile() && /\.(md|markdown|mdx)$/i.test(entry.name) && !ALLOWED_TOP_LEVEL_MARKDOWN.has(entry.name.toLowerCase())) {
+        fail(
+          path.join(folder, entry.name),
+          'This file is not in an article or video folder, so it would never be published. Articles go in src/content/writing and videos in src/content/videos.',
+        );
       }
     }
   }

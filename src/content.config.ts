@@ -2,11 +2,12 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { TAGS } from './site';
-import { checkContentFolder } from './lib/check-content';
+import { checkContentFolder, checkContentPlaces } from './lib/check-content';
 import { parseYouTube } from './lib/youtube';
 
 // Stops the build with a plain-English message if an article or video file is named or written in a way
 // that would otherwise be skipped silently or published with the wrong date.
+checkContentPlaces();
 checkContentFolder('src/content/writing');
 checkContentFolder('src/content/videos');
 
