@@ -534,3 +534,22 @@ p {
     color: var(--shiki-dark);
   }
 }
+
+/* ------------------------------------------------------------------
+   Contact page
+------------------------------------------------------------------- */
+.contact-list {
+  margin: 1.5rem 0 0;
+}
+.contact-list div {
+  margin-bottom: 1.3rem;
+}
+.contact-list dt {
+  color: var(--muted);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.09em;
+}
+.contact-list dd {
+  margin: 0;
+  font-size: 1.15em;
+}

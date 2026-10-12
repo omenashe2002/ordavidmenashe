@@ -39,4 +39,13 @@ const writing = defineCollection({
   }),
 });
 
-export const collections = { writing };
+// Ordinary pages written in Markdown: the About page (about.md) and the introduction on Home (home.md).
+const pages = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
+});
+
+export const collections = { writing, pages };

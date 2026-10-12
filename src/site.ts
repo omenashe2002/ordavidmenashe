@@ -7,8 +7,6 @@ export type Tag = (typeof TAGS)[number];
 export const SITE = {
   name: 'Or Menashe',
   tagline: 'Writing on crypto, AI, and law.',
-  // The short introduction on the Home page. Left empty until the owner approves the wording.
-  intro: '',
   description:
     'Long-form writing and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
   email: 'ordavidmenashe@gmail.com',
