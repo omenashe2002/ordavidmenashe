@@ -985,6 +985,9 @@ p {
 .toc a:hover {
   color: var(--text);
 }
+.toc a:focus-visible {
+  outline-offset: -2px; /* drawn inside the link, so the scrolling list never cuts it off */
+}
 .toc a[aria-current='location'] {
   border-left-color: var(--accent);
   color: var(--text);
@@ -1022,11 +1025,13 @@ p {
 }
 .toc-inline summary::after {
   content: '+';
+  content: '+' / '';
   font-size: 1.3em;
   line-height: 1;
 }
 .toc-inline[open] summary::after {
   content: '\2212';
+  content: '\2212' / '';
 }
 .toc-inline nav {
   padding: 0 0 var(--space-3);
@@ -1038,8 +1043,14 @@ p {
     gap: 0 clamp(3rem, 6vw, 6rem);
     align-items: start;
   }
+  .article-body.has-toc .article-main {
+    grid-column: 1;
+    grid-row: 1;
+  }
   .toc-rail {
     display: block;
+    grid-column: 2;
+    grid-row: 1;
     position: sticky;
     top: var(--space-5);
     max-height: calc(100vh - 2 * var(--space-5));
@@ -1120,6 +1131,20 @@ p {
   scroll-margin-top: var(--space-5);
 }
 
+/* Windows high-contrast mode: use system colors and shapes, not the copper accent, for the current section and jump targets */
+@media (forced-colors: active) {
+  .toc a[aria-current='location'] {
+    border-left-color: Highlight;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  .prose a[data-footnote-ref]:target,
+  .prose .footnotes li:target {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
 /* On paper: just the text */
 @media print {
   .site-header nav,
@@ -1142,6 +1167,10 @@ p {
   }
   .article-main {
     width: 100%;
+  }
+  .prose pre {
+    overflow: visible;
+    white-space: pre-wrap;
   }
 }
 

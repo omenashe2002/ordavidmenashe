@@ -40,6 +40,75 @@ function checkDate(file: string, raw: string) {
   if (year < 2000 || year > thisYear + 1) fail(file, `The year in the date "${value}" looks like a typo. ${DATE_HELP}`);
 }
 
+
+/** The settings each kind of file understands, in the order they are usually written. */
+const KNOWN_SETTINGS: Record<string, string[]> = {
+  writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker'],
+  videos: ['title', 'date', 'url', 'description', 'draft'],
+};
+
+/** How many single-letter changes turn one word into another (for "Did you mean ...?"). */
+function distance(a: string, b: string): number {
+  const row = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let previous = row[0];
+    row[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const above = row[j];
+      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (a[i - 1] === b[j - 1] ? 0 : 1));
+      previous = above;
+    }
+  }
+  return row[b.length];
+}
+
+/** A setting the site does not know is ignored without a word, so a typo like "Draft: true" would publish a draft. */
+function checkSettingName(file: string, name: string, known: string[]) {
+  if (known.includes(name)) return;
+  const lower = name.toLowerCase();
+  const sameLetters = known.find((setting) => setting === lower);
+  const close = sameLetters ?? known.find((setting) => distance(setting, lower) <= 2);
+  const hint =
+    sameLetters !== undefined
+      ? `Settings must be written in small letters: "${sameLetters}". With capital letters the site ignores the line${sameLetters === 'draft' ? ', and the article would be published' : ''}.`
+      : close !== undefined
+        ? `Did you mean "${close}"? A setting the site does not know is ignored.`
+        : `"${name}" is not a setting this site knows. The settings are: ${known.join(', ')}.`;
+  fail(file, `Check the setting "${name}" at the top of the file. ${hint}`);
+}
+
+/** Footnotes that are used but never written, or written but never used, show up as stray text or vanish. */
+function checkFootnotes(file: string, body: string[]) {
+  const defined = new Set<string>();
+  const used = new Set<string>();
+  let fence: string | undefined;
+  for (const line of body) {
+    const marker = /^\s*(```|~~~)/.exec(line)?.[1];
+    if (marker) {
+      fence = fence === undefined ? marker : fence === marker ? undefined : fence;
+      continue;
+    }
+    if (fence !== undefined) continue;
+    let text = line.replace(/`[^`]*`/g, '');
+    const definition = /^\[\^([^\]\s]+)\]:/.exec(text);
+    if (definition) {
+      defined.add(definition[1]);
+      text = text.slice(definition[0].length);
+    }
+    for (const reference of text.matchAll(/\[\^([^\]\s]+)\]/g)) used.add(reference[1]);
+  }
+  for (const label of used) {
+    if (!defined.has(label)) {
+      fail(file, `The footnote [^${label}] is used in the text, but no line starting with [^${label}]: gives its note. Add that line further down, or remove the [^${label}] from the text.`);
+    }
+  }
+  for (const label of defined) {
+    if (!used.has(label)) {
+      fail(file, `The note [^${label}]: is written, but nothing in the text points to it with [^${label}], so it would not appear. Add [^${label}] where it belongs, or delete the note.`);
+    }
+  }
+}
+
 export function checkContentFolder(folder: string) {
   const root = path.resolve(folder);
   if (!fs.existsSync(root)) return;
@@ -56,8 +125,11 @@ export function checkContentFolder(folder: string) {
     if (lines[0]?.trim() !== '---') fail(file, 'The first line of the file must be three dashes (---), which open the settings block.');
     const end = lines.findIndex((line, i) => i > 0 && line.trim() === '---');
     if (end === -1) fail(file, 'The settings block at the top is missing its closing line of three dashes (---).');
+    const known = KNOWN_SETTINGS[path.basename(root)];
     for (const line of lines.slice(1, end)) {
-      const setting = /^(title|description|date):\s*(.*)$/.exec(line);
+      const name = known && /^([^\s#'"\-[{][^:]*?)\s*:(?:\s|$)/.exec(line)?.[1];
+      if (name) checkSettingName(file, name, known);
+      const setting = /^(title|description|date|kicker):\s*(.*)$/.exec(line);
       if (!setting) continue;
       const [, key, value] = setting;
       if (key === 'date') checkDate(file, value);
@@ -69,6 +141,7 @@ export function checkContentFolder(folder: string) {
         fail(file, `The ${key} contains a colon, so it must be wrapped in quotation marks, like this: ${key}: "${value}"`);
       }
     }
+    if (path.basename(root) === 'writing') checkFootnotes(file, lines.slice(end + 1));
   }
 }
 

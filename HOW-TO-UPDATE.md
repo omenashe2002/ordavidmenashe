@@ -26,13 +26,13 @@ Write your article here. Leave a blank line between paragraphs.
 - **title** and **description**: in quotation marks. If the text itself contains quotation marks, use curly ones (“like this”) inside.
 - **date**: year-month-day. It is only the date shown. A later date does not delay publishing.
 - **tags**: one or more of Crypto, AI, Law, Other, in square brackets: `[Law, Crypto]`.
-- **featured** (optional): add the line `featured: true` to show the article as a large panel under "Selected writing" on the Home page. The two most recent featured articles are shown. Delete the line to stop featuring it.
-- **kicker** (optional): a short line above a featured title, such as `kicker: "Forthcoming in the Fordham Journal"`. It only appears on the Home page panel.
+- **featured** (optional): add the line `featured: true` to show the article as a large panel under "Selected writing" on the Home page, and on the Writing page when there is other writing too. Up to two featured articles are shown, the most recent first. Delete the line to stop featuring it.
+- **kicker** (optional): a short line above the title, such as `kicker: "Forthcoming in the Fordham Journal"`. It appears at the top of the article and on its large panel if it is featured. Keep it in quotation marks.
 - **draft**: `true` keeps the article off the website while you write. The file is still visible on GitHub. `false` publishes it.
 
-A few things happen on their own: the reading time, a contents list beside (or above, on a phone) any long article with at least three `## Heading` sections, and a "Keep reading" list of other articles at the bottom, chosen by shared topics.
+A few things happen on their own: the reading time; a contents list beside the text (above it, on a phone) for any article of about six minutes or more with at least three `## Heading` sections; and a "Keep reading" list of other articles at the bottom, chosen by shared topics.
 
-In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. The sample article shows each one.
+In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. Put a footnote at the end of a sentence, not on a heading, because its number would stick to the heading words in the contents list. The article *Registered Agents of the DAO* shows each of these.
 
 ## Add a video
 
@@ -54,7 +54,7 @@ draft: false
 - **Top of the Home page:** open `src/content/pages/home.md` and click the pencil icon. Between the two lines of dashes: `eyebrow:` is the small line above the headline, `headline:` is the big headline, `buttonText:` and `buttonLink:` are the dark button and where it goes, and `linkText:` and `linkLink:` are the quieter link beside it. Under `credentials:` each background item has a `label:` (small) and a `text:` (larger); copy a pair of lines to add one, or delete a pair to remove one. Change only the words between quotation marks. The sentence under the headline is the text below the second line of dashes.
 - **Your photo:** open `src`, then `assets`, click **Add file**, then **Upload files**, and drop in a new photo named exactly `or-menashe.jpg`. It replaces the old one. A portrait-shaped JPEG at least 1000 pixels wide works best. Remember the repository is public, so the photo is public too.
 - **Email and LinkedIn:** the lines that start with `email:` and `linkedin:` in `src/site.ts`. Change only the words between the single quotation marks, and keep both quotation marks and the comma.
-- **Delete:** open the file, click the trash can icon, and commit. Before you launch, delete `sample-article.md` and `sample-video.md`.
+- **Delete:** open the file, click the trash can icon, and commit.
 
 ## If something goes wrong
 

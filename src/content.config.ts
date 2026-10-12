@@ -39,8 +39,8 @@ const writing = defineCollection({
       )
       .transform((tags) => [...new Set(tags)]),
     draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false), // true = keep it unpublished while you write
-    featured: z.boolean({ error: 'featured must be true or false, with no quotation marks' }).default(false), // true = shown large under "Selected writing" on Home
-    kicker: z.string().optional(), // a short line above a featured title, for example: Forthcoming in the Fordham Journal
+    featured: z.boolean({ error: 'featured must be true or false, with no quotation marks' }).default(false), // true = shown as a large panel on the Home page and the Writing page
+    kicker: z.string().optional(), // a short line above the title (article page and featured panels), for example: Forthcoming in the Fordham Journal
   }),
 });
 

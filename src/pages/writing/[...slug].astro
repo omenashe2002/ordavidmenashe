@@ -14,9 +14,10 @@ export async function getStaticPaths() {
 const { post, related } = Astro.props;
 const { Content, headings } = await render(post);
 const minutes = readingMinutes(post.body);
-// A contents list is shown for long pieces with at least three sections.
+// A contents list is shown for long pieces with at least three sections of the author's own
+// (the "Footnotes" heading that is added automatically does not count).
 const toc = tableOfContents(headings);
-const showToc = minutes >= 6 && toc.length >= 3;
+const showToc = minutes >= 6 && toc.filter((item) => item.slug !== 'footnote-label').length >= 3;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} type="article" publishedTime={post.data.date} wide>
@@ -32,13 +33,14 @@ const showToc = minutes >= 6 && toc.length >= 3;
       </div>
     </header>
     <div class:list={['article-body', { 'has-toc': showToc }]}>
+      {/* The contents list comes first in the page so keyboard users reach it before the footnote links. */}
+      {showToc && <TableOfContents items={toc} variant="rail" />}
       <div class="article-main">
         {showToc && <TableOfContents items={toc} variant="inline" />}
         <div class="prose">
           <Content />
         </div>
       </div>
-      {showToc && <TableOfContents items={toc} variant="rail" />}
     </div>
   </article>
   <div class="article-end">
