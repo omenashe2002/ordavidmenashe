@@ -612,3 +612,8 @@ p {
     border-left-color: Canvas;
   }
 }
+
+/* Small capitals in legal citations (converted from Word) */
+.prose .smallcaps {
+  font-variant-caps: small-caps;
+}
