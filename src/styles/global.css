@@ -1,3 +1,5 @@
+/*! EB Garamond is licensed under the SIL Open Font License 1.1. The license text is at /fonts/EB-Garamond-OFL.txt */
+
 /* ------------------------------------------------------------------
    Fonts: EB Garamond, bundled with the site (no requests to Google).
    Only the Latin letters are downloaded unless a page needs more.
@@ -106,6 +108,7 @@ body {
   font-kerning: normal;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word; /* long URLs, citations and addresses wrap instead of scrolling sideways */
 }
 
 main {
@@ -287,6 +290,13 @@ p {
   text-decoration: underline;
 }
 
+/* An italic word inside an italic line (case names in a heading or intro) switches back to upright. */
+.prose h3 :is(em, i, cite),
+.lede :is(em, i, cite),
+.post-meta :is(em, i, cite) {
+  font-style: normal;
+}
+
 /* Everything inside an article's body text */
 .prose h2 {
   font-size: 1.55em;
@@ -347,7 +357,22 @@ p {
   max-width: 100%;
   height: auto;
 }
+.prose iframe,
+.prose svg {
+  max-width: 100%;
+}
+.prose figure {
+  margin: 1.5em 0;
+}
+/* Footnote numbers and other superscripts must not push the lines of text apart. */
+.prose sup,
+.prose sub {
+  line-height: 0;
+}
 .prose table {
+  display: block; /* a wide table scrolls inside the column instead of widening the page */
+  max-width: 100%;
+  overflow-x: auto;
   width: 100%;
   margin: 0 0 1.2em;
   border-collapse: collapse;
@@ -358,4 +383,16 @@ p {
   padding: 0.4em 0.6em;
   border-bottom: 1px solid var(--rule);
   text-align: left;
+}
+
+/* ------------------------------------------------------------------
+   Windows high-contrast mode: keep the current-page marker visible
+------------------------------------------------------------------- */
+@media (forced-colors: active) {
+  .site-header nav a {
+    border-bottom-color: Canvas;
+  }
+  .site-header nav a[aria-current='page'] {
+    border-bottom-color: LinkText;
+  }
 }
