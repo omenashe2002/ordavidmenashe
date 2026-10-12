@@ -2,11 +2,13 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { TAGS } from './site';
-import { checkArticleFiles } from './lib/check-articles';
+import { checkContentFolder } from './lib/check-content';
+import { parseYouTube } from './lib/youtube';
 
-// Stops the build with a plain-English message if an article file is named or written in a way that
-// would otherwise be skipped silently or published with the wrong date.
-checkArticleFiles();
+// Stops the build with a plain-English message if an article or video file is named or written in a way
+// that would otherwise be skipped silently or published with the wrong date.
+checkContentFolder('src/content/writing');
+checkContentFolder('src/content/videos');
 
 // A topic may be typed in any capitalization ("crypto"), and is stored the way it is spelled in src/site.ts.
 const findTopic = (value: string) => TAGS.find((tag) => tag.toLowerCase() === value.trim().toLowerCase());
@@ -39,6 +41,22 @@ const writing = defineCollection({
   }),
 });
 
+// Every video is a small Markdown file in src/content/videos/ with the YouTube link in its settings block.
+const videos = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/videos' }),
+  schema: z.object({
+    title: z.string({ error: 'Add a title line at the top of the file, for example: title: "My video"' }),
+    date: z.coerce.date({ error: 'Add a date line at the top of the file, for example: date: 2026-10-12' }),
+    url: z
+      .string({ error: 'Add a url line at the top of the file, for example: url: https://youtu.be/abc123XYZ_0' })
+      .refine((value) => parseYouTube(value) !== undefined, {
+        error: 'That is not a link to a single YouTube video. Copy the address from YouTube\'s Share button, for example: https://youtu.be/abc123XYZ_0',
+      }),
+    description: z.string().optional(),
+    draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false),
+  }),
+});
+
 // Ordinary pages written in Markdown: the About page (about.md) and the introduction on Home (home.md).
 const pages = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/pages' }),
@@ -48,4 +66,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { writing, pages };
+export const collections = { writing, videos, pages };

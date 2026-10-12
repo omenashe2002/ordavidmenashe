@@ -1,0 +1,29 @@
+---
+import { embedUrl, watchUrl } from '../lib/youtube';
+
+interface Props {
+  id: string;
+  start?: number;
+  title: string;
+}
+const { id, start, title } = Astro.props;
+---
+
+<!--
+  Nothing is loaded from YouTube until a visitor clicks play. Without JavaScript the button is an ordinary
+  link that opens the video on YouTube. The small script that swaps in the player is in the Videos page.
+-->
+<div class="video">
+  <a
+    class="video-facade"
+    href={watchUrl(id, start)}
+    data-embed={embedUrl(id, start)}
+    data-title={title}
+    target="_blank"
+    rel="noopener"
+    aria-label={`Play video: ${title}`}
+  >
+    <span class="video-play" aria-hidden="true"></span>
+    <span class="video-label">Play video</span>
+  </a>
+</div>

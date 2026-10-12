@@ -2,10 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /**
- * Checks every file in src/content/writing/ before the site is built, and stops with a plain-English
+ * Checks every file in an article or video folder before the site is built, and stops with a plain-English
  * message when something would otherwise be skipped or published wrongly. The messages name the file.
  */
-const FOLDER = path.resolve('src/content/writing');
 const DATE_HELP = 'Write the date as year-month-day, for example 2026-10-12.';
 
 function fail(file: string, message: string): never {
@@ -33,15 +32,16 @@ function checkDate(file: string, raw: string) {
   if (year < 2000 || year > thisYear + 1) fail(file, `The year in the date "${value}" looks like a typo. ${DATE_HELP}`);
 }
 
-export function checkArticleFiles() {
-  if (!fs.existsSync(FOLDER)) return;
-  for (const file of listFiles(FOLDER)) {
+export function checkContentFolder(folder: string) {
+  const root = path.resolve(folder);
+  if (!fs.existsSync(root)) return;
+  for (const file of listFiles(root)) {
     const name = path.basename(file);
     if (!name.endsWith('.md')) {
       const suggestion = name.replace(/\.[^.]*$/, '') + '.md';
       fail(
         file,
-        `This file would not be published, because article files must end in .md (lowercase). Rename it, for example to "${suggestion}". Images do not belong in this folder; put them in public/images/.`,
+        `This file would not be published, because these files must end in .md (lowercase). Rename it, for example to "${suggestion}". Other kinds of files do not belong in this folder (images go in public/images/).`,
       );
     }
     const lines = fs.readFileSync(file, 'utf8').replace(/^﻿/, '').split(/\r?\n/);
