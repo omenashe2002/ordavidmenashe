@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../site';
+import { personSchema } from '../../lib/seo';
 import portrait from '../../assets/or-menashe.jpg';
 
 const page = await getEntry('pages', 'about');
@@ -15,7 +16,7 @@ const Now = now?.body?.trim() ? (await render(now)).Content : undefined;
 const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
 ---
 
-<BaseLayout title={page.data.title} description={page.data.description} wide>
+<BaseLayout title={page.data.title} description={page.data.description} wide structuredData={[personSchema(Astro.site!)]}>
   <div class="about">
     <h1>{page.data.title}</h1>
     <div class="about-grid">

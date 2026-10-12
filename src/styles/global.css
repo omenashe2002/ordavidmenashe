@@ -293,6 +293,8 @@ p {
   list-style: none;
 }
 .site-footer a {
+  display: inline-block;
+  padding: 0.25rem 0; /* a taller target for fingers */
   color: var(--muted);
 }
 .site-footer a:hover {
@@ -607,7 +609,6 @@ p {
 }
 .prose a[data-footnote-backref] {
   margin-left: 0.25em;
-  text-decoration: none;
 }
 
 .astro-code,
@@ -715,6 +716,10 @@ p {
   font-weight: 500;
   font-variant-caps: all-small-caps;
   letter-spacing: 0.16em;
+}
+
+.measure > .eyebrow:first-child {
+  margin-top: var(--space-6); /* the "404" label on the page-not-found page */
 }
 
 .hero {

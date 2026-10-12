@@ -6,6 +6,7 @@ import FeaturedPiece from '../components/FeaturedPiece.astro';
 import { getEntry, render } from 'astro:content';
 import { SITE } from '../site';
 import { getPosts } from '../lib/posts';
+import { personSchema, websiteSchema } from '../lib/seo';
 import portrait from '../assets/or-menashe.jpg';
 
 const posts = await getPosts();
@@ -19,7 +20,7 @@ const Intro = home ? (await render(home)).Content : undefined;
 const top = home?.data;
 ---
 
-<BaseLayout wide>
+<BaseLayout wide structuredData={[websiteSchema(Astro.site!), personSchema(Astro.site!)]}>
   <section class="hero" aria-labelledby="headline">
     <div class="hero-text">
       {top?.eyebrow && <p class="eyebrow">{top.eyebrow}</p>}
