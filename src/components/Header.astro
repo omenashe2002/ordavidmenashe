@@ -1,0 +1,24 @@
+---
+import { SITE, NAV } from '../site';
+
+const { currentPath } = Astro.props;
+// A link counts as "current" when the page address starts with it (so /writing/some-post/ highlights Writing).
+const isCurrent = (href: string) => currentPath.startsWith(href);
+---
+
+<header class="site-header">
+  <a class="site-name" href="/">{SITE.name}</a>
+  <nav aria-label="Main">
+    <ul>
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
