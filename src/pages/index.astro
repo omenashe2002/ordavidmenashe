@@ -1,15 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostList from '../components/PostList.astro';
+import { getEntry, render } from 'astro:content';
 import { SITE } from '../site';
 import { getPosts } from '../lib/posts';
 
 const latest = (await getPosts()).slice(0, 3);
+const introPage = await getEntry('pages', 'home');
+const Intro = introPage ? (await render(introPage)).Content : undefined;
 ---
 
 <BaseLayout>
   <h1>{SITE.tagline}</h1>
-  {SITE.intro && <p class="intro">{SITE.intro}</p>}
+  {Intro && <div class="prose intro"><Intro /></div>}
   {
     latest.length > 0 && (
       <section aria-labelledby="latest-writing">

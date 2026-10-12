@@ -4,11 +4,11 @@
 export const TAGS = ['Crypto', 'AI', 'Law', 'Other'] as const;
 export type Tag = (typeof TAGS)[number];
 
+// If you edit the lines below, change only the words between the single quotation marks. Keep both
+// quotation marks and the comma at the end of the line, or the site will not build.
 export const SITE = {
   name: 'Or Menashe',
   tagline: 'Writing on crypto, AI, and law.',
-  // The short introduction on the Home page. Left empty until the owner approves the wording.
-  intro: '',
   description:
     'Long-form writing and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
   email: 'ordavidmenashe@gmail.com',

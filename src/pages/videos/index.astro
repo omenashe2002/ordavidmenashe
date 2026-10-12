@@ -1,8 +1,53 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import VideoPlayer from '../../components/VideoPlayer.astro';
+import { getVideos } from '../../lib/videos';
+import { formatDate } from '../../lib/posts';
+import { parseYouTube } from '../../lib/youtube';
+
+const videos = await getVideos();
 ---
 
 <BaseLayout title="Videos" description="Videos on crypto, AI, and law by Or Menashe.">
   <h1>Videos</h1>
-  <p class="placeholder">Placeholder: your YouTube videos will be embedded here (built in step 4).</p>
+  {
+    videos.length > 0 ? (
+      <ol class="post-list">
+        {videos.map((video) => {
+          const { id, start } = parseYouTube(video.data.url)!;
+          return (
+            <li>
+              <h2>{video.data.title}</h2>
+              <div class="post-meta">
+                <time datetime={video.data.date.toISOString().slice(0, 10)}>{formatDate(video.data.date)}</time>
+              </div>
+              <VideoPlayer id={id} start={start} title={video.data.title} />
+              {video.data.description && <p class="summary">{video.data.description}</p>}
+            </li>
+          );
+        })}
+      </ol>
+    ) : (
+      <p class="placeholder">Videos will appear here.</p>
+    )
+  }
 </BaseLayout>
+
+<script>
+  // Swap the play button for the YouTube player when a visitor clicks it.
+  document.addEventListener('click', (event) => {
+    const facade = (event.target as Element | null)?.closest<HTMLAnchorElement>('.video-facade');
+    if (!facade) return;
+    const mouse = event as MouseEvent;
+    if (mouse.button !== 0 || mouse.metaKey || mouse.ctrlKey || mouse.shiftKey || mouse.altKey) return; // let "open in new tab" work
+    event.preventDefault();
+    const frame = document.createElement('iframe');
+    frame.src = facade.dataset.embed ?? '';
+    frame.title = facade.dataset.title ?? 'Video';
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    facade.replaceWith(frame);
+    frame.focus();
+  });
+</script>

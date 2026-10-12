@@ -14,7 +14,7 @@ const { Content } = await render(post);
 const minutes = readingMinutes(post.body);
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={post.data.title} description={post.data.description} type="article" publishedTime={post.data.date}>
   <article>
     <header class="post-header">
       <h1>{post.data.title}</h1>
