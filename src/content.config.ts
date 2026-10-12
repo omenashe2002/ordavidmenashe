@@ -61,12 +61,13 @@ const videos = defineCollection({
 });
 
 // Ordinary pages written in Markdown: the About page (about.md) and the top of the Home page (home.md).
-// The extra lines are only used by home.md.
+// The extra lines are only used by home.md (and "updated" by now.md).
 const pages = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    updated: z.string().optional(), // now.md only: the month shown as "Updated ..."
     eyebrow: z.string().optional(), // the small line above the big headline
     headline: z.string().optional(), // the big headline
     buttonText: z.string().optional(), // the main button

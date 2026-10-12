@@ -8,29 +8,31 @@ import { parseYouTube } from '../../lib/youtube';
 const videos = await getVideos();
 ---
 
-<BaseLayout title="Videos" description="Videos on crypto, AI, and law by Or Menashe.">
-  <h1>Videos</h1>
-  {
-    videos.length > 0 ? (
-      <ol class="post-list">
-        {videos.map((video) => {
-          const { id, start } = parseYouTube(video.data.url)!;
-          return (
-            <li>
-              <h2>{video.data.title}</h2>
-              <div class="post-meta">
-                <time datetime={video.data.date.toISOString().slice(0, 10)}>{formatDate(video.data.date)}</time>
-              </div>
-              <VideoPlayer id={id} start={start} title={video.data.title} />
-              {video.data.description && <p class="summary">{video.data.description}</p>}
-            </li>
-          );
-        })}
-      </ol>
-    ) : (
-      <p class="placeholder">Videos will appear here.</p>
-    )
-  }
+<BaseLayout title="Videos" description="Occasional videos on crypto, AI, and law by Or Menashe." wide>
+  <div class="videos-page">
+    <h1>Videos</h1>
+    {
+      videos.length > 0 ? (
+        <ol class="video-grid">
+          {videos.map((video) => {
+            const { id, start } = parseYouTube(video.data.url)!;
+            return (
+              <li class="video-card">
+                <VideoPlayer id={id} start={start} title={video.data.title} />
+                <h2>{video.data.title}</h2>
+                <p class="video-date">
+                  <time datetime={video.data.date.toISOString().slice(0, 10)}>{formatDate(video.data.date)}</time>
+                </p>
+                {video.data.description && <p class="summary">{video.data.description}</p>}
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <p class="placeholder">Videos will appear here.</p>
+      )
+    }
+  </div>
 </BaseLayout>
 
 <script>

@@ -12,6 +12,9 @@ export const SITE = {
   description:
     'Long-form writing and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
   email: 'ordavidmenashe@gmail.com',
+  // The signup form on the Contact page appears only when this holds the form address from your newsletter
+  // service (it starts with https://). Leave the two quotation marks empty to hide the form. See HOW-TO-UPDATE.md.
+  newsletter: '',
   linkedin: 'https://www.linkedin.com/in/ordavidmenashe',
   disclaimer:
     'This site is personal commentary. It is not legal advice and does not reflect the views of any employer or institution.',

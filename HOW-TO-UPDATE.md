@@ -50,11 +50,24 @@ draft: false
 
 ## Edit or delete something
 
-- **About page:** open `src/content/pages/about.md`, click the pencil icon, edit only the text below the second line of three dashes, and click **Commit changes**.
+- **About page:** open `src/content/pages/about.md`, click the pencil icon, edit only the text below the second line of three dashes, and click **Commit changes**. A line that starts with `## ` is a small section label. The photo on this page is the same `or-menashe.jpg` described below.
+- **"What I'm working on now" (About page):** open `src/content/pages/now.md`. Each line that starts with a dash is one item; add, change or delete lines. Change the month in the `updated:` line when you refresh the list, because it appears under the list as "Updated October 2026".
 - **Top of the Home page:** open `src/content/pages/home.md` and click the pencil icon. Between the two lines of dashes: `eyebrow:` is the small line above the headline, `headline:` is the big headline, `buttonText:` and `buttonLink:` are the dark button and where it goes, and `linkText:` and `linkLink:` are the quieter link beside it. Under `credentials:` each background item has a `label:` (small) and a `text:` (larger); copy a pair of lines to add one, or delete a pair to remove one. Change only the words between quotation marks. The sentence under the headline is the text below the second line of dashes.
 - **Your photo:** open `src`, then `assets`, click **Add file**, then **Upload files**, and drop in a new photo named exactly `or-menashe.jpg`. It replaces the old one. A portrait-shaped JPEG at least 1000 pixels wide works best. Remember the repository is public, so the photo is public too.
 - **Email and LinkedIn:** the lines that start with `email:` and `linkedin:` in `src/site.ts`. Change only the words between the single quotation marks, and keep both quotation marks and the comma.
+- **Newsletter signup:** see "Turn on the newsletter signup" below.
 - **Delete:** open the file, click the trash can icon, and commit.
+
+## Turn on the newsletter signup
+
+The Contact page shows a signup form only when `newsletter:` in `src/site.ts` holds a form address. It is empty now, so no form appears. The form is a plain form that sends the reader to the newsletter service, so it loads nothing from them until someone subscribes.
+
+1. Create a free account at buttondown.com and choose a username. As of October 2026 the free plan covers your first 100 subscribers. Past 100 you can keep collecting addresses but cannot send until you add billing and pick a paid plan, which starts at $9 a month. Check their pricing page for the current terms.
+2. In Buttondown, open **Settings**, then **Embedding**, and copy the code under **Form**. Find the part that reads `action="https://buttondown.com/api/emails/embed-subscribe/yourname"`.
+3. In `src/site.ts`, put only that address between the single quotation marks after `newsletter:`, so the line reads `newsletter: 'https://buttondown.com/api/emails/embed-subscribe/yourname',`. Click **Commit changes**.
+4. To switch the form off, empty the quotation marks again.
+
+Buttondown asks every new subscriber to confirm their address by email. Every email you send includes an unsubscribe link, so keep it.
 
 ## If something goes wrong
 
@@ -68,8 +81,9 @@ draft: false
 | "third-year law student" | `about.md` and `home.md` | when you graduate |
 | "J.D. expected May 2027" | `home.md` (the `credentials:` list) | after you graduate |
 | "forthcoming" | `about.md`, and the `kicker:` line of the featured article | when the note is published |
-| "This semester I am a law clerk at the Wyoming Stable Token Commission" | `about.md`, and `home.md` (`credentials:`) | when that role ends |
-| "In the spring I will join the DeFi Education Fund" | `about.md` | when you start |
+| "This semester I am a law clerk at the Wyoming Stable Token Commission" | `about.md`, `now.md`, and `home.md` (`credentials:`) | when that role ends |
+| "In the spring I will join the DeFi Education Fund" | `about.md` and `now.md` | when you start |
+| "Updated October 2026" | the `updated:` line in `now.md` | each time you change that list |
 | "This past summer, as a law clerk at Fidelity National Financial" | `about.md` | next summer |
 | "student ambassador for Harvey" | `about.md`, and `home.md` (`credentials:`) | when that role ends |
 | "expected May 2027" | `about.md` | after you graduate |
