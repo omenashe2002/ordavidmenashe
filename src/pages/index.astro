@@ -1,22 +1,85 @@
 ---
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostList from '../components/PostList.astro';
+import FeaturedPiece from '../components/FeaturedPiece.astro';
 import { getEntry, render } from 'astro:content';
 import { SITE } from '../site';
 import { getPosts } from '../lib/posts';
+import portrait from '../assets/or-menashe.jpg';
 
-const latest = (await getPosts()).slice(0, 3);
-const introPage = await getEntry('pages', 'home');
-const Intro = introPage ? (await render(introPage)).Content : undefined;
+const posts = await getPosts();
+const featured = posts.filter((post) => post.data.featured).slice(0, 2);
+const latest = posts.filter((post) => !post.data.featured).slice(0, 3);
+
+// The words at the top of the page come from src/content/pages/home.md.
+const home = await getEntry('pages', 'home');
+const Intro = home ? (await render(home)).Content : undefined;
+const top = home?.data;
 ---
 
-<BaseLayout>
-  <h1>{SITE.tagline}</h1>
-  {Intro && <div class="prose intro"><Intro /></div>}
+<BaseLayout wide>
+  <section class="hero" aria-labelledby="headline">
+    <div class="hero-text">
+      {top?.eyebrow && <p class="eyebrow">{top.eyebrow}</p>}
+      <h1 id="headline">{top?.headline ?? SITE.tagline}</h1>
+      {Intro && <div class="hero-intro"><Intro /></div>}
+      {
+        top?.buttonText && top.buttonLink && (
+          <p class="hero-cta">
+            <a class="button" href={top.buttonLink}>{top.buttonText}</a>
+            {top.linkText && top.linkLink && <a href={top.linkLink}>{top.linkText} <span aria-hidden="true">&rarr;</span></a>}
+          </p>
+        )
+      }
+    </div>
+    <figure class="portrait">
+      <Picture
+        src={portrait}
+        alt="Portrait of Or Menashe"
+        widths={[360, 540, 720, 960]}
+        sizes="(max-width: 54rem) 17rem, 27rem"
+        formats={['avif', 'webp']}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </figure>
+  </section>
+
+  {
+    top?.credentials && top.credentials.length > 0 && (
+      <ul class="proof" aria-label="Background">
+        {top.credentials.map((item) => (
+          <li>
+            <span class="proof-label">{item.label}</span>
+            <span class="proof-text">{item.text}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    featured.length > 0 && (
+      <section class="selected" aria-labelledby="selected-writing">
+        <h2 class="section-head" id="selected-writing">Selected writing</h2>
+        <div class="featured-grid" data-count={featured.length}>
+          {featured.map((post) => <FeaturedPiece post={post} />)}
+        </div>
+        {latest.length === 0 && (
+          <p class="more-link">
+            <a href="/writing/">All writing &rarr;</a>
+          </p>
+        )}
+      </section>
+    )
+  }
+
   {
     latest.length > 0 && (
-      <section aria-labelledby="latest-writing">
-        <h2 class="section-title" id="latest-writing">Latest writing</h2>
+      <section class="latest" aria-labelledby="latest-writing">
+        <h2 class="section-head" id="latest-writing">Latest writing</h2>
         <PostList posts={latest} level={3} />
         <p class="more-link">
           <a href="/writing/">All writing &rarr;</a>

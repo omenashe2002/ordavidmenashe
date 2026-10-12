@@ -1,0 +1,30 @@
+---
+import { formatDate, readingMinutes, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  /** Heading level for the title: 2 on pages whose main title is an h1, 3 under a section heading. */
+  level?: 2 | 3;
+}
+const { post, level = 3 } = Astro.props;
+const Heading = level === 2 ? 'h2' : 'h3';
+const minutes = readingMinutes(post.body);
+---
+
+<article class="featured">
+  <div>
+    {post.data.kicker && <span class="featured-kicker">{post.data.kicker}</span>}
+    <p class="featured-meta">
+      <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date)}</time>{' '}
+      &middot; {minutes} min read
+    </p>
+  </div>
+  <div>
+    <Heading>
+      <a href={`/writing/${post.id}/`}>{post.data.title}</a>
+    </Heading>
+    <p class="featured-summary">{post.data.description}</p>
+    <p class="featured-tags">{post.data.tags.join(' · ')}</p>
+    <p class="featured-cta">Read the piece <span aria-hidden="true">&rarr;</span></p>
+  </div>
+</article>

@@ -39,6 +39,8 @@ const writing = defineCollection({
       )
       .transform((tags) => [...new Set(tags)]),
     draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false), // true = keep it unpublished while you write
+    featured: z.boolean({ error: 'featured must be true or false, with no quotation marks' }).default(false), // true = shown large under "Selected writing" on Home
+    kicker: z.string().optional(), // a short line above a featured title, for example: Forthcoming in the Fordham Journal
   }),
 });
 
@@ -58,12 +60,20 @@ const videos = defineCollection({
   }),
 });
 
-// Ordinary pages written in Markdown: the About page (about.md) and the introduction on Home (home.md).
+// Ordinary pages written in Markdown: the About page (about.md) and the top of the Home page (home.md).
+// The extra lines are only used by home.md.
 const pages = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    eyebrow: z.string().optional(), // the small line above the big headline
+    headline: z.string().optional(), // the big headline
+    buttonText: z.string().optional(), // the main button
+    buttonLink: z.string().optional(),
+    linkText: z.string().optional(), // the quieter link beside the button
+    linkLink: z.string().optional(),
+    credentials: z.array(z.object({ label: z.string(), text: z.string() })).optional(), // the row under the headline
   }),
 });
 
