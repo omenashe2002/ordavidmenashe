@@ -30,7 +30,7 @@ A numbered list keeps its order, and a bulleted list does not:
 - A bullet.
 - Another bullet.
 
-## Footnotes
+## Citations
 
 Legal writing leans on citations, so footnotes are built in.[^first] Type a marker like the one at the end of the previous sentence, then write the note anywhere in the file, usually at the bottom.[^second]
 

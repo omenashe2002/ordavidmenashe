@@ -2,6 +2,20 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { TAGS } from './site';
+import { checkArticleFiles } from './lib/check-articles';
+
+// Stops the build with a plain-English message if an article file is named or written in a way that
+// would otherwise be skipped silently or published with the wrong date.
+checkArticleFiles();
+
+// A topic may be typed in any capitalization ("crypto"), and is stored the way it is spelled in src/site.ts.
+const findTopic = (value: string) => TAGS.find((tag) => tag.toLowerCase() === value.trim().toLowerCase());
+const topic = z
+  .string()
+  .refine((value) => findTopic(value) !== undefined, {
+    error: (issue) => `"${String(issue.input)}" is not a topic on this site. Use only: ${TAGS.join(', ')}.`,
+  })
+  .transform((value) => findTopic(value)!);
 
 // Every article is a Markdown file in src/content/writing/. The block of settings at the very top of each
 // file (between the two lines of dashes) must follow the rules below, or the site will refuse to build
@@ -10,11 +24,18 @@ const writing = defineCollection({
   // Files whose names start with an underscore (like _template.md) are never published.
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/writing' }),
   schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    description: z.string(),
-    tags: z.array(z.enum(TAGS)).min(1),
-    draft: z.boolean().default(false), // true = keep it unpublished while you write
+    title: z.string({ error: 'Add a title line at the top of the file, for example: title: "My article"' }),
+    date: z.coerce.date({ error: 'Add a date line at the top of the file, for example: date: 2026-10-12' }),
+    description: z.string({ error: 'Add a description line at the top of the file, for example: description: "One or two sentences."' }),
+    tags: z
+      .preprocess(
+        (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : value), // tags: Law, Crypto
+        z
+          .array(topic, { error: 'Add a tags line at the top of the file, for example: tags: [Law]' })
+          .min(1, { error: 'Add at least one topic, for example: tags: [Law]' }),
+      )
+      .transform((tags) => [...new Set(tags)]),
+    draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false), // true = keep it unpublished while you write
   }),
 });
 
