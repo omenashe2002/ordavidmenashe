@@ -418,11 +418,12 @@ p {
   padding: 0;
   list-style: none;
 }
-.post-list li {
+/* Only the entries themselves ('>'), not the topic tags nested inside each one. */
+.post-list > li {
   padding: 1.4rem 0;
   border-bottom: 1px solid var(--rule);
 }
-.post-list li:last-child {
+.post-list > li:last-child {
   border-bottom: 0;
 }
 .post-list h2,
@@ -477,9 +478,10 @@ p {
   border-bottom-color: var(--accent);
 }
 .tag-filter span {
+  font-size: 0.82em;
   font-variant-caps: normal;
   letter-spacing: 0;
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .more-link {
