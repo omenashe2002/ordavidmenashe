@@ -1,15 +1,57 @@
 ---
+import { Picture } from 'astro:assets';
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../site';
+import portrait from '../../assets/or-menashe.jpg';
 
 const page = await getEntry('pages', 'about');
 if (!page) throw new Error('Missing file: src/content/pages/about.md');
 const { Content } = await render(page);
+
+// "What I'm working on now" is its own small file, so it is easy to refresh: src/content/pages/now.md
+const now = await getEntry('pages', 'now');
+const Now = now?.body?.trim() ? (await render(now)).Content : undefined;
+const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
 ---
 
-<BaseLayout title={page.data.title} description={page.data.description}>
-  <h1>{page.data.title}</h1>
-  <div class="prose">
-    <Content />
+<BaseLayout title={page.data.title} description={page.data.description} wide>
+  <div class="about">
+    <h1>{page.data.title}</h1>
+    <div class="about-grid">
+      <aside class="about-side">
+        <figure class="portrait">
+          <Picture
+            src={portrait}
+            alt="Portrait of Or Menashe"
+            widths={[320, 480, 640]}
+            sizes="(max-width: 54rem) 15rem, 17rem"
+            formats={['avif', 'webp']}
+            loading="eager"
+            decoding="async"
+          />
+        </figure>
+        <ul class="about-links" aria-label="Get in touch">
+          <li><a href={`mailto:${SITE.email}`}>Email</a></li>
+          <li><a href={SITE.linkedin} rel="noopener" aria-label={`LinkedIn, ${linkedinLabel}`}>LinkedIn</a></li>
+        </ul>
+      </aside>
+      <div class="about-main">
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+      {
+        Now && (
+          <section class="now" aria-labelledby="now-title">
+            <h2 id="now-title">{now!.data.title}</h2>
+            <div class="now-list">
+              <Now />
+            </div>
+            {now!.data.updated && <p class="now-updated">Updated {now!.data.updated}</p>}
+          </section>
+        )
+      }
+    </div>
   </div>
 </BaseLayout>

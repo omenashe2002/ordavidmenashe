@@ -2,12 +2,13 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { TAGS } from './site';
-import { checkContentFolder, checkContentPlaces } from './lib/check-content';
+import { checkContentFolder, checkContentPlaces, checkSiteSettings } from './lib/check-content';
 import { parseYouTube } from './lib/youtube';
 
 // Stops the build with a plain-English message if an article or video file is named or written in a way
 // that would otherwise be skipped silently or published with the wrong date.
 checkContentPlaces();
+checkSiteSettings();
 checkContentFolder('src/content/writing');
 checkContentFolder('src/content/videos');
 
@@ -61,12 +62,13 @@ const videos = defineCollection({
 });
 
 // Ordinary pages written in Markdown: the About page (about.md) and the top of the Home page (home.md).
-// The extra lines are only used by home.md.
+// The extra lines are only used by home.md (and "updated" by now.md).
 const pages = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    updated: z.coerce.string().optional(), // now.md only: the month shown as "Updated ..."
     eyebrow: z.string().optional(), // the small line above the big headline
     headline: z.string().optional(), // the big headline
     buttonText: z.string().optional(), // the main button

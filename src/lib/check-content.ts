@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { SITE } from '../site';
 
 /**
  * Checks every file in an article or video folder before the site is built, and stops with a plain-English
@@ -171,5 +172,17 @@ export function checkContentPlaces() {
         );
       }
     }
+  }
+}
+
+/** Stops the build, in plain words, when the newsletter address in src/site.ts is not usable. */
+export function checkSiteSettings() {
+  const address = String(SITE.newsletter ?? '').trim();
+  if (address === '') return; // no newsletter: the signup form stays hidden
+  if (!/^https:\/\/[^\s"'<>]+$/.test(address)) {
+    fail(
+      path.resolve('src/site.ts'),
+      'The newsletter address must start with https:// and contain no spaces or quotation marks. Paste only the web address that follows action= in the form code from your newsletter service, or leave the two quotation marks empty to hide the signup form.',
+    );
   }
 }
