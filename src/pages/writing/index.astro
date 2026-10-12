@@ -1,10 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import TagFilter from '../../components/TagFilter.astro';
+import { getPosts, tagsInUse } from '../../lib/posts';
+
+const posts = await getPosts();
+const tags = tagsInUse(posts);
 ---
 
 <BaseLayout title="Writing" description="Articles on crypto, AI, and law by Or Menashe.">
   <h1>Writing</h1>
-  <p class="placeholder">
-    Placeholder: all articles, newest first, with topic tags, will appear here (built in step 3).
-  </p>
+  {tags.length > 0 && <TagFilter posts={posts} tags={tags} />}
+  {
+    posts.length > 0 ? (
+      <PostList posts={posts} />
+    ) : (
+      <p class="placeholder">Articles will appear here.</p>
+    )
+  }
 </BaseLayout>

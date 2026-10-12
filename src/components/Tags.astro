@@ -1,0 +1,18 @@
+---
+import { tagSlug } from '../lib/posts';
+
+interface Props {
+  tags: readonly string[];
+}
+const { tags } = Astro.props;
+---
+
+<ul class="tags" aria-label="Topics">
+  {
+    tags.map((tag) => (
+      <li>
+        <a href={`/writing/tag/${tagSlug(tag)}/`}>{tag}</a>
+      </li>
+    ))
+  }
+</ul>
