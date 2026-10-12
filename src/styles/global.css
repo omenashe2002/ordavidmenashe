@@ -24,6 +24,7 @@ body {
   padding: 0 1.25rem;
   max-width: calc(var(--measure) + 2.5rem);
   min-height: 100vh;
+  min-height: 100dvh; /* on phones, keeps the footer inside the visible screen */
   display: flex;
   flex-direction: column;
   background: var(--bg);
