@@ -175,14 +175,20 @@ export function checkContentPlaces() {
   }
 }
 
-/** Stops the build, in plain words, when the newsletter address in src/site.ts is not usable. */
+/** Stops the build, in plain words, when the newsletter or LinkedIn address in src/site.ts is not usable. */
 export function checkSiteSettings() {
-  const address = String(SITE.newsletter ?? '').trim();
-  if (address === '') return; // no newsletter: the signup form stays hidden
-  if (!/^https:\/\/[^\s"'<>]+$/.test(address)) {
+  const web = /^https:\/\/[^\s"'<>]+$/;
+  const newsletter = String(SITE.newsletter ?? '').trim();
+  if (newsletter !== '' && !web.test(newsletter)) {
     fail(
       path.resolve('src/site.ts'),
       'The newsletter address must start with https:// and contain no spaces or quotation marks. Paste only the web address that follows action= in the form code from your newsletter service, or leave the two quotation marks empty to hide the signup form.',
+    );
+  }
+  if (!web.test(String(SITE.linkedin ?? '').trim())) {
+    fail(
+      path.resolve('src/site.ts'),
+      'The LinkedIn address must start with https:// and contain no spaces or quotation marks. Copy it from your browser\'s address bar while you are on your LinkedIn profile.',
     );
   }
 }

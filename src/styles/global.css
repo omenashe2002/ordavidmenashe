@@ -1179,6 +1179,18 @@ p {
     overflow: visible;
     white-space: pre-wrap;
   }
+  .prose h2,
+  .prose h3 {
+    break-after: avoid; /* never leave a heading alone at the bottom of a page */
+  }
+  .prose a[data-footnote-backref] {
+    display: none; /* the back arrows are useless on paper */
+  }
+  .button {
+    border: 1px solid #000;
+    background: none;
+    color: #000;
+  }
 }
 
 /* ------------------------------------------------------------------

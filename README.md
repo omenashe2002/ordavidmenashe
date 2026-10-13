@@ -14,7 +14,7 @@ To add or change anything, read [HOW-TO-UPDATE.md](HOW-TO-UPDATE.md).
 
 ## Running it on your own computer
 
-You need Node.js 22 or newer.
+You need Node.js 22.12 or newer.
 
 ```
 npm install

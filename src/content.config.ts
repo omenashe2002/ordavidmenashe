@@ -28,9 +28,15 @@ const writing = defineCollection({
   // Files whose names start with an underscore (like _template.md) are never published.
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/writing' }),
   schema: z.object({
-    title: z.string({ error: 'Add a title line at the top of the file, for example: title: "My article"' }),
+    title: z
+      .string({ error: 'Add a title line at the top of the file, for example: title: "My article"' })
+      .trim()
+      .min(1, { error: 'The title line is empty. Write the title between the quotation marks.' }),
     date: z.coerce.date({ error: 'Add a date line at the top of the file, for example: date: 2026-10-12' }),
-    description: z.string({ error: 'Add a description line at the top of the file, for example: description: "One or two sentences."' }),
+    description: z
+      .string({ error: 'Add a description line at the top of the file, for example: description: "One or two sentences."' })
+      .trim()
+      .min(1, { error: 'The description line is empty. Write one or two sentences between the quotation marks.' }),
     tags: z
       .preprocess(
         (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : value), // tags: Law, Crypto
@@ -65,7 +71,8 @@ const videos = defineCollection({
 // The extra lines are only used by home.md (and "updated" by now.md).
 const pages = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/pages' }),
-  schema: z.object({
+  // strictObject: a misspelled setting (such as "buttonlink") stops the build instead of being ignored.
+  schema: z.strictObject({
     title: z.string(),
     description: z.string(),
     updated: z.coerce.string().optional(), // now.md only: the month shown as "Updated ..."
