@@ -5,20 +5,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // The words come from src/content/pages/now.md: each line that starts with a dash is one item.
 const page = await getEntry('pages', 'now');
 const Now = page?.body?.trim() ? (await render(page)).Content : undefined;
+// With no now.md (or nothing in it), there is no Now page: visitors are sent to About instead.
+if (!Now) return Astro.redirect('/about/');
 ---
 
 <BaseLayout title={page?.data.title ?? 'Now'} description={page?.data.description ?? 'What Or Menashe is working on at the moment.'}>
   <div class="now-page">
     <h1>{page?.data.title ?? 'Now'}</h1>
-    {
-      Now ? (
-        <div class="prose now-full">
-          <Now />
-        </div>
-      ) : (
-        <p class="placeholder">Nothing is listed here right now.</p>
-      )
-    }
+    <div class="prose now-full">
+      <Now />
+    </div>
     {page?.data.updated && <p class="now-updated">Updated {page.data.updated}</p>}
   </div>
 </BaseLayout>

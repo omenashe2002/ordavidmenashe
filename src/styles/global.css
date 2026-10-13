@@ -408,6 +408,9 @@ p {
   grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: var(--space-5) var(--space-6);
 }
+.footer-columns > * {
+  min-width: 0;
+}
 .footer-heading {
   margin: 0 0 var(--space-2);
 }
@@ -450,15 +453,15 @@ p {
 }
 .theme-toggle {
   display: flex;
+  flex-wrap: wrap; /* in a narrow column the three choices go onto two lines instead of past the edge of the screen */
   align-items: center;
   margin: 0;
   padding: 0;
   border: 0;
 }
 .theme-toggle button {
-  min-width: 3.4rem;
   min-height: 2.5rem;
-  padding: 0 0.7rem;
+  padding: 0 0.6rem;
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
@@ -1979,9 +1982,7 @@ p {
   .prose a[href^='http']:not([data-bare-url])::after {
     content: ' (' attr(href) ')';
     display: inline;
-    width: auto;
-    height: auto;
-    margin-left: 0;
+    padding-left: 0;
     background: none;
     opacity: 1;
     -webkit-mask: none;
@@ -2045,15 +2046,22 @@ p {
   .print-source {
     display: block;
   }
-  .about-main[data-bio='short'] .prose > :not(:first-child) {
-    display: revert;
-  }
   .bio-toggle,
   .now-more {
     display: none !important;
   }
-  .now-preview li:nth-child(n + 3) {
-    display: revert;
+  .section-head,
+  .section-title,
+  .eyebrow,
+  .toc-title,
+  .footer-heading {
+    break-after: avoid;
+  }
+  .footer-legal {
+    break-inside: avoid;
+  }
+  .prose details:not([open])::details-content {
+    content-visibility: visible; /* a closed block still prints (the script also opens them) */
   }
   .button {
     border: 1px solid #000;
@@ -2076,15 +2084,12 @@ p {
 /* The mark itself. A link with no kind below has nothing to draw. */
 :is(.prose, .sidenote, .note-box) a::after {
   content: var(--link-mark, none);
-  display: inline-block;
-  width: 0.66em;
-  height: 0.66em;
-  margin-left: 0.3em;
+  /* An inline box with the icon painted in its left padding, so the icon always stays on the line of the link's last word. */
+  padding-left: 0.96em;
   background-color: currentColor;
   opacity: 0.7;
-  vertical-align: 0.04em;
-  -webkit-mask: var(--link-icon, none) no-repeat center / contain;
-  mask: var(--link-icon, none) no-repeat center / contain;
+  -webkit-mask: var(--link-icon, none) no-repeat right center / 0.66em 0.66em;
+  mask: var(--link-icon, none) no-repeat right center / 0.66em 0.66em;
   transition: opacity var(--dur-2) var(--ease);
 }
 :is(.prose, .sidenote, .note-box) a:hover::after {
@@ -2153,6 +2158,15 @@ p {
 .search-item:not(.is-ready) {
   visibility: hidden; /* keeps its place, so the header does not move when the button appears */
 }
+@media (scripting: none) {
+  .search-item {
+    display: none; /* with scripts off there is no button, and no gap where it would be */
+  }
+}
+.is-found {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  transition: background-color var(--dur-3) var(--ease);
+}
 .search-open {
   display: inline-flex;
   align-items: center;
@@ -2173,6 +2187,8 @@ p {
   color: var(--text);
 }
 .search-key {
+  min-width: 3.1rem; /* the same width for "Ctrl K" and the Mac's "\2318K", so the header does not move */
+  text-align: center;
   padding: 0.05rem 0.4rem;
   border: 1px solid var(--rule);
   border-radius: 3px;
@@ -2498,7 +2514,7 @@ p {
   font-family: var(--font-ui);
   font-size: var(--step--1);
 }
-.now-preview li:nth-child(n + 3) {
+.now-preview > ul > li:nth-child(n + 3) {
   display: none; /* the About page shows the first two items; the Now page shows them all */
 }
 .now-page h1 {
@@ -2712,6 +2728,24 @@ button.button {
 
 /* Windows high-contrast mode draws no backgrounds, so give buttons and the "now" panel an outline */
 @media (forced-colors: active) {
+  .search-open,
+  .tag-filter a {
+    border-bottom-color: Canvas;
+  }
+  .tag-filter a[aria-current='page'] {
+    border-bottom-color: Highlight;
+  }
+  .search-results li a {
+    border-left-color: Canvas;
+  }
+  .search-results li.is-active a {
+    border-left-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .search-bar:focus-within {
+    outline: 2px solid Highlight;
+  }
   .theme-toggle button {
     border-bottom-color: Canvas;
   }
@@ -2735,5 +2769,15 @@ button.button {
   *::after {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* On paper the whole bio and the whole Now list are shown. This sits last so that it wins over the screen rules above. */
+@media print {
+  .about-main[data-bio='short'] .prose > :not(:first-child) {
+    display: revert !important;
+  }
+  .now-preview > ul > li:nth-child(n + 3) {
+    display: revert !important;
   }
 }

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
@@ -10,6 +11,15 @@ const keepSectionSignWithNumber = {
     const value = node.value.replace(/(§+) /g, '$1\u00A0');
     if (value !== node.value) ctx.replaceNode(node, { type: 'text', value });
   },
+};
+
+// The Now page exists only while src/content/pages/now.md has something in it (see src/pages/now/index.astro).
+const hasNowPage = () => {
+  try {
+    return readFileSync('src/content/pages/now.md', 'utf8').replace(/^---[\s\S]*?\n---/, '').trim().length > 0;
+  } catch {
+    return false;
+  }
 };
 
 // After the pages are built, this reads them and writes a search index into dist/pagefind (see src/scripts/search.ts).
@@ -36,7 +46,7 @@ const searchIndex = {
 // "site" is the final web address. It is used for the sitemap, RSS feed and share previews.
 export default defineConfig({
   site: 'https://ordavidmenashe.com',
-  integrations: [sitemap({ filter: (page) => !page.includes('/404') }), searchIndex],
+  integrations: [sitemap({ filter: (page) => !page.includes('/404') && !(page.endsWith('/now/') && !hasNowPage()) }), searchIndex],
   markdown: {
     processor: satteri({ mdastPlugins: [keepSectionSignWithNumber] }),
     // Code in articles is colored by the site's own light and dark styles (see global.css).

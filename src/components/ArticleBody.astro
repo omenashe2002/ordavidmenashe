@@ -47,7 +47,7 @@ const iso = (value: Date) => value.toISOString().slice(0, 10);
     {kicker && <p class="kicker">{kicker}</p>}
     <h1>{title}</h1>
     <p class="dek">{description}</p>
-    <div class="post-meta">
+    <div class="post-meta" data-pagefind-ignore>
       {status && <span class="status-badge" data-status={status}>{STATUS_LABEL[status]}</span>}
       {
         labeled ? (
@@ -81,15 +81,15 @@ const iso = (value: Date) => value.toISOString().slice(0, 10);
   {cite && <ArticleTools variant="end" {...cite} />}
   <slot name="after" />
   <RelatedPosts posts={related} heading={relatedHeading} basePath={relatedBasePath} />
-  <p class="more-link"><a href={backHref}>&larr; {backLabel}</a></p>
+  <p class="more-link" data-pagefind-ignore><a href={backHref}>&larr; {backLabel}</a></p>
 </div>
 {
   showTools && (
     <>
-      <div class="reading-progress" aria-hidden="true" data-needs-js hidden>
+      <div class="reading-progress" aria-hidden="true" data-needs-js hidden data-pagefind-ignore>
         <span />
       </div>
-      <div class="reader-tools" data-reader-tools data-minutes={minutes} data-needs-js hidden>
+      <div class="reader-tools" data-reader-tools data-minutes={minutes} data-needs-js hidden data-pagefind-ignore>
         {showToc && (
           <button class="reader-button reader-contents" type="button" data-open-contents>
             Contents

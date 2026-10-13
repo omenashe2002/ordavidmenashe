@@ -22,7 +22,7 @@ const hasSignup = SITE.newsletter.trim() !== ''; // already checked at build tim
             <dt>Email</dt>
             <dd class="contact-email">
               <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-              <button class="text-button contact-copy" type="button" data-copy-email={SITE.email} data-needs-js hidden>Copy address</button>
+              <button class="text-button contact-copy" type="button" data-copy-email={SITE.email} data-needs-js hidden data-pagefind-ignore>Copy address</button>
             </dd>
           </div>
           <div>

@@ -74,13 +74,32 @@ const startShort = page.data.startShort !== false;
   const toggle = document.querySelector<HTMLButtonElement>('[data-bio-toggle]');
   const box = document.querySelector<HTMLElement>('.about-main[data-bio]');
   if (toggle && box) {
+    const show = (full: boolean) => {
+      box.dataset.bio = full ? 'full' : 'short';
+      toggle.textContent = full ? 'Show less' : 'Read the full bio';
+      toggle.setAttribute('aria-expanded', String(full));
+    };
     toggle.addEventListener('click', () => {
-      const short = box.dataset.bio === 'short';
-      box.dataset.bio = short ? 'full' : 'short';
-      toggle.textContent = short ? 'Show less' : 'Read the full bio';
-      toggle.setAttribute('aria-expanded', String(short));
+      const full = box.dataset.bio === 'short';
+      show(full);
       // Back at the short version, bring the top of the bio into view again.
-      if (!short) box.scrollIntoView({ block: 'nearest' });
+      if (!full) box.scrollIntoView({ block: 'nearest' });
     });
+    // A link (from search, for example) to a part of the bio that is folded away opens the bio first.
+    const openForAddress = () => {
+      let id = location.hash.slice(1);
+      try {
+        id = decodeURIComponent(id);
+      } catch {
+        // an address with a broken % sign: use it as it is
+      }
+      const target = id ? document.getElementById(id) : null;
+      if (target && box.contains(target) && box.dataset.bio === 'short' && target.getClientRects().length === 0) {
+        show(true);
+        target.scrollIntoView();
+      }
+    };
+    window.addEventListener('hashchange', openForAddress);
+    openForAddress();
   }
 </script>

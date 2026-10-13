@@ -35,6 +35,9 @@ let active = -1;
 
 /** Pagefind marks the matched words in an excerpt with <mark>. Everything else is plain text, never markup. */
 function excerptNodes(html: string): Node[] {
+  // A snippet that starts with a long stretch before the first match is cut to start just before it, so the match shows even on a phone.
+  const first = html.indexOf('<mark>');
+  if (first > 70) html = `… ${html.slice(html.lastIndexOf(' ', first - 40) + 1)}`;
   return html.split(/(<mark>|<\/mark>)/).reduce<{ nodes: Node[]; marked: boolean }>(
     (state, part) => {
       if (part === '<mark>') state.marked = true;
@@ -61,6 +64,9 @@ function where(url: string, excerpt: string) {
   return word ? `${base}#:~:text=${encodeURIComponent(word)}` : base;
 }
 
+const HINT = 'Type to search writing, videos, and pages.';
+const UNAVAILABLE = 'Search is not available right now. Try again in a moment, or use the Writing page.';
+
 function setActive(index: number) {
   active = options.length === 0 ? -1 : (index + options.length) % options.length;
   options.forEach((option, i) => {
@@ -80,6 +86,16 @@ function say(message: string) {
   status.textContent = message;
 }
 
+/** Empties the results and puts the box back to its starting state. */
+function reset(message = HINT) {
+  list.replaceChildren();
+  options = [];
+  active = -1;
+  input.setAttribute('aria-expanded', 'false');
+  input.removeAttribute('aria-activedescendant');
+  say(message);
+}
+
 async function load(): Promise<Pagefind | undefined> {
   if (pagefind || failed) return pagefind;
   try {
@@ -93,57 +109,97 @@ async function load(): Promise<Pagefind | undefined> {
   return pagefind;
 }
 
+let runId = 0; // each search gets a number; an answer that is no longer the newest is thrown away
+
 async function run(query: string) {
+  const mine = ++runId;
   const text = query.trim();
-  list.replaceChildren();
-  options = [];
-  setActive(-1);
-  input.setAttribute('aria-expanded', 'false');
   if (text.length < 2) {
-    say(text ? 'Keep typing to search.' : 'Type to search writing, videos, and pages.');
+    reset(text ? 'Keep typing to search.' : HINT);
     return;
   }
-  const engine = await load();
-  if (!engine) {
-    say('Search is not available right now. Try again later, or use the Writing page.');
+  if (options.length === 0) say('Searching…'); // earlier results stay on screen until the new ones are ready
+  try {
+    const engine = await load();
+    if (mine !== runId) return;
+    if (!engine) {
+      reset(UNAVAILABLE);
+      return;
+    }
+    const search = await engine.debouncedSearch(text, {}, 150);
+    if (mine !== runId || search === null) return; // a newer search has taken over
+    const found = await Promise.all(search.results.slice(0, MAX_RESULTS).map((result) => result.data()));
+    if (mine !== runId) return;
+    if (found.length === 0) {
+      reset(`No results for “${text}”.`);
+      return;
+    }
+    const items = found.map((item, index) => {
+      const best = item.sub_results?.[0];
+      const li = document.createElement('li');
+      li.setAttribute('role', 'none');
+      const link = document.createElement('a');
+      link.id = `search-option-${index}`;
+      link.setAttribute('role', 'option');
+      link.setAttribute('aria-selected', 'false');
+      link.href = where(best?.url ?? item.url, best?.excerpt ?? item.excerpt);
+      link.tabIndex = -1;
+      const kind = document.createElement('span');
+      kind.className = 'search-kind';
+      kind.textContent = item.meta.kind ?? 'Page';
+      const title = document.createElement('span');
+      title.className = 'search-title';
+      title.textContent = item.meta.title ?? item.url;
+      const excerpt = document.createElement('span');
+      excerpt.className = 'search-excerpt';
+      excerpt.append(...excerptNodes(best?.excerpt ?? item.excerpt));
+      link.append(kind, title, excerpt);
+      li.append(link);
+      li.addEventListener('pointermove', () => setActive(options.indexOf(link)));
+      return { li, link };
+    });
+    list.replaceChildren(...items.map((item) => item.li));
+    options = items.map((item) => item.link);
+    input.setAttribute('aria-expanded', 'true');
+    setActive(0);
+    say(`${found.length} result${found.length === 1 ? '' : 's'} for “${text}”. Use the up and down arrow keys, then Enter.`);
+  } catch {
+    if (mine === runId) {
+      failed = true;
+      reset(UNAVAILABLE);
+    }
+  }
+}
+
+/** Finds the first place on this page where a word appears, in the notes if the notes have it, and brings it into view. */
+function showWord(word: string) {
+  const needle = word.toLowerCase();
+  const rendered = (element: Element) => element.getClientRects().length > 0;
+  const places = [...document.querySelectorAll('.sidenote, .prose .footnotes li, .prose p, .prose li, .prose td')];
+  const target = places.find((element) => rendered(element) && element.textContent?.toLowerCase().includes(needle));
+  if (!target) return;
+  target.scrollIntoView({ block: 'center' });
+  target.classList.add('is-found');
+  window.setTimeout(() => target.classList.remove('is-found'), 2200);
+}
+
+/** Opens a result. On another page that is an ordinary link. On this page the box closes first, so the reader can see where they landed. */
+function go(link: HTMLAnchorElement) {
+  const url = new URL(link.href);
+  if (url.pathname !== location.pathname) {
+    location.assign(url.href);
     return;
   }
-  const search = await engine.debouncedSearch(text, {}, 150);
-  if (search === null) return; // a newer search has taken over
-  const found = await Promise.all(search.results.slice(0, MAX_RESULTS).map((result) => result.data()));
-  if (input.value.trim() !== text) return;
-  if (found.length === 0) {
-    say(`No results for “${text}”.`);
-    return;
+  dialog?.close();
+  if (url.hash.startsWith('#:~:text=')) {
+    showWord(decodeURIComponent(url.hash.slice('#:~:text='.length)));
+  } else if (url.hash) {
+    const same = location.hash === url.hash;
+    location.hash = url.hash;
+    if (same) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView(); // the address did not change, so the browser would not move
+  } else {
+    window.scrollTo({ top: 0 });
   }
-  found.forEach((item, index) => {
-    const best = item.sub_results?.[0];
-    const li = document.createElement('li');
-    li.setAttribute('role', 'none');
-    const link = document.createElement('a');
-    link.id = `search-option-${index}`;
-    link.setAttribute('role', 'option');
-    link.setAttribute('aria-selected', 'false');
-    link.href = where(best?.url ?? item.url, best?.excerpt ?? item.excerpt);
-    link.tabIndex = -1;
-    const kind = document.createElement('span');
-    kind.className = 'search-kind';
-    kind.textContent = item.meta.kind ?? 'Page';
-    const title = document.createElement('span');
-    title.className = 'search-title';
-    title.textContent = item.meta.title ?? item.url;
-    const excerpt = document.createElement('span');
-    excerpt.className = 'search-excerpt';
-    excerpt.append(...excerptNodes(best?.excerpt ?? item.excerpt));
-    link.append(kind, title, excerpt);
-    li.append(link);
-    li.addEventListener('pointermove', () => setActive(options.indexOf(link)));
-    list.append(li);
-    options.push(link);
-  });
-  input.setAttribute('aria-expanded', 'true');
-  setActive(0);
-  say(`${found.length} result${found.length === 1 ? '' : 's'} for “${text}”. Use the up and down arrow keys, then Enter.`);
 }
 
 function build() {
@@ -173,26 +229,36 @@ function build() {
       const link = options[active];
       if (link) {
         event.preventDefault();
-        location.assign(link.href);
+        go(link);
       }
     }
   });
+  list.addEventListener('click', (event) => {
+    const mouse = event as MouseEvent;
+    const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a');
+    if (!link || mouse.button !== 0 || mouse.metaKey || mouse.ctrlKey || mouse.shiftKey || mouse.altKey) return; // "open in new tab" still works
+    event.preventDefault();
+    go(link);
+  });
   dialog.querySelector('.search-close')!.addEventListener('click', () => dialog!.close());
+  // A click on the dimmed area closes the box, but only when it also began there (not when a text selection ended there).
+  let pressedOutside = false;
+  dialog.addEventListener('mousedown', (event) => (pressedOutside = event.target === dialog));
   dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) dialog!.close(); // a click on the dimmed area
+    if (event.target === dialog && pressedOutside) dialog!.close();
   });
   dialog.addEventListener('close', () => {
+    runId++; // answers still on their way are no longer wanted
     input.value = '';
-    list.replaceChildren();
-    options = [];
-    say('');
+    reset();
   });
-  say('Type to search writing, videos, and pages.');
+  say(HINT);
 }
 
 function open() {
   build();
   if (dialog!.open) return;
+  failed = false; // a failed load is tried again each time the box is opened
   dialog!.showModal();
   input.focus();
   void load(); // starts fetching the index while the visitor types

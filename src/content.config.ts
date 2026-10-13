@@ -14,6 +14,7 @@ checkSiteSettings();
 checkContentFolder('src/content/writing');
 checkContentFolder('src/content/videos');
 checkContentFolder('src/content/newsletter');
+checkContentFolder('src/content/pages');
 
 // A topic may be typed in any capitalization ("crypto"), and is stored the way it is spelled in src/site.ts.
 const findTopic = (value: string) => TAGS.find((tag) => tag.toLowerCase() === value.trim().toLowerCase());
@@ -146,7 +147,15 @@ const pages = defineCollection({
     title: z.string(),
     description: z.string(),
     startShort: z.boolean({ error: 'startShort must be true or false, with no quotation marks' }).optional(), // about.md only: false shows the whole bio at once instead of the short version first
-    updated: z.coerce.string().optional(), // now.md only: the month shown as "Updated ..."
+    // now.md only: the month shown as "Updated ...". A date typed as 2026-11-15 is shown as "November 2026"; an empty line shows nothing.
+    updated: z
+      .union([z.string(), z.date()])
+      .nullish()
+      .transform((value) => {
+        if (value == null) return undefined;
+        if (value instanceof Date) return value.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+        return value.trim() || undefined;
+      }),
     eyebrow: z.string().optional(), // the small line above the big headline
     headline: z.string().optional(), // the big headline
     buttonText: z.string().optional(), // the main button

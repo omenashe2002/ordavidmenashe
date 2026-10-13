@@ -1,4 +1,5 @@
 ---
+import { getEntry } from 'astro:content';
 import { SITE, NAV } from '../site';
 import ThemeToggle from './ThemeToggle.astro';
 import NewsletterSignup from './NewsletterSignup.astro';
@@ -9,6 +10,9 @@ interface Props {
 }
 const { showSignup = true } = Astro.props;
 const year = new Date().getFullYear();
+// The Now link is shown only while there is a Now page (src/content/pages/now.md with items in it).
+const now = await getEntry('pages', 'now');
+const hasNow = Boolean(now?.body?.trim());
 ---
 
 <footer class="site-footer wrap">
@@ -29,7 +33,7 @@ const year = new Date().getFullYear();
         <h2 class="footer-heading" id="footer-pages">Pages</h2>
         <ul>
           {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-          <li><a href="/now/">Now</a></li>
+          {hasNow && <li><a href="/now/">Now</a></li>}
           <li><a href="/writing/newsletter/">Weekly newsletter</a></li>
         </ul>
       </nav>
