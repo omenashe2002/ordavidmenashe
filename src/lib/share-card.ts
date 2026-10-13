@@ -29,8 +29,8 @@ async function resources() {
     const photo = () => sharp(path.resolve('src/assets/or-menashe.jpg')).rotate();
     const small = await photo().resize(200, 200, { fit: 'cover', position: 'north' }).jpeg({ quality: 88 }).toBuffer();
     // The tall portrait on the general card is blended into the cream mat, as on the Home page.
-    const tall = await photo().resize(656, 884, { fit: 'cover', position: 'north' }).jpeg({ quality: 92 }).toBuffer();
-    const blended = await sharp({ create: { width: 656, height: 884, channels: 3, background: MAT } })
+    const tall = await photo().resize(708, 936, { fit: 'cover', position: 'north' }).jpeg({ quality: 92 }).toBuffer();
+    const blended = await sharp({ create: { width: 708, height: 936, channels: 3, background: MAT } })
       .composite([{ input: tall, blend: 'multiply' }])
       .jpeg({ quality: 90 })
       .toBuffer();
@@ -77,9 +77,9 @@ export async function shareCard(options: { title: string; kicker?: string; tags:
       el('div', { fontSize: titleSize(title), fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.012em', color: INK, maxWidth: 1000, lineClamp: 5 }, title),
       el('div', { display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '2px solid #ddd5c4', paddingTop: 24 }, [
         el('div', { display: 'flex', alignItems: 'center' }, [
-          el('div', { display: 'flex', boxSizing: 'border-box', width: 88, height: 88, borderRadius: 44, marginRight: 22, border: `5px solid ${FRAME}` }, [
-            el('div', { display: 'flex', boxSizing: 'border-box', flex: 1, borderRadius: 39, border: `2px solid ${LIP}`, padding: 2, background: MAT }, [
-              el('img', { width: 70, height: 70, borderRadius: 35, objectFit: 'cover' }, undefined, { src: portrait, width: 70, height: 70 }),
+          el('div', { display: 'flex', boxSizing: 'border-box', width: 88, height: 88, borderRadius: 44, marginRight: 22, border: `3px solid ${FRAME}` }, [
+            el('div', { display: 'flex', boxSizing: 'border-box', flex: 1, borderRadius: 41, border: `1px solid ${LIP}`, padding: 1, background: MAT }, [
+              el('img', { width: 78, height: 78, borderRadius: 39, objectFit: 'cover' }, undefined, { src: portrait, width: 78, height: 78 }),
             ]),
           ]),
           el('div', { display: 'flex', flexDirection: 'column' }, [
@@ -118,9 +118,9 @@ export async function generalCard(): Promise<Buffer> {
     el('div', abs({ left: 96, top: 92, fontSize: 32, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: COPPER }), 'Or Menashe'),
     el('div', abs({ left: 96, top: 176, width: 620, fontSize: 96, fontWeight: 500, lineHeight: 1.03, letterSpacing: '-0.014em', color: INK }), 'Law, digital assets, and AI.'),
     el('div', abs({ left: 96, bottom: 84, width: 560, borderTop: '2px solid #ddd5c4', paddingTop: 24, fontSize: 30, fontStyle: 'italic', color: MUTED }), 'ordavidmenashe.com'),
-    el('div', abs({ right: 96, top: 66, boxSizing: 'border-box', width: 384, height: 498, border: `16px solid ${FRAME}` }), [
-      el('div', { display: 'flex', boxSizing: 'border-box', flex: 1, border: `2px solid ${LIP}`, padding: 10, background: MAT }, [
-        el('img', { width: 328, height: 442, objectFit: 'cover' }, undefined, { src: wide, width: 328, height: 442 }),
+    el('div', abs({ right: 96, top: 66, boxSizing: 'border-box', width: 384, height: 498, border: `8px solid ${FRAME}` }), [
+      el('div', { display: 'flex', boxSizing: 'border-box', flex: 1, border: `1px solid ${LIP}`, padding: 6, background: MAT }, [
+        el('img', { width: 354, height: 468, objectFit: 'cover' }, undefined, { src: wide, width: 354, height: 468 }),
       ]),
     ]),
   ]);
