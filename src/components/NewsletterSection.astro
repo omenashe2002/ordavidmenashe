@@ -1,0 +1,30 @@
+---
+import PostList from './PostList.astro';
+import NewsletterSignup from './NewsletterSignup.astro';
+import type { Issue } from '../lib/issues';
+
+/** The "Weekly newsletter" part of the Writing page: the latest issues, a link to all of them, and the signup form. */
+interface Props {
+  issues: Issue[];
+}
+const { issues } = Astro.props;
+---
+
+<section class="newsletter-section" aria-labelledby="weekly-newsletter">
+  <h2 class="section-head" id="weekly-newsletter">Weekly newsletter</h2>
+  {
+    issues.length > 0 ? (
+      <>
+        <PostList posts={issues.slice(0, 3)} level={3} basePath="/writing/newsletter/" />
+        <p class="more-link">
+          <a href="/writing/newsletter/">All issues &rarr;</a>
+        </p>
+      </>
+    ) : (
+      <p>
+        A short note each week. The first issue is coming soon. <a href="/writing/newsletter/">About the newsletter &rarr;</a>
+      </p>
+    )
+  }
+  <NewsletterSignup id="writing-signup" blurb="Each issue by email. It is free, and you can unsubscribe at any time." />
+</section>

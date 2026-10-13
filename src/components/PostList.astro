@@ -1,13 +1,16 @@
 ---
 import Tags from './Tags.astro';
 import { formatDate, readingMinutes, type Post } from '../lib/posts';
+import type { Issue } from '../lib/issues';
 
 interface Props {
-  posts: Post[];
-  /** Heading level for each article title: 2 on pages whose main title is an h1, 3 under a section heading. */
+  posts: (Post | Issue)[];
+  /** Heading level for each title: 2 on pages whose main title is an h1, 3 under a section heading. */
   level?: 2 | 3;
+  /** Where the entries live: articles are under /writing/, newsletter issues under /writing/newsletter/. */
+  basePath?: string;
 }
-const { posts, level = 2 } = Astro.props;
+const { posts, level = 2, basePath = '/writing/' } = Astro.props;
 const Heading = level === 3 ? 'h3' : 'h2';
 ---
 
@@ -21,10 +24,10 @@ const Heading = level === 3 ? 'h3' : 'h2';
         </p>
         <div class="post-what">
           <Heading>
-            <a href={`/writing/${post.id}/`}>{post.data.title}</a>
+            <a href={`${basePath}${post.id}/`}>{post.data.title}</a>
           </Heading>
           <p class="summary">{post.data.description}</p>
-          <Tags tags={post.data.tags} />
+          {post.data.tags.length > 0 && <Tags tags={post.data.tags} />}
         </div>
       </li>
     ))

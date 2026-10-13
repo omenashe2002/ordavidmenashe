@@ -14,6 +14,7 @@ const INK = '#1d1b17';
 const MUTED = '#5c564b';
 const COPPER = '#964a1c';
 const PAPER = '#faf6ee';
+const FRAME = '#77736a'; // the thin frame around the portrait, as on the site
 
 const fontFile = (name: string) =>
   fs.readFileSync(path.resolve('node_modules/@fontsource/eb-garamond/files', name));
@@ -73,7 +74,7 @@ export async function shareCard(options: { title: string; kicker?: string; tags:
       el('div', { fontSize: titleSize(title), fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.012em', color: INK, maxWidth: 1000, lineClamp: 5 }, title),
       el('div', { display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '2px solid #ddd5c4', paddingTop: 24 }, [
         el('div', { display: 'flex', alignItems: 'center' }, [
-          el('img', { width: 76, height: 76, borderRadius: 38, marginRight: 22, objectFit: 'cover' }, undefined, { src: portrait, width: 76, height: 76 }),
+          el('img', { width: 76, height: 76, borderRadius: 38, marginRight: 22, objectFit: 'cover', border: `2px solid ${FRAME}` }, undefined, { src: portrait, width: 76, height: 76 }),
           el('div', { display: 'flex', flexDirection: 'column' }, [
             el('div', { fontSize: 32, fontWeight: 600, color: INK }, 'Or Menashe'),
             el('div', { fontSize: 26, fontStyle: 'italic', color: MUTED }, 'ordavidmenashe.com'),
@@ -110,7 +111,7 @@ export async function generalCard(): Promise<Buffer> {
     el('div', abs({ left: 96, top: 92, fontSize: 32, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: COPPER }), 'Or Menashe'),
     el('div', abs({ left: 96, top: 176, width: 620, fontSize: 96, fontWeight: 500, lineHeight: 1.03, letterSpacing: '-0.014em', color: INK }), 'Law, digital assets, and AI.'),
     el('div', abs({ left: 96, bottom: 84, width: 560, borderTop: '2px solid #ddd5c4', paddingTop: 24, fontSize: 30, fontStyle: 'italic', color: MUTED }), 'ordavidmenashe.com'),
-    el('img', abs({ right: 96, top: 70, width: 384, height: 490 }), undefined, { src: wide, width: 384, height: 490 }),
+    el('img', abs({ right: 96, top: 70, width: 384, height: 490, border: `2px solid ${FRAME}` }), undefined, { src: wide, width: 384, height: 490 }),
   ]);
   return render(card, fonts);
 }

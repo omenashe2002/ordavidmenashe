@@ -45,7 +45,8 @@ function checkDate(file: string, raw: string) {
 /** The settings each kind of file understands, in the order they are usually written. */
 const KNOWN_SETTINGS: Record<string, string[]> = {
   writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker'],
-  videos: ['title', 'date', 'url', 'description', 'draft'],
+  newsletter: ['title', 'date', 'description', 'issue', 'tags', 'draft'],
+  videos: ['title', 'date', 'url', 'description', 'credit', 'group', 'draft'],
 };
 
 /** How many single-letter changes turn one word into another (for "Did you mean ...?"). */
@@ -122,6 +123,9 @@ export function checkContentFolder(folder: string) {
         `This file would not be published, because these files must end in .md (lowercase). Rename it, for example to "${suggestion}". Other kinds of files do not belong in this folder (images go in public/images/).`,
       );
     }
+    if (path.basename(root) === 'writing' && /^newsletter(\/|\.md$)/i.test(path.relative(root, file).replace(/\\/g, '/'))) {
+      fail(file, 'The name "newsletter" is used by the weekly newsletter section, so an article cannot have it. Rename the file, for example "newsletter-notes.md".');
+    }
     const lines = fs.readFileSync(file, 'utf8').replace(/^﻿/, '').split(/\r?\n/);
     if (lines[0]?.trim() !== '---') fail(file, 'The first line of the file must be three dashes (---), which open the settings block.');
     const end = lines.findIndex((line, i) => i > 0 && line.trim() === '---');
@@ -142,11 +146,11 @@ export function checkContentFolder(folder: string) {
         fail(file, `The ${key} contains a colon, so it must be wrapped in quotation marks, like this: ${key}: "${value}"`);
       }
     }
-    if (path.basename(root) === 'writing') checkFootnotes(file, lines.slice(end + 1));
+    if (['writing', 'newsletter'].includes(path.basename(root))) checkFootnotes(file, lines.slice(end + 1));
   }
 }
 
-const CONTENT_FOLDERS = new Set(['writing', 'videos', 'pages']);
+const CONTENT_FOLDERS = new Set(['writing', 'newsletter', 'videos', 'pages']);
 const ALLOWED_TOP_LEVEL_MARKDOWN = new Set(['readme.md', 'how-to-update.md']);
 
 /** Stops the build when an article or video was saved somewhere the site never looks. */
@@ -158,7 +162,7 @@ export function checkContentPlaces() {
       if (!entry.isDirectory() || !CONTENT_FOLDERS.has(entry.name)) {
         fail(
           path.join(content, entry.name),
-          'This is in the wrong place, so it would never be published. Articles go in src/content/writing, videos in src/content/videos, and the About and Home text in src/content/pages. Move it, or check the folder name for a typo.',
+          'This is in the wrong place, so it would never be published. Articles go in src/content/writing, weekly newsletter issues in src/content/newsletter, videos in src/content/videos, and the About and Home text in src/content/pages. Move it, or check the folder name for a typo.',
         );
       }
     }

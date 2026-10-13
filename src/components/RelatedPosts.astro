@@ -1,18 +1,21 @@
 ---
 import PostList from './PostList.astro';
 import type { Post } from '../lib/posts';
+import type { Issue } from '../lib/issues';
 
 interface Props {
-  posts: Post[];
+  posts: (Post | Issue)[];
+  heading?: string;
+  basePath?: string;
 }
-const { posts } = Astro.props;
+const { posts, heading = 'Keep reading', basePath = '/writing/' } = Astro.props;
 ---
 
 {
   posts.length > 0 && (
     <section class="related" aria-labelledby="keep-reading">
-      <h2 class="section-head" id="keep-reading">Keep reading</h2>
-      <PostList posts={posts} level={3} />
+      <h2 class="section-head" id="keep-reading">{heading}</h2>
+      <PostList posts={posts} level={3} basePath={basePath} />
     </section>
   )
 }

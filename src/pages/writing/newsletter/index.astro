@@ -1,0 +1,30 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostList from '../../../components/PostList.astro';
+import NewsletterSignup from '../../../components/NewsletterSignup.astro';
+import { getIssues } from '../../../lib/issues';
+
+const issues = await getIssues();
+// The short introduction comes from src/content/pages/newsletter.md. Delete its text to hide it.
+const introPage = await getEntry('pages', 'newsletter');
+const Intro = introPage?.body?.trim() ? (await render(introPage)).Content : undefined;
+---
+
+<BaseLayout title="Weekly newsletter" description="A weekly note on digital assets, DeFi, AI, and law by Or Menashe." wide>
+  <div class="writing-page newsletter-page">
+    <h1>Weekly newsletter</h1>
+    {Intro && <div class="videos-intro"><Intro /></div>}
+    {
+      issues.length > 0 ? (
+        <PostList posts={issues} basePath="/writing/newsletter/" />
+      ) : (
+        <p class="placeholder">The first issue is coming soon.</p>
+      )
+    }
+    <div class="newsletter-signup-block">
+      <NewsletterSignup id="archive-signup" heading="Get it by email" blurb="Each issue by email. It is free, and you can unsubscribe at any time." />
+    </div>
+    <p class="more-link"><a href="/writing/">&larr; All writing</a></p>
+  </div>
+</BaseLayout>

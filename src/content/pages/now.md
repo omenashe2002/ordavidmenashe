@@ -6,5 +6,4 @@ updated: "October 2026"
 
 - Clerking at the Wyoming Stable Token Commission on the legal and compliance frameworks for the Frontier (FRNT) Token.
 - Supervising student Notes through publication as Senior Notes Editor of the Journal of Corporate and Financial Law.
-- Building Legal IQ, an AI-powered legal compliance platform for early-stage startups.
 - Preparing to join the DeFi Education Fund as a legal extern in the spring.

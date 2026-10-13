@@ -1,5 +1,5 @@
 import { SITE } from '../site';
-import { tagSlug, type Post } from './posts';
+import { tagSlug } from './posts';
 
 /** Facts about the site's author, written the way search engines expect (schema.org "Person"). */
 export function personSchema(site: URL) {
@@ -30,19 +30,24 @@ export function websiteSchema(site: URL) {
   };
 }
 
-export function articleSchema(post: Post, site: URL) {
-  const url = new URL(`/writing/${post.id}/`, site).href;
+export function articleSchema(
+  entry: { data: { title: string; description: string; date: Date; tags: readonly string[] } },
+  site: URL,
+  path: string,
+  imagePath: string,
+) {
+  const url = new URL(path, site).href;
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: post.data.title,
-    description: post.data.description,
-    datePublished: post.data.date.toISOString().slice(0, 10),
-    image: [new URL(`/og/${post.id}.png`, site).href],
+    headline: entry.data.title,
+    description: entry.data.description,
+    datePublished: entry.data.date.toISOString().slice(0, 10),
+    image: [new URL(imagePath, site).href],
     mainEntityOfPage: url,
     url,
     inLanguage: 'en',
-    keywords: post.data.tags.map(tagSlug).join(', '),
+    ...(entry.data.tags.length > 0 ? { keywords: entry.data.tags.map(tagSlug).join(', ') } : {}),
     author: { '@id': new URL('/#person', site).href, '@type': 'Person', name: SITE.name, url: site.href },
   };
 }
