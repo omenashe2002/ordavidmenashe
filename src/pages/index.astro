@@ -6,6 +6,7 @@ import FeaturedPiece from '../components/FeaturedPiece.astro';
 import { getEntry, render } from 'astro:content';
 import { SITE } from '../site';
 import { getPosts } from '../lib/posts';
+import { personSchema, websiteSchema } from '../lib/seo';
 import portrait from '../assets/or-menashe.jpg';
 
 const posts = await getPosts();
@@ -15,11 +16,12 @@ const latest = posts.filter((post) => !shown.has(post.id)).slice(0, 3);
 
 // The words at the top of the page come from src/content/pages/home.md.
 const home = await getEntry('pages', 'home');
-const Intro = home ? (await render(home)).Content : undefined;
-const top = home?.data;
+if (!home) throw new Error('Missing file: src/content/pages/home.md');
+const Intro = (await render(home)).Content;
+const top = home.data;
 ---
 
-<BaseLayout wide>
+<BaseLayout wide structuredData={[websiteSchema(Astro.site!), personSchema(Astro.site!)]}>
   <section class="hero" aria-labelledby="headline">
     <div class="hero-text">
       {top?.eyebrow && <p class="eyebrow">{top.eyebrow}</p>}

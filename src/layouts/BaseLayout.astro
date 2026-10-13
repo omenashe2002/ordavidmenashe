@@ -5,6 +5,7 @@ import { SITE } from '../site';
 import '../styles/global.css';
 // Ask the browser to fetch the main font immediately, so text appears in Garamond without a flash.
 import garamondRoman from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
+import garamondItalic from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-italic.woff2?url';
 
 interface Props {
   title?: string;
@@ -15,13 +16,42 @@ interface Props {
   publishedTime?: Date;
   /** Wide pages (Home) use the full page frame; every other page sits in a comfortable reading column. */
   wide?: boolean;
+  /** A shorter title for the browser tab and search results, when the page's own title is long. */
+  headTitle?: string;
+  /** The picture shown in link previews, as a path on this site. Defaults to the general card. */
+  image?: string;
+  /** What the preview picture shows, for people who cannot see it. */
+  imageAlt?: string;
+  /** Ask search engines to leave this page out (used for the "page not found" page). */
+  noindex?: boolean;
+  /** Topics of an article, shared with the link preview. */
+  tags?: readonly string[];
+  /** Facts about the page for search engines (schema.org), written out as JSON. */
+  structuredData?: Record<string, unknown>[];
 }
 
-const { title, description = SITE.description, type = 'website', publishedTime, wide = false } = Astro.props;
+const {
+  title,
+  description = SITE.description,
+  type = 'website',
+  publishedTime,
+  wide = false,
+  headTitle,
+  image = '/og.png',
+  imageAlt = `${SITE.name}: ${SITE.tagline}`,
+  noindex = false,
+  tags = [],
+  structuredData = [],
+} = Astro.props;
 const pageTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | ${SITE.tagline}`;
+const tabTitle = headTitle ? `${headTitle} | ${SITE.name}` : pageTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const shareImage = new URL('/og.png', Astro.site);
-const shareImageAlt = `${SITE.name}: ${SITE.tagline}`;
+const shareImage = new URL(image, Astro.site);
+const shareImageAlt = imageAlt;
+// Link previews show "About | Or Menashe" for ordinary pages and just the headline for an article.
+const socialTitle = type === 'article' && title ? title : pageTitle;
+// Written out as plain text; "<" is escaped so the data can never end the script block early.
+const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '\\u003c'));
 ---
 
 <!doctype html>
@@ -29,16 +59,21 @@ const shareImageAlt = `${SITE.name}: ${SITE.tagline}`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{pageTitle}</title>
+    <title>{tabTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    <meta name="author" content={SITE.name} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#faf6ee" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)" />
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- The preview card shown when a link to this page is shared (LinkedIn, Slack, iMessage, X) -->
     <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:type" content={type} />
-    <meta property="og:title" content={title ?? pageTitle} />
+    <meta property="og:title" content={socialTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={shareImage} />
@@ -46,9 +81,19 @@ const shareImageAlt = `${SITE.name}: ${SITE.tagline}`;
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={shareImageAlt} />
     {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {type === 'article' && <meta property="article:author" content={SITE.name} />}
+    {tags.map((tag) => <meta property="article:tag" content={tag} />)}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareImage} />
+    <meta name="twitter:image:alt" content={shareImageAlt} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={data} />)}
     <link rel="preload" href={garamondRoman} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={garamondItalic} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
