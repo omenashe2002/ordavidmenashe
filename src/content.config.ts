@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
@@ -38,6 +40,11 @@ const webAddress = (name: string, orFile = false) =>
       error: orFile
         ? `${name} must be a full web address starting with https:// (or a file in public/ starting with a slash, such as /my-article.pdf), with no spaces.`
         : `${name} must be a full web address starting with https://, with no spaces.`,
+    })
+    // A file in the public folder has to be there, or the link on the page would lead nowhere.
+    .refine((value) => !orFile || !value.startsWith('/') || fs.existsSync(path.join(process.cwd(), 'public', value.split(/[?#]/)[0])), {
+      error: (issue) =>
+        `${name} points to ${String(issue.input)}, but no such file is in the public folder. Upload the file to the public folder first (the address does not include the word public), or use a full https:// address.`,
     })
     .optional();
 

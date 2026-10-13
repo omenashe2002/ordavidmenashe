@@ -69,7 +69,14 @@ function checkSettingName(file: string, name: string, known: string[]) {
   if (known.includes(name)) return;
   const lower = name.toLowerCase();
   const sameLetters = known.find((setting) => setting.toLowerCase() === lower);
-  const close = sameLetters ?? known.find((setting) => distance(setting.toLowerCase(), lower) <= 2);
+  // The closest setting wins, and a few common wordings are understood too.
+  const ALIASES: Record<string, string> = { update: 'updatedDate', updated: 'updatedDate', cite: 'citation', state: 'status', draftdate: 'draftDate' };
+  const nearest = known
+    .map((setting) => ({ setting, away: distance(setting.toLowerCase(), lower) }))
+    .filter((entry) => entry.away <= 2)
+    .sort((a, b) => a.away - b.away)[0]?.setting;
+  const aliased = ALIASES[lower] && known.includes(ALIASES[lower]) ? ALIASES[lower] : undefined;
+  const close = sameLetters ?? aliased ?? nearest;
   const hint =
     sameLetters !== undefined
       ? `Write it exactly like this, with the same small and capital letters: "${sameLetters}". Written differently, the site ignores the line${sameLetters === 'draft' ? ', and the article would be published' : ''}.`
@@ -132,18 +139,27 @@ export function checkContentFolder(folder: string) {
     if (end === -1) fail(file, 'The settings block at the top is missing its closing line of three dashes (---).');
     const known = KNOWN_SETTINGS[path.basename(root)];
     for (const line of lines.slice(1, end)) {
+      // A line that starts with a space is read as part of the line above it, which confuses the whole block.
+      const indented = known && /^[ \t]+([A-Za-z]+)\s*:(?:\s|$)/.exec(line)?.[1];
+      if (indented && known.some((setting) => setting.toLowerCase() === indented.toLowerCase())) {
+        fail(file, `The line starting with "${indented}:" begins with a space. Delete the spaces at the start of the line, so that it starts with the word ${indented}. If you took the # off a line of the template, take off the space after it too.`);
+      }
       const name = known && /^([^\s#'"\-[{][^:]*?)\s*:(?:\s|$)/.exec(line)?.[1];
       if (name) checkSettingName(file, name, known);
       const setting = /^(title|description|date|draftDate|updatedDate|kicker|credit|group|citation):\s*(.*)$/.exec(line);
       if (!setting) continue;
       const [, key, value] = setting;
       if (['date', 'draftDate', 'updatedDate'].includes(key)) checkDate(file, value);
-      else if (['credit', 'group', 'citation'].includes(key) && value.trim() === '') {
+      else if (['credit', 'group', 'citation', 'kicker'].includes(key) && value.trim() === '') {
         fail(file, `The ${key} line is empty. Put the words between quotation marks, or delete the whole ${key} line.`);
       } else if (quotationProblem(value) === 'double') {
         fail(file, `The ${key} has a quotation mark inside its quotation marks. Use curly quotes inside (\u201clike this\u201d), or wrap the whole ${key} in single quotation marks.`);
       } else if (quotationProblem(value) === 'single') {
         fail(file, `The ${key} has an apostrophe inside single quotation marks. Wrap the whole ${key} in double quotation marks instead.`);
+      } else if (/^[\u201c\u201d\u2018\u2019]/.test(value)) {
+        fail(file, `The ${key} starts with a curly quotation mark. Around the whole ${key}, use straight quotation marks ("like this"); curly ones are only for inside the words.`);
+      } else if (value && !/^["'[{|>]/.test(value) && /\s#/.test(value)) {
+        fail(file, `The ${key} contains a # sign. In this block everything after a # is treated as a comment and dropped, so the ${key} would be cut short. Wrap the whole ${key} in quotation marks, like this: ${key}: "${value}"`);
       } else if (value && !/^["'[{|>]/.test(value) && /:(\s|$)/.test(value)) {
         fail(file, `The ${key} contains a colon, so it must be wrapped in quotation marks, like this: ${key}: "${value}"`);
       }

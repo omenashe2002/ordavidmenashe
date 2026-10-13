@@ -1360,6 +1360,10 @@ p {
 .toc-rail {
   display: none;
 }
+/* With the notes in the margin there is no list of notes to jump to. */
+.has-sidenotes .toc li:has(> a[href='#footnote-label']) {
+  display: none;
+}
 .toc-inline {
   margin: 0 0 var(--space-6);
   border-block: 1px solid var(--rule);

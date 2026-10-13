@@ -24,7 +24,8 @@ interface Note {
 
 const notes = new Map<HTMLAnchorElement, Note>();
 for (const ref of refs) {
-  const source = document.getElementById(decodeURIComponent(ref.hash.slice(1)));
+  // The note's id is written in the page exactly as it is in the link, so it is used without decoding.
+  const source = document.getElementById(ref.getAttribute('href')?.slice(1) ?? '');
   if (source) notes.set(ref, { number: ref.textContent?.trim() ?? '', ref, source });
 }
 
@@ -214,7 +215,7 @@ function closeBox(restoreFocus: boolean) {
 
 function openBox(ref: HTMLAnchorElement) {
   const note = notes.get(ref);
-  const container = ref.closest<HTMLElement>('p, li, blockquote, h2, h3, h4, td, dd');
+  const container = ref.closest<HTMLElement>('p, li, blockquote, h2, h3, h4, td, th, dd, dt');
   if (!note || !main || !container) return;
   closeBox(false);
 
@@ -248,7 +249,9 @@ function openBox(ref: HTMLAnchorElement) {
 
   box.append(head, body, foot);
   // Placed straight after the paragraph, so keyboard and screen reader users meet it right after the number.
-  container.after(box);
+  // Inside a list item or table cell it goes inside that item, because only list items may sit directly in a list.
+  if (container.matches('li, td, th, dd, dt')) container.append(box);
+  else container.after(box);
 
   const mainBox = main.getBoundingClientRect();
   const refBox = ref.getBoundingClientRect();
@@ -348,13 +351,20 @@ if (main && notes.size > 0) {
 
   // The margin is laid out again whenever the text moves: the window is resized, a font arrives, or a picture loads.
   new ResizeObserver(queueLayout).observe(main);
+  window.addEventListener('resize', queueLayout); // the margin's own width changes with the window even when the text's does not
+  // An open note box would otherwise stay where it was while the text moves under it.
+  let lastWidth = window.innerWidth;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth !== lastWidth) closeBox(false);
+    lastWidth = window.innerWidth;
+  });
   document.fonts?.ready.then(queueLayout);
   window.addEventListener('load', queueLayout);
 
   // A link to a note in the list (for example one that was shared) opens that note in the margin instead.
   const showTarget = () => {
     if (!sidenotesOn || !location.hash.startsWith('#user-content-fn-')) return;
-    const note = [...notes.values()].find((entry) => entry.source.id === decodeURIComponent(location.hash.slice(1)));
+    const note = [...notes.values()].find((entry) => entry.source.id === location.hash.slice(1));
     if (!note?.sidenote) return;
     note.ref.scrollIntoView({ block: 'center' });
     pulse(note);
