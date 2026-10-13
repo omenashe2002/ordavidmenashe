@@ -10,6 +10,8 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 |---|---|
 | An article | `src/content/writing/` (one file per article) |
 | A video | `src/content/videos/` (one file per video) |
+| A weekly newsletter issue | `src/content/newsletter/` (one file per issue) |
+| The short introductions on the Videos and Weekly newsletter pages | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
 | The top of the Home page | `src/content/pages/home.md` |
 | The About page | `src/content/pages/about.md` |
 | "What I'm working on now" | `src/content/pages/now.md` |
@@ -66,13 +68,26 @@ draft: false
 ---
 ```
 
+Six explainer videos by other creators are on the page for now (three on digital assets, three on how AI works). They use two extra lines: `credit:`, who made the video and when, which is shown instead of the date, and `group:`, the heading it is listed under. For those six, `date:` only sets the order. When you have your own videos, delete the six files whose `credit:` names someone else, and delete the text in `src/content/pages/videos.md` or reword it. Your own videos need neither extra line. Any video that has a `group:` line is listed under that heading.
+
+## Write the weekly newsletter
+
+Each week's issue is a file in `src/content/newsletter`. It appears on the Writing page under "Weekly newsletter", on its own page, and in the RSS feed. Until the first issue is published, the page says "The first issue is coming soon."
+
+1. Open `src`, then `content`, then `newsletter`. Click **Add file**, then **Create new file**.
+2. Name it for the week, with no spaces, ending in `.md`, for example `2026-10-20.md`. The name becomes the address: `ordavidmenashe.com/writing/newsletter/2026-10-20/`.
+3. Open `_template.md` in the same folder, copy its text, and paste it into the big box. Fill in the title, date and one-sentence description, and write the issue under the second line of dashes. The topic line is optional; delete it if the issue has no single topic.
+4. Click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again.
+
+Issues are numbered automatically in date order, so the first one is Issue 1. To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, edit `src/content/pages/newsletter.md`.
+
 ## Change the words on a page
 
 - **Home, top of the page:** open `home.md`. Between the two lines of dashes: `eyebrow:` is the small line above the headline, `headline:` is the big headline, `buttonText:` and `buttonLink:` are the dark button and where it goes, and `linkText:` and `linkLink:` are the quieter link beside it. Under `credentials:` each background item has a `label:` (small) and a `text:` (larger); copy a pair of lines to add one, or delete a pair to remove one. Keep the words in quotation marks. The sentence under the headline is the text below the second line of dashes.
 - **About:** open `about.md` and edit only the text below the second line of dashes. A line that starts with `## ` is a small section label.
 - **What I'm working on now (on the About page):** open `now.md`. Each line that starts with a dash is one item; add, change or delete lines. Change the month in the `updated:` line each time you refresh the list, because it appears under the list as "Updated October 2026". To hide the panel, delete `now.md` or delete every item.
 - **Email, LinkedIn, footer disclaimer and the other lines in `site.ts`:** change only the words between the single quotation marks, and keep both quotation marks and the comma. Do not type a straight apostrophe (') inside the words, as in it's or doesn't. The site reads it as the end of the sentence and the build stops. Type the curly apostrophe instead (it’s, doesn’t), or reword. The LinkedIn address must start with https://; copy it from your browser's address bar while you are on your profile.
-- **Your photo:** open `src`, then `assets`, click **Add file**, then **Upload files**. GitHub keeps the file's name, so rename the new photo to exactly `or-menashe.jpg` on your computer first, then drop it in. It replaces the old one, and the Home page, About page and link-preview pictures all pick it up. It must be a real JPEG picture. A phone photo saved as HEIC stops the site from publishing, even if you rename the ending, so export it as JPEG first (in Photos or Preview, choose File, then Export). A portrait-shaped picture at least 1000 pixels wide works best. A photo taken on a phone often carries the place and time it was taken inside the file. The website's own copies have that removed, but the file you upload stays in your public repository, and GitHub keeps every earlier version, so replacing it later does not erase it. Before you upload, take a screenshot of the photo and upload that instead, which carries none, or ask Claude to remove it first. If Vercel shows Error after a photo change, the picture is the likely cause.
+- **Your photo** (it has a thin frame wherever it appears): open `src`, then `assets`, click **Add file**, then **Upload files**. GitHub keeps the file's name, so rename the new photo to exactly `or-menashe.jpg` on your computer first, then drop it in. It replaces the old one, and the Home page, About page and link-preview pictures all pick it up. It must be a real JPEG picture. A phone photo saved as HEIC stops the site from publishing, even if you rename the ending, so export it as JPEG first (in Photos or Preview, choose File, then Export). A portrait-shaped picture at least 1000 pixels wide works best. A photo taken on a phone often carries the place and time it was taken inside the file. The website's own copies have that removed, but the file you upload stays in your public repository, and GitHub keeps every earlier version, so replacing it later does not erase it. Before you upload, take a screenshot of the photo and upload that instead, which carries none, or ask Claude to remove it first. If Vercel shows Error after a photo change, the picture is the likely cause.
 - **Delete an article or a video:** open the file, click the trash can icon, and commit. Do not delete `home.md`, `about.md`, `site.ts` or the photo. To remove something from those pages, edit the words instead.
 
 ## Turn on the newsletter signup
@@ -113,5 +128,5 @@ Use GitHub's search box to find each phrase and check every file it lists.
 | DeFi Education Fund | `about.md` and `now.md` | when you start, and again when it ends |
 | Fidelity National Financial | `about.md` | next summer |
 | Harvey | `about.md` and `home.md` (`credentials:`) | when that role ends |
-| Legal IQ | `about.md` and `now.md` | if you stop working on it |
+| Legal IQ | `about.md` | if you stop working on it |
 | (not searchable) the `updated:` line in `now.md` | `now.md` | each time you change that list |

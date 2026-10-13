@@ -1,0 +1,57 @@
+---
+import Tags from './Tags.astro';
+import TableOfContents from './TableOfContents.astro';
+import RelatedPosts from './RelatedPosts.astro';
+import { formatDate, type Post, type TocItem } from '../lib/posts';
+import type { Issue } from '../lib/issues';
+
+/**
+ * The page content shared by articles and newsletter issues: the header, the optional contents list, the text
+ * (the default slot), anything to show after it (the "after" slot), a list of related pieces, and a way back.
+ */
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  tags: readonly string[];
+  minutes: number;
+  /** A short line above the title. */
+  kicker?: string;
+  toc: TocItem[];
+  showToc: boolean;
+  related: (Post | Issue)[];
+  relatedHeading?: string;
+  relatedBasePath?: string;
+  backHref: string;
+  backLabel: string;
+}
+const { title, description, date, tags, minutes, kicker, toc, showToc, related, relatedHeading, relatedBasePath, backHref, backLabel } = Astro.props;
+---
+
+<article class="article">
+  <header class="post-header">
+    {kicker && <p class="kicker">{kicker}</p>}
+    <h1>{title}</h1>
+    <p class="dek">{description}</p>
+    <div class="post-meta">
+      <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
+      <span>{minutes} min read</span>
+      {tags.length > 0 && <Tags tags={tags} />}
+    </div>
+  </header>
+  <div class:list={['article-body', { 'has-toc': showToc }]}>
+    {/* The contents list comes first in the page so keyboard users reach it before the footnote links. */}
+    {showToc && <TableOfContents items={toc} variant="rail" />}
+    <div class="article-main">
+      {showToc && <TableOfContents items={toc} variant="inline" />}
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+  </div>
+</article>
+<div class="article-end">
+  <slot name="after" />
+  <RelatedPosts posts={related} heading={relatedHeading} basePath={relatedBasePath} />
+  <p class="more-link"><a href={backHref}>&larr; {backLabel}</a></p>
+</div>

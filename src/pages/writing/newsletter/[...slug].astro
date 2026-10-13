@@ -1,0 +1,56 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleBody from '../../../components/ArticleBody.astro';
+import NewsletterSignup from '../../../components/NewsletterSignup.astro';
+import { readingMinutes, shortTabTitle, tableOfContents } from '../../../lib/posts';
+import { getIssues, issueLabel } from '../../../lib/issues';
+import { articleSchema, personSchema } from '../../../lib/seo';
+
+export async function getStaticPaths() {
+  const issues = await getIssues();
+  return issues.map((issue) => ({
+    params: { slug: issue.id },
+    props: { issue, label: issueLabel(issue, issues), others: issues.filter((other) => other.id !== issue.id).slice(0, 3) },
+  }));
+}
+
+const { issue, label, others } = Astro.props;
+const { Content, headings } = await render(issue);
+const minutes = readingMinutes(issue.body);
+const toc = tableOfContents(headings);
+const showToc = minutes >= 6 && toc.filter((item) => item.slug !== 'footnote-label').length >= 3;
+const path = `/writing/newsletter/${issue.id}/`;
+---
+
+<BaseLayout
+  title={issue.data.title}
+  headTitle={shortTabTitle(issue.data.title)}
+  description={issue.data.description}
+  type="article"
+  publishedTime={issue.data.date}
+  tags={issue.data.tags}
+  image={`/og/newsletter/${issue.id}.png`}
+  imageAlt={`${issue.data.title}, the weekly newsletter by Or Menashe`}
+  structuredData={[articleSchema(issue, Astro.site!, path, `/og/newsletter/${issue.id}.png`), personSchema(Astro.site!)]}
+  wide
+>
+  <ArticleBody
+    title={issue.data.title}
+    description={issue.data.description}
+    date={issue.data.date}
+    tags={issue.data.tags}
+    minutes={minutes}
+    kicker={label}
+    toc={toc}
+    showToc={showToc}
+    related={others}
+    relatedHeading="Other issues"
+    relatedBasePath="/writing/newsletter/"
+    backHref="/writing/newsletter/"
+    backLabel="All issues"
+  >
+    <Content />
+    <NewsletterSignup slot="after" id="issue-signup" blurb="Get each issue by email. It is free, and you can unsubscribe at any time." />
+  </ArticleBody>
+</BaseLayout>

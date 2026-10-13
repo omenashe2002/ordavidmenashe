@@ -11,6 +11,7 @@ checkContentPlaces();
 checkSiteSettings();
 checkContentFolder('src/content/writing');
 checkContentFolder('src/content/videos');
+checkContentFolder('src/content/newsletter');
 
 // A topic may be typed in any capitalization ("crypto"), and is stored the way it is spelled in src/site.ts.
 const findTopic = (value: string) => TAGS.find((tag) => tag.toLowerCase() === value.trim().toLowerCase());
@@ -51,6 +52,32 @@ const writing = defineCollection({
   }),
 });
 
+// Every weekly newsletter issue is a Markdown file in src/content/newsletter/. It is shown under Writing, in its own
+// section, and has the same settings as an article, plus an optional issue number (otherwise issues are counted by date).
+const newsletter = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/newsletter' }),
+  schema: z.object({
+    title: z
+      .string({ error: 'Add a title line at the top of the file, for example: title: "This week: stablecoins"' })
+      .trim()
+      .min(1, { error: 'The title line is empty. Write the title between the quotation marks.' }),
+    date: z.coerce.date({ error: 'Add a date line at the top of the file, for example: date: 2026-10-20' }),
+    description: z
+      .string({ error: 'Add a description line at the top of the file, for example: description: "One sentence on this issue."' })
+      .trim()
+      .min(1, { error: 'The description line is empty. Write one sentence between the quotation marks.' }),
+    issue: z.coerce.number({ error: 'issue must be a number, for example: issue: 3' }).int().positive().optional(),
+    tags: z
+      .preprocess(
+        (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : value),
+        z.array(topic, { error: 'tags must be a list of topics in square brackets, for example: tags: [Law]' }),
+      )
+      .default([])
+      .transform((tags) => [...new Set(tags)]),
+    draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false),
+  }),
+});
+
 // Every video is a small Markdown file in src/content/videos/ with the YouTube link in its settings block.
 const videos = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/videos' }),
@@ -63,6 +90,8 @@ const videos = defineCollection({
         error: 'That is not a link to a single YouTube video. Copy the address from YouTube\'s Share button, for example: https://youtu.be/abc123XYZ_0',
       }),
     description: z.string().optional(),
+    credit: z.string().optional(), // for a video by someone else: who made it and when, shown instead of the date
+    group: z.string().optional(), // a heading to list the video under on the Videos page
     draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false),
   }),
 });
@@ -86,4 +115,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { writing, videos, pages };
+export const collections = { writing, newsletter, videos, pages };

@@ -1,10 +1,8 @@
 ---
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Tags from '../../components/Tags.astro';
-import TableOfContents from '../../components/TableOfContents.astro';
-import RelatedPosts from '../../components/RelatedPosts.astro';
-import { getPosts, formatDate, readingMinutes, relatedPosts, tableOfContents } from '../../lib/posts';
+import ArticleBody from '../../components/ArticleBody.astro';
+import { getPosts, readingMinutes, relatedPosts, shortTabTitle, tableOfContents } from '../../lib/posts';
 import { articleSchema, personSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
@@ -15,9 +13,6 @@ export async function getStaticPaths() {
 const { post, related } = Astro.props;
 const { Content, headings } = await render(post);
 const minutes = readingMinutes(post.body);
-// Search results cut long titles off, so a very long one is shortened to the part before its colon for the browser tab.
-const [beforeColon] = post.data.title.split(':');
-const headTitle = post.data.title.length > 60 && beforeColon.length >= 12 && beforeColon !== post.data.title ? beforeColon.trim() : undefined;
 // A contents list is shown for long pieces with at least three sections of the author's own
 // (the "Footnotes" heading that is added automatically does not count).
 const toc = tableOfContents(headings);
@@ -26,40 +21,29 @@ const showToc = minutes >= 6 && toc.filter((item) => item.slug !== 'footnote-lab
 
 <BaseLayout
   title={post.data.title}
-  headTitle={headTitle}
+  headTitle={shortTabTitle(post.data.title)}
   description={post.data.description}
   type="article"
   publishedTime={post.data.date}
   tags={post.data.tags}
   image={`/og/${post.id}.png`}
   imageAlt={`${post.data.title}, by Or Menashe`}
-  structuredData={[articleSchema(post, Astro.site!), personSchema(Astro.site!)]}
+  structuredData={[articleSchema(post, Astro.site!, `/writing/${post.id}/`, `/og/${post.id}.png`), personSchema(Astro.site!)]}
   wide
 >
-  <article class="article">
-    <header class="post-header">
-      {post.data.kicker && <p class="kicker">{post.data.kicker}</p>}
-      <h1>{post.data.title}</h1>
-      <p class="dek">{post.data.description}</p>
-      <div class="post-meta">
-        <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date)}</time>
-        <span>{minutes} min read</span>
-        <Tags tags={post.data.tags} />
-      </div>
-    </header>
-    <div class:list={['article-body', { 'has-toc': showToc }]}>
-      {/* The contents list comes first in the page so keyboard users reach it before the footnote links. */}
-      {showToc && <TableOfContents items={toc} variant="rail" />}
-      <div class="article-main">
-        {showToc && <TableOfContents items={toc} variant="inline" />}
-        <div class="prose">
-          <Content />
-        </div>
-      </div>
-    </div>
-  </article>
-  <div class="article-end">
-    <RelatedPosts posts={related} />
-    <p class="more-link"><a href="/writing/">&larr; All writing</a></p>
-  </div>
+  <ArticleBody
+    title={post.data.title}
+    description={post.data.description}
+    date={post.data.date}
+    tags={post.data.tags}
+    minutes={minutes}
+    kicker={post.data.kicker}
+    toc={toc}
+    showToc={showToc}
+    related={related}
+    backHref="/writing/"
+    backLabel="All writing"
+  >
+    <Content />
+  </ArticleBody>
 </BaseLayout>

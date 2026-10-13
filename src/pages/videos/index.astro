@@ -1,36 +1,65 @@
 ---
+import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VideoPlayer from '../../components/VideoPlayer.astro';
-import { getVideos } from '../../lib/videos';
+import { getVideos, type Video } from '../../lib/videos';
 import { formatDate } from '../../lib/posts';
 import { parseYouTube } from '../../lib/youtube';
 
 const videos = await getVideos();
+
+// The short introduction at the top comes from src/content/pages/videos.md. Delete its text to hide it.
+const introPage = await getEntry('pages', 'videos');
+const Intro = introPage?.body?.trim() ? (await render(introPage)).Content : undefined;
+
+// Videos with a "group" line are listed under that heading, in the order the groups first appear.
+const groups: { name: string; items: Video[] }[] = [];
+for (const video of videos) {
+  const name = video.data.group?.trim() ?? '';
+  let group = groups.find((entry) => entry.name === name);
+  if (!group) groups.push((group = { name, items: [] }));
+  group.items.push(video);
+}
+const grouped = groups.some((group) => group.name !== '');
+const Heading = grouped ? 'h3' : 'h2';
 ---
 
 <BaseLayout title="Videos" description="Occasional videos on crypto, AI, and law by Or Menashe." wide>
   <div class="videos-page">
     <h1>Videos</h1>
+    {Intro && <div class="videos-intro"><Intro /></div>}
     {
-      videos.length > 0 ? (
-        <ol class="video-grid">
-          {videos.map((video) => {
-            const { id, start } = parseYouTube(video.data.url)!;
-            return (
-              <li class="video-card">
-                <VideoPlayer id={id} start={start} title={video.data.title} />
-                <h2>{video.data.title}</h2>
-                <p class="video-date">
-                  <time datetime={video.data.date.toISOString().slice(0, 10)}>{formatDate(video.data.date)}</time>
-                </p>
-                {video.data.description && <p class="summary">{video.data.description}</p>}
-              </li>
-            );
-          })}
-        </ol>
-      ) : (
-        <p class="placeholder">Videos will appear here.</p>
-      )
+      groups.length === 0 && <p class="placeholder">Videos will appear here.</p>
+    }
+    {
+      groups.map((group, index) => (
+        <section class="video-group" aria-labelledby={grouped ? `group-${index}` : undefined}>
+          {grouped && (
+            <h2 class="section-head" id={`group-${index}`}>
+              {group.name || 'More videos'}
+            </h2>
+          )}
+          <ol class="video-grid">
+            {group.items.map((video) => {
+              const { id, start } = parseYouTube(video.data.url)!;
+              return (
+                <li class="video-card">
+                  <VideoPlayer id={id} start={start} title={video.data.title} />
+                  <Heading>{video.data.title}</Heading>
+                  <p class="video-date">
+                    {video.data.credit ? (
+                      video.data.credit
+                    ) : (
+                      <time datetime={video.data.date.toISOString().slice(0, 10)}>{formatDate(video.data.date)}</time>
+                    )}
+                  </p>
+                  {video.data.description && <p class="summary">{video.data.description}</p>}
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      ))
     }
   </div>
 </BaseLayout>

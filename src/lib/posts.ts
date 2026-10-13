@@ -55,3 +55,9 @@ export function tableOfContents(headings: MarkdownHeading[]): TocItem[] {
   }
   return items;
 }
+
+/** Search results cut long titles off, so a very long one is shortened to the part before its colon for the browser tab. */
+export function shortTabTitle(title: string): string | undefined {
+  const [beforeColon] = title.split(':');
+  return title.length > 60 && beforeColon.length >= 12 && beforeColon !== title ? beforeColon.trim() : undefined;
+}

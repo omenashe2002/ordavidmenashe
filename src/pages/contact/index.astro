@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { SITE } from '../../site';
 
 // "https://www.linkedin.com/in/name" is shown as "linkedin.com/in/name".
 const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
-// The signup form is shown only once a newsletter service's form address has been added in src/site.ts.
-const signup = SITE.newsletter.trim() || undefined; // already checked at build time by checkSiteSettings()
+const hasSignup = SITE.newsletter.trim() !== ''; // already checked at build time by checkSiteSettings()
 ---
 
 <BaseLayout title="Contact" description="How to reach Or Menashe." wide>
-  <div class:list={['contact-page', { 'has-signup': signup }]}>
+  <div class:list={['contact-page', { 'has-signup': hasSignup }]}>
     <h1>Contact</h1>
     <div class="contact-grid">
       <section aria-labelledby="direct-title">
@@ -25,23 +25,7 @@ const signup = SITE.newsletter.trim() || undefined; // already checked at build 
           </div>
         </dl>
       </section>
-      {
-        signup && (
-          <section class="newsletter" aria-labelledby="newsletter-title">
-            <h2 id="newsletter-title" class="section-head">Newsletter</h2>
-            <p>New writing by email. It is free, and you can unsubscribe at any time.</p>
-            <form class="signup" action={signup} method="post" target="_blank">
-              <label for="signup-email">Email address</label>
-              <div class="signup-row">
-                <input id="signup-email" type="email" name="email" autocomplete="email" required />
-                <input type="hidden" name="embed" value="1" />
-                <button class="button" type="submit">Subscribe</button>
-              </div>
-            </form>
-            <p class="signup-note">A confirmation page opens in a new tab, and you will get an email to confirm your address.</p>
-          </section>
-        )
-      }
+      <NewsletterSignup id="contact-signup" heading="Newsletter" />
     </div>
   </div>
 </BaseLayout>

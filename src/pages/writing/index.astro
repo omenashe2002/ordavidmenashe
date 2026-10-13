@@ -3,16 +3,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostList from '../../components/PostList.astro';
 import FeaturedPiece from '../../components/FeaturedPiece.astro';
 import TagFilter from '../../components/TagFilter.astro';
+import NewsletterSection from '../../components/NewsletterSection.astro';
 import { getPosts, tagsInUse } from '../../lib/posts';
+import { getIssues } from '../../lib/issues';
 
 const posts = await getPosts();
+const issues = await getIssues();
 const tags = tagsInUse(posts);
 const featured = posts.filter((post) => post.data.featured).slice(0, 2);
 // The "Selected writing" panels only make sense when there is other writing to set them apart from.
 const showFeatured = featured.length > 0 && posts.length > featured.length;
 ---
 
-<BaseLayout title="Writing" description="Articles on digital assets, DeFi, AI, and law by Or Menashe." wide>
+<BaseLayout title="Writing" description="Articles and a weekly newsletter on digital assets, DeFi, AI, and law by Or Menashe." wide>
   <div class="writing-page">
     <h1>Writing</h1>
     {
@@ -25,16 +28,19 @@ const showFeatured = featured.length > 0 && posts.length > featured.length;
         </section>
       )
     }
-    <section aria-labelledby={showFeatured ? 'all-writing' : undefined}>
-      {showFeatured && <h2 class="section-head" id="all-writing">All writing</h2>}
+    {/* Once there are issues, the newsletter comes first; until then the articles do. */}
+    {issues.length > 0 && <NewsletterSection issues={issues} />}
+    <section aria-labelledby="all-writing">
+      <h2 class="section-head" id="all-writing">All writing</h2>
       {tags.length > 0 && <TagFilter posts={posts} tags={tags} />}
       {
         posts.length > 0 ? (
-          <PostList posts={posts} level={showFeatured ? 3 : 2} />
+          <PostList posts={posts} level={3} />
         ) : (
           <p class="placeholder">Articles will appear here.</p>
         )
       }
     </section>
+    {issues.length === 0 && <NewsletterSection issues={issues} />}
   </div>
 </BaseLayout>
