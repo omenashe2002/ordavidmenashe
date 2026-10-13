@@ -10,8 +10,8 @@ for (const element of document.querySelectorAll<HTMLElement>('[data-needs-js]'))
 let toast: HTMLElement | undefined;
 let toastTimer: number | undefined;
 
-/** Shows a brief message at the bottom of the screen and announces it to screen readers. */
-export function announce(message: string) {
+/** Announces a brief message to screen readers and, unless `visible` is false, shows it at the bottom of the screen. */
+export function announce(message: string, visible = true) {
   if (!toast) {
     toast = document.createElement('div');
     toast.className = 'toast';
@@ -25,6 +25,7 @@ export function announce(message: string) {
   window.setTimeout(() => {
     if (!toast) return;
     toast.textContent = message;
+    toast.classList.toggle('is-silent', !visible);
     toast.classList.add('is-visible');
   }, 30);
   toastTimer = window.setTimeout(() => toast?.classList.remove('is-visible'), 2400);
@@ -70,7 +71,7 @@ export function confirmOnButton(button: HTMLElement, message: string, done = 'Co
   button.dataset.label = original;
   button.textContent = done;
   button.classList.add('is-done');
-  announce(message);
+  announce(message, false); // the button's own words already show the result
   window.setTimeout(() => {
     button.textContent = original;
     button.classList.remove('is-done');

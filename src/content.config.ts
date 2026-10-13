@@ -29,12 +29,15 @@ const topic = z
 const STATUSES = ['draft', 'forthcoming', 'published'] as const;
 const optionalDate = (name: string) =>
   z.coerce.date({ error: `${name} must be a date written as year-month-day, for example: ${name}: 2026-03-01` }).optional();
-const webAddress = (name: string) =>
+// A web address in quotation marks. A file uploaded to the public folder (starting with a slash) is also allowed when `orFile` is set.
+const webAddress = (name: string, orFile = false) =>
   z
     .string({ error: `${name} must be a web address in quotation marks, for example: ${name}: "https://example.com/file.pdf"` })
     .trim()
-    .refine((value) => /^https:\/\/[^\s"'<>]+$/.test(value) || /^\/[^\s"'<>]+$/.test(value), {
-      error: `${name} must be a full web address starting with https:// (or a file in public/ starting with a slash, such as /my-article.pdf), with no spaces.`,
+    .refine((value) => /^https:\/\/[^\s"'<>]+$/.test(value) || (orFile && /^\/[^\s"'<>]+$/.test(value)), {
+      error: orFile
+        ? `${name} must be a full web address starting with https:// (or a file in public/ starting with a slash, such as /my-article.pdf), with no spaces.`
+        : `${name} must be a full web address starting with https://, with no spaces.`,
     })
     .optional();
 
@@ -69,7 +72,7 @@ const writing = defineCollection({
       draftDate: optionalDate('draftDate'), // when the draft was written, shown as "Draft of March 1, 2026"
       updatedDate: optionalDate('updatedDate'), // when the piece was last revised, shown as "Updated ..."
       citation: z.string().trim().min(1, { error: 'The citation line is empty. Write the full citation between quotation marks, or delete the line.' }).optional(), // replaces the automatic citation; *asterisks* make italics
-      pdf: webAddress('pdf'), // adds a "Download PDF" link
+      pdf: webAddress('pdf', true), // adds a "Download PDF" link
       ssrn: webAddress('ssrn'), // adds an "SSRN" link
     })
     // Each date is checked against the others, so a page never shows dates that contradict each other.

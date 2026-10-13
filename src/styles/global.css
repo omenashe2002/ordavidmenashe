@@ -558,6 +558,9 @@ p {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+.toast.is-silent {
+  opacity: 0; /* still announced to screen readers; the button already shows the result */
+}
 @media (prefers-reduced-motion: reduce) {
   .toast {
     transition: none;
@@ -1429,7 +1432,8 @@ p {
   display: none;
 }
 .has-sidenotes .sidenotes {
-  --side-width: 16rem;
+  /* As wide as the margin allows (16 to 20rem), so the notes run to fewer lines when there is room. */
+  --side-width: clamp(16rem, calc(92vw - 52.5rem), 20rem);
   display: block;
   position: absolute;
   top: 0;
@@ -1470,11 +1474,9 @@ p {
 .sidenote p:last-child {
   display: inline;
 }
-.sidenote.is-long:not(.is-open) .sidenote-body {
-  max-height: 11.5em;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
-  mask-image: linear-gradient(to bottom, #000 78%, transparent);
+.sidenote.is-long:not(.is-open) .sidenote-full,
+.sidenote.is-open .sidenote-short {
+  display: none;
 }
 .sidenote-more {
   display: block;

@@ -138,7 +138,7 @@ export function checkContentFolder(folder: string) {
       if (!setting) continue;
       const [, key, value] = setting;
       if (['date', 'draftDate', 'updatedDate'].includes(key)) checkDate(file, value);
-      else if (['credit', 'group'].includes(key) && value.trim() === '') {
+      else if (['credit', 'group', 'citation'].includes(key) && value.trim() === '') {
         fail(file, `The ${key} line is empty. Put the words between quotation marks, or delete the whole ${key} line.`);
       } else if (quotationProblem(value) === 'double') {
         fail(file, `The ${key} has a quotation mark inside its quotation marks. Use curly quotes inside (\u201clike this\u201d), or wrap the whole ${key} in single quotation marks.`);

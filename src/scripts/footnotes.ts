@@ -9,7 +9,8 @@
 
 const SIDENOTE_QUERY = '(min-width: 75rem)';
 const NOTE_GAP = 10; // pixels kept between two notes in the margin
-const LONG_NOTE = 9.5; // notes taller than this many lines are shortened until the reader asks for the rest
+const LONG_NOTE = 340; // a note longer than this many characters is shortened in the margin until the reader asks for the rest
+const SHORT_NOTE = 260; // how many characters of a long note are shown at first
 
 const main = document.querySelector<HTMLElement>('.article-main');
 const refs = [...document.querySelectorAll<HTMLAnchorElement>('.prose a[data-footnote-ref]')];
@@ -37,6 +38,38 @@ function copyOfNote(source: HTMLElement): DocumentFragment {
   return fragment;
 }
 
+/** The first `budget` characters of a note, ending at a word, with its italics and links intact. */
+function shortened(source: Node, budget: number): DocumentFragment {
+  let left = budget;
+  const copy = (node: Node): Node | null => {
+    if (left <= 0) return null;
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent ?? '';
+      if (text.length <= left) {
+        left -= text.length;
+        return node.cloneNode();
+      }
+      const cut = text.slice(0, left);
+      const space = cut.lastIndexOf(' ');
+      left = 0;
+      return document.createTextNode(`${(space > 20 ? cut.slice(0, space) : cut).trimEnd()}\u2026`);
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return null;
+    const clone = node.cloneNode(false);
+    for (const child of node.childNodes) {
+      const part = copy(child);
+      if (part) clone.appendChild(part);
+    }
+    return clone;
+  };
+  const fragment = document.createDocumentFragment();
+  for (const child of source.childNodes) {
+    const part = copy(child);
+    if (part) fragment.appendChild(part);
+  }
+  return fragment;
+}
+
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ------------------------------------------------------------------
@@ -61,48 +94,79 @@ function buildSidenotes() {
     number.textContent = note.number;
     const body = document.createElement('div');
     body.className = 'sidenote-body';
-    body.append(copyOfNote(note.source));
+    const full = document.createElement('div');
+    full.className = 'sidenote-full';
+    full.append(copyOfNote(note.source));
+    body.append(full);
+    if ((full.textContent ?? '').length > LONG_NOTE) {
+      // A very long note is cut short, with a button to read the rest, so it cannot push the notes after it far from their text.
+      item.classList.add('is-long');
+      const short = document.createElement('div');
+      short.className = 'sidenote-short';
+      short.append(shortened(full, SHORT_NOTE));
+      body.prepend(short);
+    }
     const back = document.createElement('a');
     back.className = 'sidenote-back';
     back.href = `#${note.ref.id}`;
     back.setAttribute('aria-label', `Back to reference ${note.number}`);
-    back.textContent = '↩';
+    back.textContent = '\u21a9';
     body.append(back);
     item.append(number, body);
-    sidenoteList.append(item);
-    note.sidenote = item;
-  }
-  main.append(sidenoteList);
-  // A very long note is cut short, with a button to read the rest, so it cannot push the notes after it far from their text.
-  for (const note of notes.values()) {
-    const body = note.sidenote!.querySelector<HTMLElement>('.sidenote-body')!;
-    const lineHeight = parseFloat(getComputedStyle(body).lineHeight) || 20;
-    if (body.scrollHeight > lineHeight * LONG_NOTE) {
-      note.sidenote!.classList.add('is-long');
+    if (item.classList.contains('is-long')) {
       const more = document.createElement('button');
       more.type = 'button';
       more.className = 'sidenote-more';
       more.textContent = 'Show more';
       more.setAttribute('aria-expanded', 'false');
-      note.sidenote!.append(more);
+      item.append(more);
     }
+    sidenoteList.append(item);
+    note.sidenote = item;
   }
+  main.append(sidenoteList);
 }
 
-/** Puts each note level with its number, and moves it down when the note before it would overlap. */
+/**
+ * Puts each note level with its number. When notes would overlap they are stacked into one block, and the block is
+ * centred on where its notes want to be, so no note ends up as far from its number as it would if every one were pushed down.
+ */
 function layoutSidenotes() {
   layoutQueued = false;
   if (!sidenotesOn || !main || !sidenoteList) return;
   const mainTop = main.getBoundingClientRect().top;
   const all = [...notes.values()].filter((note) => note.sidenote);
-  const wanted = all.map((note) => note.ref.getBoundingClientRect().top - mainTop);
+  const wanted = all.map((note) => note.ref.getBoundingClientRect().top - mainTop - 3);
   const heights = all.map((note) => note.sidenote!.offsetHeight);
-  let bottom = -Infinity;
-  all.forEach((note, index) => {
-    const top = Math.max(wanted[index] - 3, bottom + NOTE_GAP);
-    note.sidenote!.style.top = `${top}px`;
-    bottom = top + heights[index];
+
+  interface Block {
+    top: number;
+    height: number;
+    count: number;
+    sum: number; // the total of (where each note wants to be, minus its place inside the block)
+    members: { index: number; offset: number }[];
+  }
+  const blocks: Block[] = [];
+  all.forEach((_, index) => {
+    let block: Block = { top: Math.max(0, wanted[index]), height: heights[index], count: 1, sum: wanted[index], members: [{ index, offset: 0 }] };
+    for (let previous = blocks[blocks.length - 1]; previous && previous.top + previous.height + NOTE_GAP > block.top; previous = blocks[blocks.length - 1]) {
+      blocks.pop();
+      const shift = previous.height + NOTE_GAP;
+      for (const member of block.members) previous.members.push({ index: member.index, offset: member.offset + shift });
+      previous.sum += block.sum - shift * block.count;
+      previous.count += block.count;
+      previous.height = shift + block.height;
+      previous.top = Math.max(0, previous.sum / previous.count);
+      block = previous;
+    }
+    blocks.push(block);
   });
+
+  let bottom = 0;
+  for (const block of blocks) {
+    for (const member of block.members) all[member.index].sidenote!.style.top = `${Math.round(block.top + member.offset)}px`;
+    bottom = Math.max(bottom, block.top + block.height);
+  }
   // Keep the page long enough that the last notes do not hang below the article.
   main.style.minHeight = '';
   if (bottom > main.offsetHeight) main.style.minHeight = `${Math.ceil(bottom)}px`;
