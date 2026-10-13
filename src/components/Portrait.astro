@@ -1,0 +1,33 @@
+---
+// The portrait photo on the Home and About pages. It is cut to the frame's 4:5 shape once, here, and made in
+// several sizes, so a phone or laptop with a sharp (high-density) screen is sent a bigger file than an ordinary
+// screen. The photo itself is src/assets/or-menashe.jpg. The quality is set high on purpose: the default
+// compression for the newer picture formats smooths away fine detail in a face. A browser too old for AVIF is
+// sent the JPEG copies instead.
+import { Picture } from 'astro:assets';
+import portrait from '../assets/or-menashe.jpg';
+
+interface Props {
+  /** How wide the photo is shown at different screen widths (the HTML "sizes" text). */
+  sizes: string;
+  /** True for the first picture on a page: it is fetched before anything else. */
+  priority?: boolean;
+}
+const { sizes, priority = false } = Astro.props;
+---
+
+<Picture
+  src={portrait}
+  alt="Portrait of Or Menashe"
+  width={800}
+  height={1000}
+  fit="cover"
+  position="center"
+  widths={[320, 480, 640, 800, 1000]}
+  sizes={sizes}
+  formats={['avif']}
+  quality={80}
+  loading="eager"
+  decoding="async"
+  fetchpriority={priority ? 'high' : undefined}
+/>

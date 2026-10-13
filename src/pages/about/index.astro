@@ -1,10 +1,9 @@
 ---
-import { Picture } from 'astro:assets';
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Portrait from '../../components/Portrait.astro';
 import { SITE } from '../../site';
 import { personSchema } from '../../lib/seo';
-import portrait from '../../assets/or-menashe.jpg';
 
 const page = await getEntry('pages', 'about');
 if (!page) throw new Error('Missing file: src/content/pages/about.md');
@@ -24,15 +23,7 @@ const startShort = page.data.startShort !== false;
     <div class="about-grid">
       <aside class="about-side">
         <figure class="portrait">
-          <Picture
-            src={portrait}
-            alt="Portrait of Or Menashe"
-            widths={[320, 480, 640]}
-            sizes="(max-width: 54rem) 15rem, 17rem"
-            formats={['avif', 'webp']}
-            loading="eager"
-            decoding="async"
-          />
+          <Portrait sizes="(max-width: 54rem) 15rem, 17rem" />
         </figure>
         <ul class="about-links" aria-label="Get in touch">
           <li><a href={`mailto:${SITE.email}`}>Email</a></li>
