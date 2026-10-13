@@ -1,6 +1,8 @@
 ---
 title: "Registered Agents of the DAO: A Proposal for Federal Accountability in Decentralized Governance"
 date: 2026-10-12
+status: draft
+draftDate: 2026-03-01
 description: "A proposal for federal accountability in decentralized governance: DAOs with a U.S. nexus would designate a registered agent and maintain a liquid reserve fund, and exchanges that list noncompliant governance tokens would face independent liability."
 tags: [Law, Crypto]
 featured: true

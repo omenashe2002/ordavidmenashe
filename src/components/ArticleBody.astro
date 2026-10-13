@@ -2,7 +2,9 @@
 import Tags from './Tags.astro';
 import TableOfContents from './TableOfContents.astro';
 import RelatedPosts from './RelatedPosts.astro';
-import { formatDate, type Post, type TocItem } from '../lib/posts';
+import ArticleTools from './ArticleTools.astro';
+import { formatDate, STATUS_LABEL, type Post, type Status, type TocItem } from '../lib/posts';
+import type { CitePiece } from '../lib/cite';
 import type { Issue } from '../lib/issues';
 
 /**
@@ -13,8 +15,14 @@ interface Props {
   title: string;
   description: string;
   date: Date;
+  /** Where the piece stands, and when each stage happened. All optional; shown beside the date. */
+  status?: Status;
+  draftDate?: Date;
+  updatedDate?: Date;
   tags: readonly string[];
   minutes: number;
+  /** The citation and download links, for articles. Newsletter issues have none. */
+  cite?: { pieces: CitePiece[]; pdf?: string; ssrn?: string };
   /** A short line above the title. */
   kicker?: string;
   toc: TocItem[];
@@ -25,7 +33,10 @@ interface Props {
   backHref: string;
   backLabel: string;
 }
-const { title, description, date, tags, minutes, kicker, toc, showToc, related, relatedHeading, relatedBasePath, backHref, backLabel } = Astro.props;
+const { title, description, date, status, draftDate, updatedDate, tags, minutes, cite, kicker, toc, showToc, related, relatedHeading, relatedBasePath, backHref, backLabel } = Astro.props;
+// With a status or extra dates, each date is labeled so the reader can tell the stages apart.
+const labeled = status !== undefined || draftDate !== undefined || updatedDate !== undefined;
+const iso = (value: Date) => value.toISOString().slice(0, 10);
 ---
 
 <article class="article">
@@ -34,10 +45,22 @@ const { title, description, date, tags, minutes, kicker, toc, showToc, related, 
     <h1>{title}</h1>
     <p class="dek">{description}</p>
     <div class="post-meta">
-      <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
+      {status && <span class="status-badge" data-status={status}>{STATUS_LABEL[status]}</span>}
+      {
+        labeled ? (
+          <>
+            {draftDate && <span>Draft of <time datetime={iso(draftDate)}>{formatDate(draftDate)}</time></span>}
+            <span>Posted <time datetime={iso(date)}>{formatDate(date)}</time></span>
+            {updatedDate && <span>Updated <time datetime={iso(updatedDate)}>{formatDate(updatedDate)}</time></span>}
+          </>
+        ) : (
+          <time datetime={iso(date)}>{formatDate(date)}</time>
+        )
+      }
       <span>{minutes} min read</span>
       {tags.length > 0 && <Tags tags={tags} plain={backHref !== '/writing/'} />}
     </div>
+    {cite && <ArticleTools variant="top" {...cite} />}
   </header>
   <div class:list={['article-body', { 'has-toc': showToc }]}>
     {/* The contents list comes first in the page so keyboard users reach it before the footnote links. */}
@@ -51,6 +74,7 @@ const { title, description, date, tags, minutes, kicker, toc, showToc, related, 
   </div>
 </article>
 <div class="article-end">
+  {cite && <ArticleTools variant="end" {...cite} />}
   <slot name="after" />
   <RelatedPosts posts={related} heading={relatedHeading} basePath={relatedBasePath} />
   <p class="more-link"><a href={backHref}>&larr; {backLabel}</a></p>

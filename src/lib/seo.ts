@@ -31,7 +31,17 @@ export function websiteSchema(site: URL) {
 }
 
 export function articleSchema(
-  entry: { data: { title: string; description: string; date: Date; tags: readonly string[] } },
+  entry: {
+    data: {
+      title: string;
+      description: string;
+      date: Date;
+      tags: readonly string[];
+      status?: 'draft' | 'forthcoming' | 'published';
+      draftDate?: Date;
+      updatedDate?: Date;
+    };
+  },
   site: URL,
   path: string,
   imagePath: string,
@@ -43,6 +53,10 @@ export function articleSchema(
     headline: entry.data.title,
     description: entry.data.description,
     datePublished: entry.data.date.toISOString().slice(0, 10),
+    // The last revision, or the posting date when it has not been revised, so the two dates never disagree.
+    dateModified: (entry.data.updatedDate ?? entry.data.date).toISOString().slice(0, 10),
+    ...(entry.data.draftDate ? { dateCreated: entry.data.draftDate.toISOString().slice(0, 10) } : {}),
+    ...(entry.data.status ? { creativeWorkStatus: entry.data.status === 'published' ? 'Published' : entry.data.status === 'draft' ? 'Draft' : 'Forthcoming' } : {}),
     image: [new URL(imagePath, site).href],
     mainEntityOfPage: url,
     url,

@@ -14,6 +14,8 @@ interface Props {
   type?: 'website' | 'article';
   /** The date an article was written, for share previews and search engines. */
   publishedTime?: Date;
+  /** The date an article was last revised, when it has been. */
+  modifiedTime?: Date;
   /** Wide pages (Home) use the full page frame; every other page sits in a comfortable reading column. */
   wide?: boolean;
   /** A shorter title for the browser tab and search results, when the page's own title is long. */
@@ -35,6 +37,7 @@ const {
   description = SITE.description,
   type = 'website',
   publishedTime,
+  modifiedTime,
   wide = false,
   headTitle,
   image = '/og.png',
@@ -81,6 +84,7 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={shareImageAlt} />
     {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
     {type === 'article' && <meta property="article:author" content={SITE.name} />}
     {tags.map((tag) => <meta property="article:tag" content={tag} />)}
     <meta name="twitter:card" content="summary_large_image" />

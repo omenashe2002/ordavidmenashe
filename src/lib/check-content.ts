@@ -44,7 +44,7 @@ function checkDate(file: string, raw: string) {
 
 /** The settings each kind of file understands, in the order they are usually written. */
 const KNOWN_SETTINGS: Record<string, string[]> = {
-  writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker'],
+  writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker', 'status', 'draftDate', 'updatedDate', 'citation', 'pdf', 'ssrn'],
   newsletter: ['title', 'date', 'description', 'issue', 'tags', 'draft'],
   videos: ['title', 'date', 'url', 'description', 'credit', 'group', 'draft'],
 };
@@ -68,11 +68,11 @@ function distance(a: string, b: string): number {
 function checkSettingName(file: string, name: string, known: string[]) {
   if (known.includes(name)) return;
   const lower = name.toLowerCase();
-  const sameLetters = known.find((setting) => setting === lower);
-  const close = sameLetters ?? known.find((setting) => distance(setting, lower) <= 2);
+  const sameLetters = known.find((setting) => setting.toLowerCase() === lower);
+  const close = sameLetters ?? known.find((setting) => distance(setting.toLowerCase(), lower) <= 2);
   const hint =
     sameLetters !== undefined
-      ? `Settings must be written in small letters: "${sameLetters}". With capital letters the site ignores the line${sameLetters === 'draft' ? ', and the article would be published' : ''}.`
+      ? `Write it exactly like this, with the same small and capital letters: "${sameLetters}". Written differently, the site ignores the line${sameLetters === 'draft' ? ', and the article would be published' : ''}.`
       : close !== undefined
         ? `Did you mean "${close}"? A setting the site does not know is ignored.`
         : `"${name}" is not a setting this site knows. The settings are: ${known.join(', ')}.`;
@@ -134,10 +134,10 @@ export function checkContentFolder(folder: string) {
     for (const line of lines.slice(1, end)) {
       const name = known && /^([^\s#'"\-[{][^:]*?)\s*:(?:\s|$)/.exec(line)?.[1];
       if (name) checkSettingName(file, name, known);
-      const setting = /^(title|description|date|kicker|credit|group):\s*(.*)$/.exec(line);
+      const setting = /^(title|description|date|draftDate|updatedDate|kicker|credit|group|citation):\s*(.*)$/.exec(line);
       if (!setting) continue;
       const [, key, value] = setting;
-      if (key === 'date') checkDate(file, value);
+      if (['date', 'draftDate', 'updatedDate'].includes(key)) checkDate(file, value);
       else if (['credit', 'group'].includes(key) && value.trim() === '') {
         fail(file, `The ${key} line is empty. Put the words between quotation marks, or delete the whole ${key} line.`);
       } else if (quotationProblem(value) === 'double') {

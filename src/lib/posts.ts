@@ -25,6 +25,10 @@ export function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
+/** The label shown for an article's status setting. */
+export const STATUS_LABEL = { draft: 'Draft', forthcoming: 'Forthcoming', published: 'Published' } as const;
+export type Status = keyof typeof STATUS_LABEL;
+
 /** Approximate reading time in minutes, at about 220 words a minute. */
 export function readingMinutes(body: string | undefined) {
   const words = (body ?? '').trim().split(/\s+/).filter(Boolean).length;

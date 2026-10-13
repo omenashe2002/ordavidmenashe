@@ -174,6 +174,10 @@ a:hover {
   text-decoration-thickness: 0.1em;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3 {
@@ -345,6 +349,144 @@ p {
   margin: 0;
   color: var(--muted);
   font-style: italic;
+}
+
+/* A small label for where a piece stands: Draft, Forthcoming or Published. */
+.status-badge,
+.post-status {
+  font-style: normal;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+}
+.status-badge {
+  padding: 0 0.55em;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: var(--text);
+  line-height: 1.35;
+}
+.post-status {
+  color: var(--muted);
+  font-size: 0.92em;
+}
+
+/* "Cite this" and the download links, at the top and the end of an article. */
+.article-tools {
+  max-width: 40rem;
+  margin: var(--space-5) 0 0;
+  border-top: 1px solid var(--rule);
+}
+.cite summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--accent);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  list-style: none;
+}
+.cite summary::-webkit-details-marker {
+  display: none;
+}
+.cite summary::after {
+  content: '+';
+  content: '+' / '';
+  font-size: 1.25em;
+  line-height: 1;
+}
+.cite[open] summary::after {
+  content: '\2212';
+  content: '\2212' / '';
+}
+.cite summary:hover {
+  color: var(--accent-strong);
+}
+.cite-text {
+  margin: 0 0 var(--space-3);
+  font-size: 0.92em;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.cite-body {
+  padding: 0 0 var(--space-3);
+}
+.cite-actions,
+.article-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-5);
+  margin: 0;
+}
+.article-actions {
+  padding: 0 0 var(--space-2);
+  font-size: 0.92em;
+}
+.article-actions a,
+.cite-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+}
+.cite-end {
+  margin: 0 0 var(--section);
+}
+.cite-end .cite-text {
+  max-width: var(--measure);
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  cursor: pointer;
+}
+.text-button:hover {
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
+}
+.text-button.is-done {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+/* A short message at the bottom of the screen ("Copied"). */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-5);
+  z-index: 40;
+  max-width: calc(100vw - 2 * var(--gutter));
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 0.85em;
+  line-height: 1.3;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    transition: none;
+  }
 }
 
 .tags {

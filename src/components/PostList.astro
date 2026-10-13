@@ -1,6 +1,6 @@
 ---
 import Tags from './Tags.astro';
-import { formatDate, readingMinutes, type Post } from '../lib/posts';
+import { formatDate, readingMinutes, STATUS_LABEL, type Post } from '../lib/posts';
 import type { Issue } from '../lib/issues';
 
 interface Props {
@@ -21,6 +21,7 @@ const Heading = level === 3 ? 'h3' : 'h2';
         <p class="post-when">
           <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date)}</time>
           <span>{readingMinutes(post.body)} min read</span>
+          {'status' in post.data && post.data.status && <span class="post-status">{STATUS_LABEL[post.data.status]}</span>}
         </p>
         <div class="post-what">
           <Heading>

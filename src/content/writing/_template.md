@@ -16,6 +16,15 @@ draft: false   # true keeps the article off the website while you write it (the 
 # featured: true
 # Optional: a short line above the title, for example: Forthcoming in the Fordham Journal. Remove the # to use it.
 # kicker: "A short line above the title"
+# Optional: to show a small label and the stages of a piece, delete the # and the space after it on the lines you want,
+# so each line starts with a word. status is one of: draft, forthcoming, published.
+# status: draft
+# draftDate: 2026-03-01   # when the draft was written
+# updatedDate: 2026-11-15   # when you last revised it
+# Optional: for the "Cite this" box and download links. Delete the # and the space after it on the lines you want.
+# citation: "Or Menashe, *Title of the article*, 12 Fordham J. Corp. & Fin. L. 1 (2027)."   # replaces the automatic citation; *asterisks* make italics
+# pdf: "/my-article.pdf"   # a file you upload to the public folder, or a full https:// address
+# ssrn: "https://ssrn.com/abstract=1234567"
 ---
 
 Write your article here. Leave a blank line between paragraphs.
