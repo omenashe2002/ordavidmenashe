@@ -14,6 +14,8 @@ const { Content } = await render(page);
 const now = await getEntry('pages', 'now');
 const Now = now?.body?.trim() ? (await render(now)).Content : undefined;
 const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
+// The short bio is the first paragraph; the rest opens with a button. Add "startShort: false" to about.md to show it all at once.
+const startShort = page.data.startShort !== false;
 ---
 
 <BaseLayout title={page.data.title} description={page.data.description} wide structuredData={[personSchema(Astro.site!)]}>
@@ -37,18 +39,28 @@ const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
           <li><a href={SITE.linkedin} rel="noopener" aria-label={`LinkedIn, ${linkedinLabel}`}>LinkedIn</a></li>
         </ul>
       </aside>
-      <div class="about-main">
-        <div class="prose">
+      <div class="about-main" data-bio={startShort ? 'short' : 'full'}>
+        <div class="prose" id="bio-text">
           <Content />
         </div>
+        {
+          startShort && (
+            <button class="text-button bio-toggle" type="button" aria-expanded="false" aria-controls="bio-text" data-bio-toggle>
+              Read the full bio
+            </button>
+          )
+        }
       </div>
       {
         Now && (
           <section class="now" aria-labelledby="now-title">
             <h2 id="now-title">{now!.data.title}</h2>
-            <div class="now-list">
+            <div class="now-list now-preview">
               <Now />
             </div>
+            <p class="now-more">
+              <a href="/now/">See the whole list &rarr;</a>
+            </p>
             {now!.data.updated && <p class="now-updated">Updated {now!.data.updated}</p>}
           </section>
         )
@@ -56,3 +68,19 @@ const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  // Opens and closes the rest of the bio. Without scripts (or in a browser that cannot tell), the whole bio is simply shown.
+  const toggle = document.querySelector<HTMLButtonElement>('[data-bio-toggle]');
+  const box = document.querySelector<HTMLElement>('.about-main[data-bio]');
+  if (toggle && box) {
+    toggle.addEventListener('click', () => {
+      const short = box.dataset.bio === 'short';
+      box.dataset.bio = short ? 'full' : 'short';
+      toggle.textContent = short ? 'Show less' : 'Read the full bio';
+      toggle.setAttribute('aria-expanded', String(short));
+      // Back at the short version, bring the top of the bio into view again.
+      if (!short) box.scrollIntoView({ block: 'nearest' });
+    });
+  }
+</script>

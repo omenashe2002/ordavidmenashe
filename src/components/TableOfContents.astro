@@ -11,7 +11,7 @@ const { items, variant } = Astro.props;
 
 {
   variant === 'rail' ? (
-    <nav class="toc toc-rail" aria-label="Contents">
+    <nav class="toc toc-rail" aria-label="Contents" data-pagefind-ignore>
       <p class="toc-title">Contents</p>
       <ol>
         {items.map((item) => (
@@ -31,7 +31,7 @@ const { items, variant } = Astro.props;
       </ol>
     </nav>
   ) : (
-    <details class="toc toc-inline">
+    <details class="toc toc-inline" data-pagefind-ignore>
       <summary>Contents</summary>
       <nav aria-label="Article contents">
         <ol>

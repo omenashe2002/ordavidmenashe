@@ -15,7 +15,7 @@ const tags = tagsInUse(posts);
 const tagged = posts.filter((post) => post.data.tags.includes(tag));
 ---
 
-<BaseLayout title={`Writing on ${tag}`} description={`Articles tagged ${tag} by Or Menashe.`} wide>
+<BaseLayout title={`Writing on ${tag}`} description={`Articles tagged ${tag} by Or Menashe.`} wide searchable={false}>
   <div class="writing-page">
     <h1>Writing</h1>
     {posts.length >= MIN_POSTS_FOR_FILTER && <TagFilter tags={tags} current={tag} />}

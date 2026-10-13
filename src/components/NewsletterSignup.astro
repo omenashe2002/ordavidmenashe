@@ -31,6 +31,7 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
       aria-labelledby={heading ? `${id}-title` : undefined}
       aria-label={heading ? undefined : 'Newsletter signup'}
       data-newsletter
+      data-pagefind-ignore
     >
       {heading && <Heading class="section-head" id={`${id}-title`}>{heading}</Heading>}
       <p class="newsletter-blurb">{blurb}</p>

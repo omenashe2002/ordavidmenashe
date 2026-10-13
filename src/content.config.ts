@@ -145,6 +145,7 @@ const pages = defineCollection({
   schema: z.strictObject({
     title: z.string(),
     description: z.string(),
+    startShort: z.boolean({ error: 'startShort must be true or false, with no quotation marks' }).optional(), // about.md only: false shows the whole bio at once instead of the short version first
     updated: z.coerce.string().optional(), // now.md only: the month shown as "Updated ..."
     eyebrow: z.string().optional(), // the small line above the big headline
     headline: z.string().optional(), // the big headline

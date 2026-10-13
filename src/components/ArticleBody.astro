@@ -64,7 +64,7 @@ const iso = (value: Date) => value.toISOString().slice(0, 10);
       {tags.length > 0 && <Tags tags={tags} plain={backHref !== '/writing/'} />}
     </div>
     {cite && <ArticleTools variant="top" {...cite} />}
-    <p class="print-source">Printed from {new URL(Astro.url.pathname, Astro.site).href}</p>
+    <p class="print-source" data-pagefind-ignore>Printed from {new URL(Astro.url.pathname, Astro.site).href}</p>
   </header>
   <div class:list={['article-body', { 'has-toc': showToc }]}>
     {/* The contents list comes first in the page so keyboard users reach it before the footnote links. */}
@@ -111,5 +111,6 @@ const iso = (value: Date) => value.toISOString().slice(0, 10);
   import '../scripts/reader';
   import '../scripts/footnotes';
   import '../scripts/headings';
+  import '../scripts/details';
   import '../scripts/print';
 </script>

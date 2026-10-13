@@ -14,7 +14,7 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 | The short introductions on the Videos and Weekly newsletter pages | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
 | The top of the Home page | `src/content/pages/home.md` |
 | The About page | `src/content/pages/about.md` |
-| "What I'm working on now" | `src/content/pages/now.md` |
+| "What I’m working on now" (the Now page) | `src/content/pages/now.md` |
 | The Colophon page (how the site is made) | `src/content/pages/colophon.md` |
 | Email, LinkedIn, newsletter signup, topics, footer disclaimer | `src/site.ts` |
 | Your photo | `src/assets/or-menashe.jpg` |
@@ -50,6 +50,19 @@ Write your article here. Leave a blank line between paragraphs.
 - **citation**, **pdf** and **ssrn** (optional): every article has a "Cite this" box at the top and "Cite this article" at the end, with a Copy citation button. The site writes the citation for you in Bluebook form (as an unpublished manuscript while `status` is `draft` or `forthcoming`, otherwise as a web page). Check that it is what you want. A forthcoming piece stays an unpublished manuscript in the citation until you give the journal's citation with `citation:`. To replace it, add `citation: "Or Menashe, *Title of the article*, 12 Fordham J. Corp. & Fin. L. 1 (2027)."`, with asterisks around anything that should be italic. `pdf: "https://..."` (or a file you uploaded to `public`, such as `pdf: "/my-article.pdf"`) adds a Download PDF link, and `ssrn: "https://ssrn.com/abstract=..."` adds an SSRN link. Without those lines no such links appear. The Print or save as PDF button works on every article: in the window that opens, choose Save as PDF as the printer.
 
 In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. Put a footnote at the end of a sentence, not on a heading. The article *Registered Agents of the DAO* shows headings, italics and footnotes; open its file on GitHub to see how they are written. It has no quotation and no link written as `[link text](https://address)`, so use the examples above for those.
+
+To fold part of an article away behind a title that readers click (for example a section of objections and responses), wrap it like this. The empty lines matter, and the site stops with a message if one is missing:
+
+```
+<details open>
+<summary>Objections and Responses</summary>
+
+Write the text here, with headings, italics and footnotes as usual.
+
+</details>
+```
+
+Take the word `open` out of the first line to start with the block closed. Links and the contents list open a closed block when they point inside it, and everything is open when the article is printed.
 
 To add a picture to an article: open `public`, click **Add file**, then **Upload files**, and drop in the picture (rename it first, with no spaces, for example `chart.jpg`). In the article write `![A short description of the picture](/chart.jpg)` where it belongs. The description is for people who cannot see the picture.
 
@@ -89,7 +102,8 @@ Issues are numbered automatically in date order, so the first one is Issue 1. To
 
 - **Home, top of the page:** open `home.md`. Between the two lines of dashes: `eyebrow:` is the small line above the headline, `headline:` is the big headline, `buttonText:` and `buttonLink:` are the dark button and where it goes, and `linkText:` and `linkLink:` are the quieter link beside it. Under `credentials:` each background item has a `label:` (small) and a `text:` (larger); copy a pair of lines to add one, or delete a pair to remove one. Keep the words in quotation marks. The sentence under the headline is the text below the second line of dashes.
 - **About:** open `about.md` and edit only the text below the second line of dashes. A line that starts with `## ` is a small section label.
-- **What I'm working on now (on the About page):** open `now.md`. Each line that starts with a dash is one item; add, change or delete lines. Change the month in the `updated:` line each time you refresh the list, because it appears under the list as "Updated October 2026". To hide the panel, delete `now.md` or delete every item.
+- **What I’m working on now (the Now page, with a short preview on About):** open `now.md`. Each line that starts with a dash is one item; add, change or delete lines. The About page shows the first two items and a link to the Now page, which shows them all. Change the month in the `updated:` line each time you refresh the list, because it appears under the list as "Updated October 2026". To hide the preview and the page, delete `now.md` or delete every item.
+- **The short bio on About:** visitors first see only the first paragraph of `about.md`, with a "Read the full bio" button for the rest. To show the whole bio at once, add the line `startShort: false` between the two lines of three dashes at the top of `about.md`. (With JavaScript turned off, the whole bio always shows.)
 - **Email, LinkedIn, footer disclaimer and the other lines in `site.ts`:** change only the words between the single quotation marks, and keep both quotation marks and the comma. Do not type a straight apostrophe (') inside the words, as in it's or doesn't. The site reads it as the end of the sentence and the build stops. Type the curly apostrophe instead (it’s, doesn’t), or reword. The LinkedIn address must start with https://; copy it from your browser's address bar while you are on your profile.
 - **Your photo** (it has a thin frame wherever it appears): open `src`, then `assets`, click **Add file**, then **Upload files**. GitHub keeps the file's name, so rename the new photo to exactly `or-menashe.jpg` on your computer first, then drop it in. It replaces the old one, and the Home page, About page and link-preview pictures all pick it up. It must be a real JPEG picture. A phone photo saved as HEIC stops the site from publishing, even if you rename the ending, so export it as JPEG first (in Photos or Preview, choose File, then Export). A portrait-shaped picture at least 1000 pixels wide works best. A photo taken on a phone often carries the place and time it was taken inside the file. The website's own copies have that removed, but the file you upload stays in your public repository, and GitHub keeps every earlier version, so replacing it later does not erase it. Before you upload, take a screenshot of the photo and upload that instead, which carries none, or ask Claude to remove it first. If Vercel shows Error after a photo change, the picture is the likely cause.
 - **Delete an article or a video:** open the file, click the trash can icon, and commit. Do not delete `home.md`, `about.md`, `site.ts` or the photo. To remove something from those pages, edit the words instead.
@@ -147,3 +161,9 @@ On the free plan Vercel counts up to 50,000 events a month, and the free plan is
 ## Change the Colophon page
 
 The Colophon page (linked from the footer) is the file `src/content/pages/colophon.md`. Edit only the words below the second line of three dashes. It says the site counts visits with Vercel Web Analytics and sends the newsletter through Buttondown. If you decide not to use either, delete that sentence, or the page will say something that is not true.
+
+## Search and link previews
+
+Search (the magnifying glass in the header, or Ctrl+K on Windows and Cmd+K on a Mac) is built each time the site is published, so new articles and pages appear in it by themselves. Nothing about it needs setting up. If you ever see "Search is not available right now", the build could not make the search index; the site itself is unaffected, and publishing again usually fixes it.
+
+When a visitor with a mouse rests on a link to another page of your site inside an article or page, a small card shows that page's title, status and description. These come from each page's own `title:` and `description:` lines, so they stay current without any work.

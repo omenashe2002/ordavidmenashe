@@ -137,8 +137,11 @@ function layoutSidenotes() {
   if (!sidenotesOn || !main || !sidenoteList) return;
   const mainTop = main.getBoundingClientRect().top;
   const all = [...notes.values()].filter((note) => note.sidenote);
-  const wanted = all.map((note) => note.ref.getBoundingClientRect().top - mainTop - 3);
-  const heights = all.map((note) => note.sidenote!.offsetHeight);
+  // A note whose number is inside a collapsed block is not shown until the block is opened.
+  for (const note of all) note.sidenote!.hidden = note.ref.closest('details:not([open])') !== null;
+  const shown = all.filter((note) => !note.sidenote!.hidden);
+  const wanted = shown.map((note) => note.ref.getBoundingClientRect().top - mainTop - 3);
+  const heights = shown.map((note) => note.sidenote!.offsetHeight);
 
   interface Block {
     top: number;
@@ -148,7 +151,7 @@ function layoutSidenotes() {
     members: { index: number; offset: number }[];
   }
   const blocks: Block[] = [];
-  all.forEach((_, index) => {
+  shown.forEach((_, index) => {
     let block: Block = { top: Math.max(0, wanted[index]), height: heights[index], count: 1, sum: wanted[index], members: [{ index, offset: 0 }] };
     for (let previous = blocks[blocks.length - 1]; previous && previous.top + previous.height + NOTE_GAP > block.top; previous = blocks[blocks.length - 1]) {
       blocks.pop();
@@ -165,7 +168,7 @@ function layoutSidenotes() {
 
   let bottom = 0;
   for (const block of blocks) {
-    for (const member of block.members) all[member.index].sidenote!.style.top = `${Math.round(block.top + member.offset)}px`;
+    for (const member of block.members) shown[member.index].sidenote!.style.top = `${Math.round(block.top + member.offset)}px`;
     bottom = Math.max(bottom, block.top + block.height);
   }
   // Keep the page long enough that the last notes do not hang below the article.

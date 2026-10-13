@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { satteri } from '@astrojs/markdown-satteri';
@@ -11,10 +12,31 @@ const keepSectionSignWithNumber = {
   },
 };
 
+// After the pages are built, this reads them and writes a search index into dist/pagefind (see src/scripts/search.ts).
+// If anything goes wrong here the site is still published; search simply says it is not available.
+const searchIndex = {
+  name: 'search-index',
+  hooks: {
+    'astro:build:done': async ({ dir, logger }) => {
+      try {
+        const { createIndex, close } = await import('pagefind');
+        const { index, errors } = await createIndex({ forceLanguage: 'en' });
+        if (!index) throw new Error(errors.join(' '));
+        const output = fileURLToPath(dir);
+        await index.addDirectory({ path: output });
+        await index.writeFiles({ outputPath: `${output}pagefind` });
+        await close();
+      } catch (error) {
+        logger.warn(`The search index could not be made, so search will say it is unavailable. ${error.message}`);
+      }
+    },
+  },
+};
+
 // "site" is the final web address. It is used for the sitemap, RSS feed and share previews.
 export default defineConfig({
   site: 'https://ordavidmenashe.com',
-  integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
+  integrations: [sitemap({ filter: (page) => !page.includes('/404') }), searchIndex],
   markdown: {
     processor: satteri({ mdastPlugins: [keepSectionSignWithNumber] }),
     // Code in articles is colored by the site's own light and dark styles (see global.css).

@@ -11,7 +11,7 @@ const Heading = level === 2 ? 'h2' : 'h3';
 const minutes = readingMinutes(post.body);
 ---
 
-<article class="featured">
+<article class="featured" data-pagefind-ignore>
   <div>
     {post.data.kicker && <span class="featured-kicker">{post.data.kicker}</span>}
     <p class="featured-meta">

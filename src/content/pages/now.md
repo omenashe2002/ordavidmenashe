@@ -1,6 +1,6 @@
 ---
-title: "What I'm working on now"
-description: "A short list of current work, shown on the About page."
+title: "What I’m working on now"
+description: "What Or Menashe is working on at the moment."
 updated: "October 2026"
 ---
 

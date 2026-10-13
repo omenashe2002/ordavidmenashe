@@ -423,6 +423,7 @@ p {
 }
 .site-footer .site-name {
   color: var(--text);
+  font-family: var(--font-body);
 }
 .site-footer a:hover,
 .site-footer .site-name:hover {
@@ -759,6 +760,44 @@ p {
 }
 .prose figure {
   margin: 1.5em 0;
+}
+/* A collapsible block in an article: a title line that opens and closes the text under it. */
+.prose details {
+  margin: 1.6em 0;
+  border-block: 1px solid var(--rule);
+}
+.prose summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 2.75rem;
+  padding: 0.3rem 0;
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--dur-2) var(--ease);
+}
+.prose summary::-webkit-details-marker {
+  display: none;
+}
+.prose summary::after {
+  content: '+';
+  content: '+' / '';
+  color: var(--muted);
+  font-weight: 400;
+}
+.prose details[open] > summary::after {
+  content: '\2212';
+  content: '\2212' / '';
+}
+.prose summary:hover {
+  color: var(--accent);
+}
+.prose details > :last-child {
+  margin-bottom: 1.2em;
 }
 /* Footnote numbers and other superscripts must not push the lines of text apart. */
 .prose sup,
@@ -1987,6 +2026,16 @@ p {
   .print-source {
     display: block;
   }
+  .about-main[data-bio='short'] .prose > :not(:first-child) {
+    display: revert;
+  }
+  .bio-toggle,
+  .now-more {
+    display: none !important;
+  }
+  .now-preview li:nth-child(n + 3) {
+    display: revert;
+  }
   .button {
     border: 1px solid #000;
     background: none;
@@ -2077,6 +2126,240 @@ p {
 /* The footnote numbers and their back arrows are not outside links. */
 :is(.prose, .sidenote, .note-box) a:is([data-footnote-ref], [data-footnote-backref], .sidenote-back)::after {
   content: none;
+}
+
+/* ------------------------------------------------------------------
+   Search: a box over the page, opened from the header or with Ctrl+K / Cmd+K (set by script)
+------------------------------------------------------------------- */
+.search-item:not(.is-ready) {
+  visibility: hidden; /* keeps its place, so the header does not move when the button appears */
+}
+.search-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0 0.1rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease);
+}
+.search-open:hover {
+  color: var(--text);
+}
+.search-key {
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 500;
+}
+@media (max-width: 40rem) {
+  .search-key {
+    display: none; /* only the magnifying glass on a phone */
+  }
+  .search-label {
+    position: absolute; /* still the button's name for screen readers */
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .search-open {
+    min-width: 2.75rem;
+    justify-content: center;
+  }
+}
+.search-dialog {
+  position: fixed;
+  inset: 12vh 0 auto;
+  display: none;
+  width: min(40rem, calc(100% - 2 * var(--gutter)));
+  max-height: 76vh;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.5);
+}
+.search-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.search-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+.search-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 1.05rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+.search-input::placeholder {
+  color: var(--muted);
+}
+.search-input:focus-visible {
+  outline: none; /* the whole bar shows the focus instead */
+}
+.search-bar:focus-within {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.search-close {
+  min-height: 2.75rem;
+  padding: 0 0 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.search-status {
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+.search-status:empty {
+  display: none;
+}
+.search-results {
+  margin: 0;
+  padding: 0 0 var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+.search-results li a {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid transparent;
+  color: inherit;
+  text-decoration: none;
+}
+.search-results li.is-active a {
+  border-left-color: var(--text);
+  background: var(--surface);
+}
+.search-kind {
+  display: block;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 500;
+}
+.search-title {
+  display: block;
+  font-size: var(--step-1);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.search-excerpt {
+  display: -webkit-box;
+  margin-top: 0.2rem;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--step-small);
+  line-height: 1.4;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.search-excerpt mark {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--text);
+}
+@media print {
+  .search-item,
+  .search-dialog {
+    display: none !important;
+  }
+}
+
+/* The small card shown when a mouse rests on a link to another page of this site (set by script). */
+.link-preview {
+  position: absolute;
+  z-index: 25;
+  width: min(22rem, calc(100vw - 2 * var(--space-4)));
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
+  background: var(--bg);
+  box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.4);
+  opacity: 0;
+  transform: translateY(0.25rem);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+}
+.link-preview.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.link-preview p {
+  margin: 0;
+}
+.link-preview-label {
+  margin-bottom: 0.2rem;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 500;
+}
+.link-preview-title {
+  font-size: var(--step-1);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.link-preview-text {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: var(--step-small);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-preview {
+    transition: none;
+    transform: none;
+  }
+}
+@media print {
+  .link-preview {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -2190,6 +2473,42 @@ p {
 .now-list li:first-child {
   padding-top: 0;
   border-top: 0;
+}
+.now-more {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+.now-preview li:nth-child(n + 3) {
+  display: none; /* the About page shows the first two items; the Now page shows them all */
+}
+.now-page h1 {
+  margin: var(--space-6) 0;
+}
+.now-full ul {
+  list-style: none;
+  padding: 0;
+}
+.now-full li {
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule);
+}
+.now-full li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+/* The short bio: only the first paragraph, until the button is pressed. Only where scripts can run, so nobody is left without the rest. */
+.bio-toggle {
+  display: none;
+  margin-top: var(--space-2);
+}
+@media (scripting: enabled) {
+  .about-main[data-bio] .bio-toggle {
+    display: inline-flex;
+  }
+  .about-main[data-bio='short'] .prose > :not(:first-child) {
+    display: none;
+  }
 }
 .now-updated {
   margin: var(--space-4) 0 0;

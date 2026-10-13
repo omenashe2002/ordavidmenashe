@@ -118,6 +118,34 @@ function checkFootnotes(file: string, body: string[]) {
   }
 }
 
+/** A collapsible block (<details> ... </details>) needs a title line and blank lines around its text, or it shows up broken. */
+function checkDetails(file: string, body: string[]) {
+  let fence: string | undefined;
+  let open = 0;
+  body.forEach((line, index) => {
+    const marker = /^\s*(```|~~~)/.exec(line)?.[1];
+    if (marker) {
+      fence = fence === undefined ? marker : fence === marker ? undefined : fence;
+      return;
+    }
+    if (fence !== undefined) return;
+    const starts = (line.match(/<details[\s>]/gi) ?? []).length;
+    const ends = (line.match(/<\/details>/gi) ?? []).length;
+    if (starts > 0 && !body.slice(index, index + 3).some((next) => /<summary>.+<\/summary>/i.test(next))) {
+      fail(file, 'A collapsible block starts with <details> but the next line is not a title line like <summary>Objections and Responses</summary>. Without a title line, readers would see nothing to click.');
+    }
+    if (/<\/summary>/i.test(line) && body[index + 1] !== undefined && body[index + 1].trim() !== '') {
+      fail(file, 'Leave one empty line after the </summary> line of a collapsible block. Without it, the text inside shows its asterisks and pound signs as they are.');
+    }
+    if (ends > 0 && /<\/details>/i.test(line) && index > 0 && body[index - 1].trim() !== '' && !/<\/summary>/i.test(body[index - 1])) {
+      fail(file, 'Leave one empty line before the </details> line that ends a collapsible block, so the last paragraph inside it is read correctly.');
+    }
+    open += starts - ends;
+    if (open < 0) fail(file, 'There is a </details> line with no <details> line before it. Each collapsible block needs both.');
+  });
+  if (open > 0) fail(file, 'A collapsible block was opened with <details> but never closed with </details>. Add a line </details> after the last paragraph of the block.');
+}
+
 export function checkContentFolder(folder: string) {
   const root = path.resolve(folder);
   if (!fs.existsSync(root)) return;
@@ -164,7 +192,10 @@ export function checkContentFolder(folder: string) {
         fail(file, `The ${key} contains a colon, so it must be wrapped in quotation marks, like this: ${key}: "${value}"`);
       }
     }
-    if (['writing', 'newsletter'].includes(path.basename(root))) checkFootnotes(file, lines.slice(end + 1));
+    if (['writing', 'newsletter'].includes(path.basename(root))) {
+      checkFootnotes(file, lines.slice(end + 1));
+      checkDetails(file, lines.slice(end + 1));
+    }
   }
 }
 
