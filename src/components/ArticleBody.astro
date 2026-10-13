@@ -36,7 +36,7 @@ const { title, description, date, tags, minutes, kicker, toc, showToc, related, 
     <div class="post-meta">
       <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
       <span>{minutes} min read</span>
-      {tags.length > 0 && <Tags tags={tags} />}
+      {tags.length > 0 && <Tags tags={tags} plain={backHref !== '/writing/'} />}
     </div>
   </header>
   <div class:list={['article-body', { 'has-toc': showToc }]}>

@@ -977,8 +977,11 @@ p {
 .writing-page .newsletter-section {
   margin: 0 0 var(--section);
 }
+.writing-page .newsletter-section:last-child {
+  margin-bottom: 0;
+}
 .writing-page > section + .newsletter-section {
-  margin: var(--section) 0 0; /* after the list of articles, while there are no issues yet */
+  margin-top: var(--section); /* after the list of articles, while there are no issues yet */
 }
 .writing-page .newsletter-section .post-list {
   margin-bottom: 0;
@@ -988,6 +991,9 @@ p {
 }
 .newsletter-signup-block {
   margin-top: var(--space-7);
+}
+.article-end .newsletter + .related {
+  margin-top: var(--section);
 }
 .writing-page .tag-filter {
   margin-bottom: var(--space-2);

@@ -68,18 +68,19 @@ draft: false
 ---
 ```
 
-Six explainer videos by other creators are on the page for now (three on digital assets, three on how AI works). They use two extra lines: `credit:`, who made the video and when, which is shown instead of the date, and `group:`, the heading it is listed under. For those six, `date:` only sets the order. When you have your own videos, delete the six files whose `credit:` names someone else, and delete the text in `src/content/pages/videos.md` or reword it. Your own videos need neither extra line. Any video that has a `group:` line is listed under that heading.
+Six explainer videos by other creators are on the page for now (three on digital assets, three on how AI works). They use two extra lines: `credit:`, who made the video and when, which is shown instead of the date, and `group:`, the heading it is listed under. For those six, `date:` only sets the order. When you have your own videos, delete the six files whose `credit:` names someone else, and delete the file `src/content/pages/videos.md` to remove the sentence at the top of the Videos page, or edit only the words under its second line of three dashes. Your own videos need neither extra line. Any video that has a `group:` line is listed under that heading.
 
 ## Write the weekly newsletter
 
 Each week's issue is a file in `src/content/newsletter`. It appears on the Writing page under "Weekly newsletter", on its own page, and in the RSS feed. Until the first issue is published, the page says "The first issue is coming soon."
 
-1. Open `src`, then `content`, then `newsletter`. Click **Add file**, then **Create new file**.
-2. Name it for the week, with no spaces, ending in `.md`, for example `2026-10-20.md`. The name becomes the address: `ordavidmenashe.com/writing/newsletter/2026-10-20/`.
-3. Open `_template.md` in the same folder, copy its text, and paste it into the big box. Fill in the title, date and one-sentence description, and write the issue under the second line of dashes. The topic line is optional; delete it if the issue has no single topic.
-4. Click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again.
+1. Open `src`, then `content`, then `newsletter`, and click `_template.md`. Click the copy icon at the top right of the file (**Copy raw file**).
+2. Click `newsletter` in the path at the top to go back to the folder. Click **Add file**, then **Create new file**.
+3. Check that the path above the name box reads `ordavidemenashe / src / content / newsletter /`. Type a name for the week, with no spaces, ending in `.md`, for example `2026-10-20.md`. The name becomes the address: `ordavidmenashe.com/writing/newsletter/2026-10-20/`.
+4. Click in the big box and paste. Change the `title:`, `date:` and `description:` lines. Delete the sample sentences under the second line of three dashes and write your issue there. The topic line is optional; delete it if the issue has no single topic.
+5. Click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again.
 
-Issues are numbered automatically in date order, so the first one is Issue 1. To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, edit `src/content/pages/newsletter.md`.
+Issues are numbered automatically in date order, so the first one is Issue 1. To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, open `src/content/pages/newsletter.md` and edit only the sentence below the second line of three dashes.
 
 ## Change the words on a page
 
@@ -92,7 +93,7 @@ Issues are numbered automatically in date order, so the first one is Issue 1. To
 
 ## Turn on the newsletter signup
 
-The Contact page shows a signup form only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
+The signup form (on the Writing page, at the end of every article and issue, and on the Contact page) shows only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
 
 1. Create a free account at buttondown.com and choose a username. As of October 2026 the free plan covers your first 100 subscribers. Past 100 you can keep collecting addresses but cannot send until you add billing and pick a paid plan, which starts at $9 a month. Check their pricing page for the current terms.
 2. In Buttondown, open **Settings**, then **Embedding**, and copy the code under **Form**. Find the part that reads `action="https://buttondown.com/api/emails/embed-subscribe/yourname"`.

@@ -15,8 +15,9 @@ const Intro = introPage?.body?.trim() ? (await render(introPage)).Content : unde
 // Videos with a "group" line are listed under that heading, in the order the groups first appear.
 const groups: { name: string; items: Video[] }[] = [];
 for (const video of videos) {
-  const name = video.data.group?.trim() ?? '';
-  let group = groups.find((entry) => entry.name === name);
+  const name = (video.data.group ?? '').trim().replace(/\s+/g, ' ');
+  // Compared without regard to capital letters, so "AI videos" and "AI Videos" share one heading.
+  let group = groups.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
   if (!group) groups.push((group = { name, items: [] }));
   group.items.push(video);
 }
@@ -24,7 +25,7 @@ const grouped = groups.some((group) => group.name !== '');
 const Heading = grouped ? 'h3' : 'h2';
 ---
 
-<BaseLayout title="Videos" description="Occasional videos on crypto, AI, and law by Or Menashe." wide>
+<BaseLayout title="Videos" description="Videos on digital assets, AI, and law, picked by Or Menashe." wide>
   <div class="videos-page">
     <h1>Videos</h1>
     {Intro && <div class="videos-intro"><Intro /></div>}

@@ -134,11 +134,13 @@ export function checkContentFolder(folder: string) {
     for (const line of lines.slice(1, end)) {
       const name = known && /^([^\s#'"\-[{][^:]*?)\s*:(?:\s|$)/.exec(line)?.[1];
       if (name) checkSettingName(file, name, known);
-      const setting = /^(title|description|date|kicker):\s*(.*)$/.exec(line);
+      const setting = /^(title|description|date|kicker|credit|group):\s*(.*)$/.exec(line);
       if (!setting) continue;
       const [, key, value] = setting;
       if (key === 'date') checkDate(file, value);
-      else if (quotationProblem(value) === 'double') {
+      else if (['credit', 'group'].includes(key) && value.trim() === '') {
+        fail(file, `The ${key} line is empty. Put the words between quotation marks, or delete the whole ${key} line.`);
+      } else if (quotationProblem(value) === 'double') {
         fail(file, `The ${key} has a quotation mark inside its quotation marks. Use curly quotes inside (\u201clike this\u201d), or wrap the whole ${key} in single quotation marks.`);
       } else if (quotationProblem(value) === 'single') {
         fail(file, `The ${key} has an apostrophe inside single quotation marks. Wrap the whole ${key} in double quotation marks instead.`);
