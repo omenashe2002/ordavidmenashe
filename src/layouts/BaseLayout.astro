@@ -33,6 +33,9 @@ interface Props {
   structuredData?: Record<string, unknown>[];
   /** True on pages that already show a newsletter signup, so the footer does not show a second one. */
   inlineSignup?: boolean;
+  /** Whether site search covers this page, and the kind of page it is called in the results. */
+  searchable?: boolean;
+  searchKind?: string;
 }
 
 const {
@@ -49,6 +52,8 @@ const {
   tags = [],
   structuredData = [],
   inlineSignup = false,
+  searchable = true,
+  searchKind = 'Page',
 } = Astro.props;
 // Visitor counts (Vercel Web Analytics) are collected only on the live site, never on previews or on a local copy.
 const countVisits = process.env.VERCEL_ENV === 'production';
@@ -126,7 +131,7 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <Header currentPath={Astro.url.pathname} />
-    <main id="main" class="wrap">
+    <main id="main" class="wrap" data-pagefind-body={searchable && !noindex ? '' : undefined} data-pagefind-meta={`kind:${searchKind}`}>
       {
         wide ? (
           <slot />
@@ -138,5 +143,8 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
       }
     </main>
     <Footer showSignup={!inlineSignup} />
+    <script>
+      import '../scripts/previews';
+    </script>
   </body>
 </html>

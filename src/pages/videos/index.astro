@@ -25,7 +25,7 @@ const grouped = groups.some((group) => group.name !== '');
 const Heading = grouped ? 'h3' : 'h2';
 ---
 
-<BaseLayout title="Videos" description="Videos on digital assets, AI, and law, picked by Or Menashe." wide>
+<BaseLayout title="Videos" description="Videos on digital assets, AI, and law, picked by Or Menashe." wide searchKind="Videos">
   <div class="videos-page">
     <h1>Videos</h1>
     {Intro && <div class="videos-intro"><Intro /></div>}

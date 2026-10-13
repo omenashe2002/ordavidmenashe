@@ -50,6 +50,7 @@ export async function copyToClipboard(text: string, html?: string): Promise<bool
   } catch {
     // fall through to the older method below
   }
+  const before = document.activeElement as HTMLElement | null;
   try {
     const field = document.createElement('textarea');
     field.value = text;
@@ -59,6 +60,7 @@ export async function copyToClipboard(text: string, html?: string): Promise<bool
     field.select();
     const copied = document.execCommand('copy');
     field.remove();
+    before?.focus(); // the keyboard user's place is not lost
     return copied;
   } catch {
     return false;

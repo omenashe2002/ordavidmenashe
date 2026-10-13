@@ -31,6 +31,7 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
       aria-labelledby={heading ? `${id}-title` : undefined}
       aria-label={heading ? undefined : 'Newsletter signup'}
       data-newsletter
+      data-pagefind-ignore
     >
       {heading && <Heading class="section-head" id={`${id}-title`}>{heading}</Heading>}
       <p class="newsletter-blurb">{blurb}</p>
@@ -43,6 +44,7 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
         </div>
       </form>
       <p class="signup-message" id={`${id}-message`} data-signup-message role="status" />
+      <p class="signup-retry"><button class="text-button" type="button" data-signup-retry hidden>Use a different address</button></p>
       {!compact && <p class="signup-note" data-signup-note>A confirmation page opens in a new tab, and you will get an email to confirm your address.</p>}
     </section>
   )
@@ -52,10 +54,12 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
   // With scripts, the form is sent in the background and the answer appears in the page.
   // Without them, the form still works: it opens the newsletter service's own page in a new tab.
   const FAILED = 'That did not go through. Please check your connection and try again, or email me instead.';
+  const TIMEOUT = 15000; // a request that has not left after this long is treated as failed
 
   for (const section of document.querySelectorAll<HTMLElement>('[data-newsletter]')) {
     const form = section.querySelector<HTMLFormElement>('form.signup');
     const message = section.querySelector<HTMLElement>('[data-signup-message]');
+    const retry = section.querySelector<HTMLButtonElement>('[data-signup-retry]');
     const note = section.querySelector<HTMLElement>('[data-signup-note]');
     const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
     const input = form?.querySelector<HTMLInputElement>('input[type="email"]');
@@ -63,17 +67,27 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
     form.removeAttribute('target');
     note?.setAttribute('hidden', '');
 
+    // The words are put in a moment after the message is shown, which is what makes screen readers read them.
+    const say = (text: string, error = false) => {
+      message.classList.toggle('is-error', error);
+      message.textContent = '';
+      window.setTimeout(() => (message.textContent = text), 30);
+    };
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (button.getAttribute('aria-disabled') === 'true') return; // already sending
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
       const label = button.textContent ?? 'Subscribe';
-      button.disabled = true;
+      // aria-disabled, not disabled, so the button keeps the keyboard focus while it works
+      button.setAttribute('aria-disabled', 'true');
       button.textContent = 'Sending';
-      message.classList.remove('is-error');
-      message.textContent = '';
+      say('');
+      const stop = new AbortController();
+      const timer = window.setTimeout(() => stop.abort(), TIMEOUT);
       try {
         // The newsletter service answers with a web page, not data, so only whether the request left is known.
         await fetch(form.action, {
@@ -81,15 +95,29 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams(new FormData(form) as unknown as Record<string, string>),
+          signal: stop.signal,
         });
         form.hidden = true;
-        message.textContent = `Almost done. Open the email sent to ${input.value} and click the link to confirm. It can take a minute, and it may land in your spam folder.`;
+        retry?.removeAttribute('hidden');
+        say(`Almost done. Open the email sent to ${input.value} and click the link to confirm. It can take a minute. If nothing arrives, check your spam folder, or email me.`);
+        message.tabIndex = -1;
+        window.setTimeout(() => message.focus(), 60);
       } catch {
-        message.classList.add('is-error');
-        message.textContent = FAILED;
-        button.disabled = false;
+        say(FAILED, true);
+        input.focus();
+      } finally {
+        window.clearTimeout(timer);
+        button.removeAttribute('aria-disabled');
         button.textContent = label;
       }
+    });
+
+    // After a successful send the form can be brought back, for instance to fix a mistyped address.
+    retry?.addEventListener('click', () => {
+      form.hidden = false;
+      retry.setAttribute('hidden', '');
+      say('');
+      input.focus();
     });
   }
 </script>

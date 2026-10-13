@@ -408,6 +408,9 @@ p {
   grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: var(--space-5) var(--space-6);
 }
+.footer-columns > * {
+  min-width: 0;
+}
 .footer-heading {
   margin: 0 0 var(--space-2);
 }
@@ -423,6 +426,7 @@ p {
 }
 .site-footer .site-name {
   color: var(--text);
+  font-family: var(--font-body);
 }
 .site-footer a:hover,
 .site-footer .site-name:hover {
@@ -449,15 +453,15 @@ p {
 }
 .theme-toggle {
   display: flex;
+  flex-wrap: wrap; /* in a narrow column the three choices go onto two lines instead of past the edge of the screen */
   align-items: center;
   margin: 0;
   padding: 0;
   border: 0;
 }
 .theme-toggle button {
-  min-width: 3.4rem;
   min-height: 2.5rem;
-  padding: 0 0.7rem;
+  padding: 0 0.6rem;
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
@@ -466,7 +470,7 @@ p {
   cursor: pointer;
   transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
-.theme-toggle button:first-child {
+.theme-toggle button:first-of-type {
   padding-left: 0;
 }
 .theme-toggle button:hover {
@@ -638,6 +642,7 @@ p {
   left: 50%;
   bottom: var(--space-5);
   z-index: 40;
+  width: max-content;
   max-width: calc(100vw - 2 * var(--gutter));
   padding: 0.55rem 1.1rem;
   border: 1px solid var(--rule);
@@ -738,8 +743,9 @@ p {
   overflow-x: auto;
   margin: 0 0 1.2em;
   padding: 1em;
+  border: 1px solid var(--rule); /* a rule on the page's own background, so every code color stays readable */
   border-radius: 4px;
-  background: var(--surface);
+  background: var(--bg);
   font-size: 0.85em;
   line-height: 1.45;
 }
@@ -759,6 +765,44 @@ p {
 }
 .prose figure {
   margin: 1.5em 0;
+}
+/* A collapsible block in an article: a title line that opens and closes the text under it. */
+.prose details {
+  margin: 1.6em 0;
+  border-block: 1px solid var(--rule);
+}
+.prose summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 2.75rem;
+  padding: 0.3rem 0;
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--dur-2) var(--ease);
+}
+.prose summary::-webkit-details-marker {
+  display: none;
+}
+.prose summary::after {
+  content: '+';
+  content: '+' / '';
+  color: var(--muted);
+  font-weight: 400;
+}
+.prose details[open] > summary::after {
+  content: '\2212';
+  content: '\2212' / '';
+}
+.prose summary:hover {
+  color: var(--accent);
+}
+.prose details > :last-child {
+  margin-bottom: 1.2em;
 }
 /* Footnote numbers and other superscripts must not push the lines of text apart. */
 .prose sup,
@@ -863,8 +907,12 @@ p {
   }
   .post-when {
     flex-direction: row;
-    gap: 0.9rem;
+    flex-wrap: wrap; /* a long row drops to a new line instead of breaking inside a date */
+    gap: 0 0.9rem;
     padding-top: 0;
+  }
+  .post-when > * {
+    white-space: nowrap;
   }
 }
 
@@ -1629,7 +1677,11 @@ p {
   margin: 0 0 0.5em;
 }
 .note-box-foot {
+  position: sticky; /* the link out of a long note stays in view at the bottom of the box */
+  bottom: 0;
   margin: var(--space-2) 0 0;
+  padding: 0.35rem 0 0.25rem;
+  background: var(--bg);
   font-family: var(--font-ui);
   font-size: var(--step--1);
 }
@@ -1863,6 +1915,8 @@ p {
   .site-footer ul,
   .footer-top,
   .footer-signup,
+  .contact-copy,
+  .video-facade,
   .newsletter,
   .toc,
   .toc-sheet,
@@ -1928,9 +1982,7 @@ p {
   .prose a[href^='http']:not([data-bare-url])::after {
     content: ' (' attr(href) ')';
     display: inline;
-    width: auto;
-    height: auto;
-    margin-left: 0;
+    padding-left: 0;
     background: none;
     opacity: 1;
     -webkit-mask: none;
@@ -1958,7 +2010,10 @@ p {
   .prose pre,
   .prose table,
   .prose figure,
-  .prose .footnotes li {
+  .prose .footnotes li,
+  .featured,
+  .video-card,
+  .post-list > li {
     break-inside: avoid;
   }
   .prose pre {
@@ -1968,6 +2023,10 @@ p {
   /* The numbered notes at the end, even when the screen showed them in the margin. */
   .has-sidenotes .prose .footnotes {
     display: block;
+  }
+  .astro-code,
+  .astro-code span {
+    color: var(--shiki-light) !important; /* code in its dark-on-white colors, whatever the screen showed */
   }
   .prose .footnotes {
     margin-top: 1.5rem;
@@ -1986,6 +2045,23 @@ p {
   }
   .print-source {
     display: block;
+  }
+  .bio-toggle,
+  .now-more {
+    display: none !important;
+  }
+  .section-head,
+  .section-title,
+  .eyebrow,
+  .toc-title,
+  .footer-heading {
+    break-after: avoid;
+  }
+  .footer-legal {
+    break-inside: avoid;
+  }
+  .prose details:not([open])::details-content {
+    content-visibility: visible; /* a closed block still prints (the script also opens them) */
   }
   .button {
     border: 1px solid #000;
@@ -2008,15 +2084,12 @@ p {
 /* The mark itself. A link with no kind below has nothing to draw. */
 :is(.prose, .sidenote, .note-box) a::after {
   content: var(--link-mark, none);
-  display: inline-block;
-  width: 0.66em;
-  height: 0.66em;
-  margin-left: 0.3em;
+  /* An inline box with the icon painted in its left padding, so the icon always stays on the line of the link's last word. */
+  padding-left: 0.96em;
   background-color: currentColor;
   opacity: 0.7;
-  vertical-align: 0.04em;
-  -webkit-mask: var(--link-icon, none) no-repeat center / contain;
-  mask: var(--link-icon, none) no-repeat center / contain;
+  -webkit-mask: var(--link-icon, none) no-repeat right center / 0.66em 0.66em;
+  mask: var(--link-icon, none) no-repeat right center / 0.66em 0.66em;
   transition: opacity var(--dur-2) var(--ease);
 }
 :is(.prose, .sidenote, .note-box) a:hover::after {
@@ -2077,6 +2150,251 @@ p {
 /* The footnote numbers and their back arrows are not outside links. */
 :is(.prose, .sidenote, .note-box) a:is([data-footnote-ref], [data-footnote-backref], .sidenote-back)::after {
   content: none;
+}
+
+/* ------------------------------------------------------------------
+   Search: a box over the page, opened from the header or with Ctrl+K / Cmd+K (set by script)
+------------------------------------------------------------------- */
+.search-item:not(.is-ready) {
+  visibility: hidden; /* keeps its place, so the header does not move when the button appears */
+}
+@media (scripting: none) {
+  .search-item {
+    display: none; /* with scripts off there is no button, and no gap where it would be */
+  }
+}
+.is-found {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  transition: background-color var(--dur-3) var(--ease);
+}
+.search-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0 0.1rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease);
+}
+.search-open:hover {
+  color: var(--text);
+}
+.search-key {
+  min-width: 3.1rem; /* the same width for "Ctrl K" and the Mac's "\2318K", so the header does not move */
+  text-align: center;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 500;
+}
+@media (max-width: 40rem) {
+  .search-key {
+    display: none; /* only the magnifying glass on a phone */
+  }
+  .search-label {
+    position: absolute; /* still the button's name for screen readers */
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .search-open {
+    min-width: 2.75rem;
+    justify-content: center;
+  }
+}
+.search-dialog {
+  position: fixed;
+  inset: 12vh 0 auto;
+  display: none;
+  width: min(40rem, calc(100% - 2 * var(--gutter)));
+  max-height: 76vh;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.5);
+}
+.search-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.search-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+.search-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 1.05rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+.search-input::placeholder {
+  color: var(--muted);
+}
+.search-input:focus-visible {
+  outline: none; /* the whole bar shows the focus instead */
+}
+.search-bar:focus-within {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.search-close {
+  min-height: 2.75rem;
+  padding: 0 0 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.search-status {
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+.search-status:empty {
+  display: none;
+}
+.search-results {
+  margin: 0;
+  padding: 0 0 var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+.search-results li a {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid transparent;
+  color: inherit;
+  text-decoration: none;
+}
+.search-results li.is-active a {
+  border-left-color: var(--text);
+  background: var(--surface);
+}
+.search-kind {
+  display: block;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 500;
+}
+.search-title {
+  display: block;
+  font-size: var(--step-1);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.search-excerpt {
+  display: -webkit-box;
+  margin-top: 0.2rem;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--step-small);
+  line-height: 1.4;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.search-excerpt mark {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--text);
+}
+@media print {
+  .search-item,
+  .search-dialog {
+    display: none !important;
+  }
+}
+
+/* The small card shown when a mouse rests on a link to another page of this site (set by script). */
+.link-preview {
+  position: absolute;
+  z-index: 25;
+  width: min(22rem, calc(100vw - 2 * var(--space-4)));
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
+  background: var(--bg);
+  box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.4);
+  opacity: 0;
+  transform: translateY(0.25rem);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+}
+.link-preview.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.link-preview p {
+  margin: 0;
+}
+.link-preview-label {
+  margin-bottom: 0.2rem;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 500;
+}
+.link-preview-title {
+  font-size: var(--step-1);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.link-preview-text {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: var(--step-small);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-preview {
+    transition: none;
+    transform: none;
+  }
+}
+@media print {
+  .link-preview {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -2191,6 +2509,42 @@ p {
   padding-top: 0;
   border-top: 0;
 }
+.now-more {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+.now-preview > ul > li:nth-child(n + 3) {
+  display: none; /* the About page shows the first two items; the Now page shows them all */
+}
+.now-page h1 {
+  margin: var(--space-6) 0;
+}
+.now-full ul {
+  list-style: none;
+  padding: 0;
+}
+.now-full li {
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule);
+}
+.now-full li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+/* The short bio: only the first paragraph, until the button is pressed. Only where scripts can run, so nobody is left without the rest. */
+.bio-toggle {
+  display: none;
+  margin-top: var(--space-2);
+}
+@media (scripting: enabled) {
+  .about-main[data-bio] .bio-toggle {
+    display: inline-flex;
+  }
+  .about-main[data-bio='short'] .prose > :not(:first-child) {
+    display: none;
+  }
+}
 .now-updated {
   margin: var(--space-4) 0 0;
   color: var(--muted);
@@ -2242,16 +2596,24 @@ p {
 }
 .contact-copy {
   display: inline-flex;
-  margin-left: var(--space-3);
-  vertical-align: middle;
+}
+.contact-list .contact-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-3); /* the button sits beside the address, or under it, without an indent */
+}
+.signup-retry {
+  margin: var(--space-2) 0 0;
 }
 .signup-message {
   min-height: 0;
   margin: var(--space-3) 0 0;
   max-width: 30rem;
 }
-.signup-message:empty {
-  display: none;
+.signup-message:empty,
+.signup-retry:has([hidden]) {
+  margin: 0; /* an empty message stays in the page, so screen readers hear it when it fills */
 }
 .signup-message.is-error {
   color: var(--text);
@@ -2366,6 +2728,32 @@ button.button {
 
 /* Windows high-contrast mode draws no backgrounds, so give buttons and the "now" panel an outline */
 @media (forced-colors: active) {
+  .search-open,
+  .tag-filter a {
+    border-bottom-color: Canvas;
+  }
+  .tag-filter a[aria-current='page'] {
+    border-bottom-color: Highlight;
+  }
+  .search-results li a {
+    border-left-color: Canvas;
+  }
+  .search-results li.is-active a {
+    border-left-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .search-bar:focus-within {
+    outline: 2px solid Highlight;
+  }
+  .theme-toggle button {
+    border-bottom-color: Canvas;
+  }
+  .theme-toggle button[aria-pressed='true'] {
+    border-bottom-color: Highlight;
+    font-weight: 600;
+    text-decoration: underline;
+  }
   .button,
   button.button {
     border: 1px solid ButtonText;
@@ -2381,5 +2769,15 @@ button.button {
   *::after {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* On paper the whole bio and the whole Now list are shown. This sits last so that it wins over the screen rules above. */
+@media print {
+  .about-main[data-bio='short'] .prose > :not(:first-child) {
+    display: revert !important;
+  }
+  .now-preview > ul > li:nth-child(n + 3) {
+    display: revert !important;
   }
 }

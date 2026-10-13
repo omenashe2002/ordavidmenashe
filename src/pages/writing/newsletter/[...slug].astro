@@ -29,6 +29,7 @@ const path = `/writing/newsletter/${issue.id}/`;
   description={issue.data.description}
   type="article"
   publishedTime={issue.data.date}
+  searchKind="Newsletter"
   tags={issue.data.tags}
   image={`/og/newsletter/${issue.id}.png`}
   imageAlt={`${issue.data.title}, the weekly newsletter by Or Menashe`}

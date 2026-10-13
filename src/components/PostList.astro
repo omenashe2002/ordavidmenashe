@@ -14,7 +14,7 @@ const { posts, level = 2, basePath = '/writing/' } = Astro.props;
 const Heading = level === 3 ? 'h3' : 'h2';
 ---
 
-<ol class="post-list">
+<ol class="post-list" data-pagefind-ignore>
   {
     posts.map((post) => (
       <li>

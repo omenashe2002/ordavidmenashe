@@ -18,7 +18,7 @@ const external = (href: string) => (href.startsWith('http') ? { rel: 'noopener' 
 
 {
   variant === 'top' ? (
-    <div class="article-tools">
+    <div class="article-tools" data-pagefind-ignore>
       <details class="cite">
         <summary>Cite this</summary>
         <div class="cite-body">
@@ -37,7 +37,7 @@ const external = (href: string) => (href.startsWith('http') ? { rel: 'noopener' 
       </p>
     </div>
   ) : (
-    <section class="cite-end" aria-labelledby="cite-end-title">
+    <section class="cite-end" aria-labelledby="cite-end-title" data-pagefind-ignore>
       <h2 class="section-head" id="cite-end-title">Cite this article</h2>
       <p class="cite-text" id={textId}>
         {pieces.map((piece) => (piece.italic ? <i>{piece.text}</i> : piece.text))}
