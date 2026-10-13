@@ -16,7 +16,7 @@ export const SITE = {
   // The signup forms (Writing page, end of every article, Contact page, footer) appear only when this holds the
   // form address from your newsletter service (it starts with https://). Leave the two quotation marks empty
   // to hide them. See HOW-TO-UPDATE.md.
-  newsletter: '',
+  newsletter: 'https://buttondown.com/api/emails/embed-subscribe/ordavid',
   linkedin: 'https://www.linkedin.com/in/ordavidmenashe',
   disclaimer:
     'This site is personal commentary. It is not legal advice and does not reflect the views of any employer or institution.',
