@@ -20,7 +20,7 @@ const Intro = introPage?.body?.trim() ? (await render(introPage)).Content : unde
 >
   <div class="writing-page newsletter-page">
     <h1>{SITE.newsletterName}</h1>
-    {Intro && <div class="newsletter-intro"><Intro /></div>}
+    {Intro && <div class="videos-intro"><Intro /></div>}
     {
       issues.length > 0 ? (
         <PostList posts={issues} basePath="/writing/newsletter/" />

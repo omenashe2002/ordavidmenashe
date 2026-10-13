@@ -108,7 +108,8 @@ const newsletter = defineCollection({
       .string({ error: 'Add a description line at the top of the file, for example: description: "One sentence on this issue."' })
       .trim()
       .min(1, { error: 'The description line is empty. Write one sentence between the quotation marks.' }),
-    issue: z.coerce.number({ error: 'issue must be a number, for example: issue: 3' }).int().positive().optional(),
+    // issue: 0 marks a welcome post that is not a numbered issue; the first weekly issue is then Issue 1.
+    issue: z.coerce.number({ error: 'issue must be a number, for example: issue: 3' }).int().nonnegative({ error: 'issue cannot be below 0. Use issue: 0 for a welcome post, or a number such as issue: 3.' }).optional(),
     tags: z
       .preprocess(
         (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : value),
