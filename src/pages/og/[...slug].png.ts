@@ -12,7 +12,7 @@ export async function GET({ props }: APIContext) {
   const { post } = props as { post: Post };
   let image: Uint8Array;
   try {
-    image = new Uint8Array(await shareCard({ title: post.data.title, kicker: post.data.kicker, tags: post.data.tags }));
+    image = new Uint8Array(await shareCard({ title: post.data.title, kicker: post.data.kicker, tags: post.data.tags, status: post.data.status }));
   } catch (error) {
     // If a title has a character the card font cannot draw (Hebrew, an emoji, an unusual symbol), share the general
     // card instead of a card full of empty boxes, and never stop the build.

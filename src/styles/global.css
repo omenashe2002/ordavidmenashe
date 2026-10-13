@@ -1,4 +1,4 @@
-/*! EB Garamond is licensed under the SIL Open Font License 1.1. The license text is at /fonts/EB-Garamond-OFL.txt */
+/*! EB Garamond and Instrument Sans are licensed under the SIL Open Font License 1.1. The license texts are at /fonts/EB-Garamond-OFL.txt and /fonts/Instrument-Sans-OFL.txt */
 
 /* ------------------------------------------------------------------
    Fonts: EB Garamond, bundled with the site (no requests to Google).
@@ -45,6 +45,37 @@
     U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Instrument Sans: the companion sans-serif for navigation, dates, labels, buttons and forms. */
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2')
+    format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-ext-wght-normal.woff2')
+    format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* A stand-in sized to match Instrument Sans, shown for a moment while the real font arrives, so nothing jumps. */
+@font-face {
+  font-family: 'Instrument Sans Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 104%;
+  ascent-override: 93.3%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
 /* ------------------------------------------------------------------
    Colors. To change the whole look of the site, change these values.
    (Dark mode switches on automatically when a visitor's device is set to dark.)
@@ -83,11 +114,32 @@
   --section: clamp(3.5rem, 7vw, 6.5rem); /* space between big sections of a page */
 
   --font-body: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  --font-ui: 'Instrument Sans', 'Instrument Sans Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* The type scale. Every size on the site is one of these. The two small steps are for the sans-serif interface
+     text (navigation, dates, labels, buttons); the rest are Garamond, from the text itself up to the home headline. */
+  --step--2: 0.75rem; /* 12px: the smallest labels */
+  --step--1: 0.875rem; /* 14px: navigation, dates, tags, buttons, forms */
+  --step-small: calc(var(--step-0) * 0.82); /* footnotes, citations and other small Garamond text */
+  --step-margin: calc(var(--step-0) * 0.72); /* notes set in the margin, where space is tight */
+  --step-0: clamp(1.25rem, 1.15rem + 0.5vw, 1.4rem); /* the text itself. Garamond is small for its size, so it is set a little larger */
+  --step-1: clamp(1.35rem, 1.2rem + 0.55vw, 1.65rem); /* introductions, sub-headings */
+  --step-2: clamp(1.55rem, 1.2rem + 1.1vw, 2.1rem); /* titles in lists, section headings in articles */
+  --step-3: clamp(2.1rem, 1.5rem + 2.6vw, 3.3rem); /* page and article titles */
+  --step-4: clamp(2.6rem, 1.3rem + 4.8vw, 5rem); /* the home headline */
+
+  /* How fast things change when a visitor hovers or presses. One speed and one curve for the whole site. */
+  --dur-1: 0.12s;
+  --dur-2: 0.2s;
+  --dur-3: 0.32s;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
+/* The dark colors are written twice, once for devices set to dark and once for a visitor who chose Dark with the
+   theme control in the footer (it sets data-theme on the page). Keep the two lists identical. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #16140f;
     --surface: #1f1c16;
     --text: #ece7db;
@@ -102,6 +154,27 @@
     --frame-mat: #241f17;
     --frame-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.75);
   }
+}
+:root[data-theme='dark'] {
+  --bg: #16140f;
+  --surface: #1f1c16;
+  --text: #ece7db;
+  --muted: #a8a193;
+  --rule: #3a362c;
+  --accent: #e3a273;
+  --accent-strong: #f0c09b;
+  --button-bg: var(--accent);
+  --button-fg: #1a130c;
+  --frame: #8c6c37;
+  --frame-lip: #d9bb70;
+  --frame-mat: #241f17;
+  --frame-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.75);
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 /* ------------------------------------------------------------------
@@ -127,8 +200,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  /* Garamond is small for its size, so the text is set a little larger than usual. */
-  font-size: clamp(1.25rem, 1.15rem + 0.5vw, 1.4rem);
+  font-size: var(--step-0);
   line-height: 1.55;
   font-kerning: normal;
   text-rendering: optimizeLegibility;
@@ -162,7 +234,8 @@ main {
 
 a {
   color: var(--accent);
-  transition: color 0.18s ease, text-decoration-color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  transition: color var(--dur-2) var(--ease), text-decoration-color var(--dur-2) var(--ease),
+    text-underline-offset var(--dur-2) var(--ease), text-decoration-thickness var(--dur-2) var(--ease);
   text-decoration-line: underline;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.18em;
@@ -172,6 +245,37 @@ a:hover {
   color: var(--accent-strong);
   text-decoration-color: currentColor;
   text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.24em;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Small capitals are used for one thing only: the small label above a block of content (a section name, the line above
+   a title, the name of a list). Everything else that is small and functional is set in the sans-serif. */
+.eyebrow,
+.kicker,
+.section-head,
+.section-title,
+.featured-kicker,
+.toc-title,
+.toc-inline summary,
+.cite summary,
+.proof-label,
+.contact-list dt,
+.now h2,
+.about .prose h2,
+.note-box-head,
+.toc-sheet-head,
+.footer-heading {
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
 }
 
 h1,
@@ -183,7 +287,7 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.1rem);
+  font-size: var(--step-3);
   letter-spacing: -0.01em;
   margin: 2rem 0 1rem;
 }
@@ -194,7 +298,7 @@ p {
 }
 
 .lede {
-  font-size: 1.15em;
+  font-size: var(--step-1);
   font-style: italic;
   color: var(--muted);
 }
@@ -232,11 +336,14 @@ p {
 .site-name {
   padding: 0.5rem 0;
   color: var(--text);
-  font-size: 1.3em;
-  font-weight: 600;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
+  font-size: var(--step-1);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
   text-decoration: none;
+}
+.site-name {
+  transition: color var(--dur-2) var(--ease);
 }
 .site-name:hover {
   color: var(--accent);
@@ -257,46 +364,54 @@ p {
   padding: 0.7rem 0 0.55rem;
   border-bottom: 2px solid transparent;
   color: var(--muted);
-  font-size: 1em;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.07em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.01em;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .site-header nav a:hover {
   color: var(--text);
+  border-bottom-color: var(--rule);
 }
 .site-header nav a[aria-current='page'] {
   color: var(--text);
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--text);
 }
 
 /* ------------------------------------------------------------------
    Footer
 ------------------------------------------------------------------- */
 .site-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-4) var(--space-6);
   border-top: 1px solid var(--rule);
-  padding: var(--space-5) 0 var(--space-6);
+  padding: var(--space-6) 0;
   color: var(--muted);
-  font-size: 0.82em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   line-height: 1.5;
 }
-.site-footer p {
-  margin: 0 0 0.35rem;
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-6) var(--space-7);
 }
-.site-footer .footer-main {
-  max-width: 42rem;
+.footer-brand .site-name {
+  display: inline-block;
+  padding: 0;
 }
-.site-footer .disclaimer {
-  font-style: italic;
+.footer-tagline {
+  margin: var(--space-1) 0 0;
+}
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-5) var(--space-6);
+}
+.footer-heading {
+  margin: 0 0 var(--space-2);
 }
 .site-footer ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-5);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -306,8 +421,60 @@ p {
   padding: 0.25rem 0; /* a taller target for fingers */
   color: var(--muted);
 }
-.site-footer a:hover {
+.site-footer .site-name {
+  color: var(--text);
+}
+.site-footer a:hover,
+.site-footer .site-name:hover {
   color: var(--accent);
+}
+.footer-legal {
+  max-width: 46rem;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--rule);
+}
+.footer-legal p {
+  margin: 0 0 0.35rem;
+}
+.footer-legal .disclaimer {
+  font-family: var(--font-body);
+  font-size: var(--step-small);
+  font-style: italic;
+}
+@media (max-width: 40rem) {
+  .footer-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.theme-toggle button {
+  min-width: 3.4rem;
+  min-height: 2.5rem;
+  padding: 0 0.7rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
+}
+.theme-toggle button:first-child {
+  padding-left: 0;
+}
+.theme-toggle button:hover {
+  color: var(--text);
+}
+.theme-toggle button[aria-pressed='true'] {
+  border-bottom-color: var(--text);
+  color: var(--text);
 }
 
 /* ------------------------------------------------------------------
@@ -319,23 +486,19 @@ p {
 }
 .post-header h1 {
   margin: 0 0 var(--space-4);
-  font-size: clamp(2.2rem, 1.4rem + 3.2vw, 3.6rem);
+  font-size: var(--step-3);
   line-height: 1.08;
   letter-spacing: -0.014em;
 }
 .kicker {
   margin: 0 0 var(--space-3);
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
 }
 .dek {
   max-width: 40rem;
   margin: 0 0 var(--space-4);
   color: var(--muted);
-  font-size: 1.12em;
-  line-height: 1.45;
+  font-size: var(--step-1);
+  line-height: 1.4;
 }
 .post-meta {
   display: flex;
@@ -344,7 +507,162 @@ p {
   gap: 0.15rem 1rem;
   margin: 0;
   color: var(--muted);
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A small label for where a piece stands: Draft, Forthcoming or Published. */
+.status-badge,
+.post-status {
+  font-style: normal;
+  font-weight: 600;
+}
+.status-badge {
+  padding: 0.05em 0.6em;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: var(--text);
+  font-size: var(--step--2);
+  line-height: 1.5;
+}
+.post-status {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* "Cite this" and the download links, at the top and the end of an article. */
+.article-tools {
+  position: relative;
+  max-width: 40rem;
+  margin: var(--space-5) 0 0;
+  border-top: 1px solid var(--rule);
+}
+.cite summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+  list-style: none;
+}
+.cite summary::-webkit-details-marker {
+  display: none;
+}
+.cite summary::after {
+  content: '+';
+  content: '+' / '';
+  font-size: 1.25em;
+  line-height: 1;
+}
+.cite[open] summary::after {
+  content: '\2212';
+  content: '\2212' / '';
+}
+.cite summary:hover {
+  color: var(--text);
+}
+.cite-text {
+  margin: 0 0 var(--space-3);
+  font-size: var(--step-small);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.cite-body {
+  padding: 0 0 var(--space-3);
+}
+.cite-actions,
+.article-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-5);
+  margin: 0;
+}
+.article-actions {
+  padding: 0 0 var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+.article-actions a,
+.cite-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+}
+/* Beside "Cite this" on the same line when there is room. */
+@media (min-width: 40rem) {
+  .article-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 2.75rem;
+    padding: 0;
+  }
+}
+.cite-end {
+  margin: 0 0 var(--section);
+}
+.cite-end .cite-text {
+  max-width: var(--measure);
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease), text-decoration-color var(--dur-2) var(--ease);
+}
+.text-button:hover {
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
+}
+.text-button.is-done {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+/* A short message at the bottom of the screen ("Copied"). */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-5);
+  z-index: 40;
+  max-width: calc(100vw - 2 * var(--gutter));
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  line-height: 1.3;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.5rem);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.toast.is-silent {
+  opacity: 0; /* still announced to screen readers; the button already shows the result */
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    transition: none;
+  }
 }
 
 .tags {
@@ -354,15 +672,17 @@ p {
   margin: 0;
   padding: 0;
   list-style: none;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   font-style: normal;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.08em;
 }
 .tags a {
-  color: var(--accent);
+  color: var(--muted);
   text-decoration: none;
 }
 .tags a:hover {
+  color: var(--accent);
   text-decoration: underline;
 }
 
@@ -375,12 +695,12 @@ p {
 
 /* Everything inside an article's body text */
 .prose h2 {
-  font-size: 1.55em;
+  font-size: var(--step-2);
   font-weight: 600;
   margin: 2.2em 0 0.5em;
 }
 .prose h3 {
-  font-size: 1.2em;
+  font-size: var(--step-1);
   font-style: italic;
   font-weight: 500;
   margin: 1.8em 0 0.4em;
@@ -396,7 +716,7 @@ p {
 .prose blockquote {
   margin: 1.5em 0;
   padding: 0 0 0 1.25em;
-  border-left: 2px solid var(--accent);
+  border-left: 2px solid var(--rule);
 }
 .prose blockquote p {
   margin-bottom: 0.6em;
@@ -452,7 +772,7 @@ p {
   width: 100%;
   margin: 0 0 1.2em;
   border-collapse: collapse;
-  font-size: 0.92em;
+  font-size: var(--step-small);
 }
 .prose th,
 .prose td {
@@ -482,11 +802,6 @@ p {
 
 .section-title {
   margin: 3rem 0 0.25rem;
-  color: var(--muted);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
 }
 
 .post-list {
@@ -509,15 +824,17 @@ p {
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding-top: 0.3em;
+  padding-top: 0.5em;
   color: var(--muted);
-  font-style: italic;
-  line-height: 1.4;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
 }
 .post-what h2,
 .post-what h3 {
   margin: 0 0 0.35rem;
-  font-size: 1.55em;
+  font-size: var(--step-2);
   font-weight: 500;
   line-height: 1.18;
 }
@@ -525,6 +842,7 @@ p {
 .post-what h3 a {
   color: var(--text);
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease);
 }
 .post-what h2 a:hover,
 .post-what h3 a:hover {
@@ -537,7 +855,7 @@ p {
   margin: 0 0 0.6rem;
 }
 .post-what .tags {
-  font-size: 0.92em;
+  margin-top: var(--space-1);
 }
 @media (max-width: 44rem) {
   .post-list > li {
@@ -563,21 +881,18 @@ p {
   padding: 0.55rem 0 0.4rem;
   border-bottom: 2px solid transparent;
   color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.08em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .tag-filter a:hover {
   color: var(--text);
 }
 .tag-filter a[aria-current='page'] {
   color: var(--text);
-  border-bottom-color: var(--accent);
-}
-.tag-filter span {
-  font-size: 0.82em;
-  font-variant-caps: normal;
-  letter-spacing: 0;
+  border-bottom-color: var(--text);
 }
 
 .more-link {
@@ -603,7 +918,7 @@ p {
   margin-top: 3rem;
   padding-top: 1.1rem;
   border-top: 1px solid var(--rule);
-  font-size: 0.88em;
+  font-size: var(--step-small);
   line-height: 1.5;
 }
 .prose .footnotes ol {
@@ -625,10 +940,14 @@ p {
   color: var(--shiki-light);
 }
 @media (prefers-color-scheme: dark) {
-  .astro-code,
-  .astro-code span {
+  :root:not([data-theme='light']) .astro-code,
+  :root:not([data-theme='light']) .astro-code span {
     color: var(--shiki-dark);
   }
+}
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark);
 }
 
 /* ------------------------------------------------------------------
@@ -640,14 +959,9 @@ p {
 .contact-list div {
   margin-bottom: 1.3rem;
 }
-.contact-list dt {
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
-}
 .contact-list dd {
   margin: 0;
-  font-size: 1.15em;
+  font-size: var(--step-1);
 }
 
 /* ------------------------------------------------------------------
@@ -679,6 +993,16 @@ p {
   border-color: var(--accent);
   color: var(--text);
 }
+.video-facade {
+  transition: border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.video-play {
+  transition: transform var(--dur-2) var(--ease);
+}
+.video-facade:hover .video-play,
+.video-facade:focus-visible .video-play {
+  transform: scale(1.07);
+}
 .video-play {
   position: relative;
   width: 4.2rem;
@@ -697,8 +1021,9 @@ p {
   border-color: transparent transparent transparent var(--bg);
 }
 .video-label {
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
 }
 @media (forced-colors: active) {
   .video-play {
@@ -721,10 +1046,6 @@ p {
 ------------------------------------------------------------------- */
 .eyebrow {
   margin: 0 0 var(--space-5);
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
 }
 
 .measure > .eyebrow:first-child {
@@ -740,14 +1061,14 @@ p {
 }
 .hero h1 {
   margin: 0 0 var(--space-5);
-  font-size: clamp(2.6rem, 1.3rem + 4.8vw, 5rem);
+  font-size: var(--step-4);
   line-height: 1.03;
   letter-spacing: -0.018em;
 }
 .hero-intro {
   max-width: 31em;
   color: var(--muted);
-  font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.55rem);
+  font-size: var(--step-1);
   line-height: 1.5;
 }
 .hero-intro p {
@@ -762,12 +1083,15 @@ p {
 }
 .button {
   display: inline-block;
-  padding: 0.8rem 1.7rem;
+  padding: 0.8rem 1.6rem;
   background: var(--button-bg);
   color: var(--button-fg);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.03em;
   text-decoration: none;
+  transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 .button:hover {
   background: var(--accent-strong);
@@ -800,10 +1124,14 @@ p {
   filter: sepia(0.1) contrast(1.02);
 }
 @media (prefers-color-scheme: dark) {
-  .portrait img {
+  :root:not([data-theme='light']) .portrait img {
     mix-blend-mode: normal;
     filter: brightness(0.9) contrast(1.04);
   }
+}
+:root[data-theme='dark'] .portrait img {
+  mix-blend-mode: normal;
+  filter: brightness(0.9) contrast(1.04);
 }
 
 .proof {
@@ -816,21 +1144,12 @@ p {
   list-style: none;
 }
 .proof li {
-  padding: 0 var(--space-5);
-  border-left: 1px solid var(--rule);
+  padding: 0 var(--space-5) 0 0;
   line-height: 1.3;
-}
-.proof li:first-child {
-  padding-left: 0;
-  border-left: 0;
 }
 .proof-label {
   display: block;
   margin-bottom: 0.2rem;
-  color: var(--muted);
-  font-size: 0.92em;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
 }
 .proof-text {
   display: block;
@@ -841,26 +1160,12 @@ p {
   margin-top: var(--section);
 }
 .section-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
   margin: 0 0 var(--space-6);
-  color: var(--muted);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
-}
-.section-head::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--rule);
 }
 
 .featured-grid {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6) var(--space-7);
 }
 .featured-grid[data-count='2'] {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -869,15 +1174,10 @@ p {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-  gap: var(--space-6) var(--space-7);
-  align-content: start; /* when two panels sit side by side, the shorter one keeps its text at the top */
-  padding: clamp(1.5rem, 4vw, 3.5rem);
-  border: 1px solid transparent;
-  background: var(--surface);
-  transition: border-color 0.2s ease;
-}
-.featured:hover {
-  border-color: var(--accent);
+  gap: var(--space-4) var(--space-7);
+  align-content: start; /* when two pieces sit side by side, the shorter one keeps its text at the top */
+  padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--text);
 }
 .featured-grid[data-count='2'] .featured {
   grid-template-columns: minmax(0, 1fr);
@@ -885,26 +1185,24 @@ p {
 .featured-kicker {
   display: block;
   margin-bottom: 0.4rem;
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
 }
 .featured-meta {
   margin: 0;
   color: var(--muted);
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   line-height: 1.5;
 }
 .featured h3 {
   margin: 0 0 var(--space-4);
-  font-size: clamp(1.7rem, 1.15rem + 1.7vw, 2.65rem);
-  line-height: 1.12;
+  font-size: var(--step-2);
+  line-height: 1.15;
   letter-spacing: -0.01em;
 }
 .featured h3 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease);
 }
 .featured h3 a::after {
   content: '';
@@ -920,9 +1218,9 @@ p {
 }
 .featured-tags {
   margin-bottom: var(--space-4);
-  color: var(--accent);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .featured-cta {
   margin: 0;
@@ -930,21 +1228,22 @@ p {
 }
 .featured-cta span {
   display: inline-block;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-2) var(--ease);
 }
 .featured:hover .featured-cta span {
   transform: translateX(4px);
 }
 
+/* Tablets: the text and the portrait stay side by side, with a narrower portrait. */
 @media (max-width: 54rem) {
   .hero {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) clamp(11rem, 30vw, 17rem);
+    gap: clamp(1.5rem, 4vw, 2.5rem);
   }
   .portrait {
     --frame-w: 3px;
     --mat-w: 3px;
-    justify-self: start;
-    max-width: 17rem;
+    max-width: none; /* fills its column */
   }
   .proof {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -956,6 +1255,16 @@ p {
   .featured,
   .featured-grid[data-count='2'] {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Phones: the portrait goes below the buttons, as wide as the text column (up to 20rem). */
+@media (max-width: 36rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .portrait {
+    justify-self: start;
+    max-width: min(100%, 20rem);
   }
 }
 @media (max-width: 40rem) {
@@ -977,8 +1286,11 @@ p {
 .writing-page .newsletter-section {
   margin: 0 0 var(--section);
 }
+.writing-page .newsletter-section:last-child {
+  margin-bottom: 0;
+}
 .writing-page > section + .newsletter-section {
-  margin: var(--section) 0 0; /* after the list of articles, while there are no issues yet */
+  margin-top: var(--section); /* after the list of articles, while there are no issues yet */
 }
 .writing-page .newsletter-section .post-list {
   margin-bottom: 0;
@@ -988,6 +1300,9 @@ p {
 }
 .newsletter-signup-block {
   margin-top: var(--space-7);
+}
+.article-end .newsletter + .related {
+  margin-top: var(--section);
 }
 .writing-page .tag-filter {
   margin-bottom: var(--space-2);
@@ -1017,9 +1332,11 @@ p {
   padding: 0.3rem 0 0.3rem 0.9rem;
   border-left: 2px solid var(--rule);
   color: var(--muted);
-  font-size: 0.84em;
-  line-height: 1.3;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  line-height: 1.35;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .toc a:hover {
   color: var(--text);
@@ -1028,20 +1345,20 @@ p {
   outline-offset: -2px; /* drawn inside the link, so the scrolling list never cuts it off */
 }
 .toc a[aria-current='location'] {
-  border-left-color: var(--accent);
+  border-left-color: var(--text);
   color: var(--text);
 }
 .toc ol ol a {
   padding-left: 1.7rem;
-  font-size: 0.8em;
 }
 .toc-title {
   margin: 0 0 var(--space-3);
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
 }
 .toc-rail {
+  display: none;
+}
+/* With the notes in the margin there is no list of notes to jump to. */
+.has-sidenotes .toc li:has(> a[href='#footnote-label']) {
   display: none;
 }
 .toc-inline {
@@ -1053,9 +1370,6 @@ p {
   align-items: center;
   justify-content: space-between;
   min-height: 2.75rem;
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
   cursor: pointer;
   list-style: none;
 }
@@ -1108,12 +1422,26 @@ p {
   }
 }
 
+/* On wide screens the contents list moves to the left, which leaves the right-hand margin free for the notes. */
+@media (min-width: 75rem) {
+  .article-body.has-toc {
+    grid-template-columns: 10.5rem minmax(0, var(--measure));
+    gap: 0 2rem;
+  }
+  .article-body.has-toc .article-main {
+    grid-column: 2;
+  }
+  .toc-rail {
+    grid-column: 1;
+  }
+}
+
 @media (max-width: 40rem) {
   .kicker {
     letter-spacing: 0.1em;
   }
   .dek {
-    font-size: 1.02em;
+    font-size: var(--step-0);
   }
 }
 
@@ -1141,7 +1469,7 @@ p {
   clip-path: none;
   white-space: normal;
   color: var(--muted);
-  font-size: 1em;
+  font-size: var(--step-0);
   font-weight: 500;
   font-variant-caps: all-small-caps;
   letter-spacing: 0.14em;
@@ -1170,6 +1498,318 @@ p {
   scroll-margin-top: var(--space-5);
 }
 
+/* Notes in the margin (wide screens, set by script): each one level with the line that points to it. */
+.article-main {
+  position: relative;
+}
+.sidenotes {
+  display: none;
+}
+.has-sidenotes .sidenotes {
+  /* As wide as the margin allows (16 to 20rem), so the notes run to fewer lines when there is room. */
+  --side-width: clamp(16rem, calc(92vw - 52.5rem), 20rem);
+  display: block;
+  position: absolute;
+  top: 0;
+  left: calc(100% + 2rem);
+  width: var(--side-width);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.has-sidenotes .prose .footnotes {
+  display: none; /* the notes are in the margin; the list at the end still prints and is the fallback without scripts */
+}
+.sidenote {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding: 0.1em 0 0.1em 1.7em;
+  border-radius: 2px;
+  color: var(--muted);
+  font-size: var(--step-margin);
+  line-height: 1.42;
+  transition: background-color var(--dur-3) var(--ease);
+}
+.sidenote:focus-visible {
+  outline-offset: 4px;
+}
+.sidenote-num {
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  color: var(--text);
+  font-variant-numeric: lining-nums;
+  font-weight: 600;
+}
+.sidenote p {
+  margin: 0 0 0.4em;
+}
+.sidenote p:last-child {
+  display: inline;
+}
+.sidenote.is-long:not(.is-open) .sidenote-full,
+.sidenote.is-open .sidenote-short {
+  display: none;
+}
+.sidenote-more {
+  display: block;
+  margin: 0.2em 0 0;
+  padding: 0.3em 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+.sidenote-back {
+  margin-left: 0.4em;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+}
+.sidenote:hover .sidenote-back,
+.sidenote:focus-within .sidenote-back,
+.sidenote-back:focus-visible {
+  opacity: 1;
+}
+.sidenote.is-active,
+.sidenote.is-linked,
+.prose a[data-footnote-ref].is-linked {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.sidenote a {
+  overflow-wrap: anywhere;
+}
+
+/* The note box (narrower screens): opens right under the number, on top of the text. */
+.note-box {
+  position: absolute;
+  z-index: 20;
+  max-height: min(60vh, 26rem);
+  overflow-y: auto;
+  padding: 0 var(--space-4) var(--space-3);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
+  background: var(--bg);
+  box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.4);
+  font-size: var(--step-small);
+  line-height: 1.5;
+}
+.note-box:focus-visible {
+  outline-offset: -4px;
+}
+.note-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  padding-top: var(--space-1);
+  background: var(--bg);
+  font-size: var(--step-small);
+}
+.note-box-close {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  margin-right: -0.9rem;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.5em;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease);
+}
+.note-box-body p {
+  margin: 0 0 0.5em;
+}
+.note-box-foot {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+
+/* Reading aids (set by script): a thin bar showing how far through the piece the reader is, and a small bar of buttons. */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 3px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease);
+}
+.reading-progress.is-visible {
+  opacity: 1;
+}
+.reading-progress span {
+  display: block;
+  height: 100%;
+  background: var(--muted);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+.reader-tools {
+  position: fixed;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--bg);
+  box-shadow: 0 8px 22px -12px rgb(0 0 0 / 0.45);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  line-height: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease), visibility var(--dur-2);
+}
+.reader-tools.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.reader-left {
+  padding: 0 0.6rem;
+  color: var(--muted);
+  font-variant-numeric: lining-nums;
+  white-space: nowrap;
+}
+.reader-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease);
+}
+.reader-button:hover {
+  color: var(--accent);
+}
+.reader-contents {
+  display: none;
+}
+@media (max-width: 63.99rem) {
+  .reader-contents {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+.toast {
+  bottom: 5rem;
+}
+
+/* The list of sections, opened from the Contents button on narrow screens. */
+.toc-sheet {
+  position: fixed;
+  inset: auto 0 0;
+  width: min(100%, 36rem);
+  max-height: 75dvh;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+.toc-sheet[open] {
+  display: flex;
+  flex-direction: column;
+}
+.toc-sheet::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+.toc-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+.toc-sheet-close {
+  min-height: 2.75rem;
+  padding: 0 0 0 var(--space-4);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.toc-sheet-list {
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-5);
+  overscroll-behavior: contain;
+}
+.toc-sheet-list a {
+  padding-block: 0.6rem;
+}
+.toc-sheet-list ol ol a {
+  padding-block: 0.5rem;
+}
+
+/* The link icon beside a heading (set by script): copies the address of that section. */
+.heading-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -1rem 0 -1rem 0.1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.75em;
+  vertical-align: middle;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.prose :is(h2, h3):hover .heading-link,
+.heading-link:focus-visible,
+.heading-link.is-done {
+  opacity: 1;
+}
+.heading-link:hover {
+  color: var(--accent);
+}
+.heading-link.is-done {
+  color: var(--text);
+}
+@media (hover: none) {
+  .heading-link {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress,
+  .reader-tools,
+  .heading-link,
+  .sidenote {
+    transition: none;
+  }
+}
+
 /* Windows high-contrast mode: use system colors and shapes, not the copper accent, for the current section and jump targets */
 @media (forced-colors: active) {
   .toc a[aria-current='location'] {
@@ -1184,44 +1824,287 @@ p {
   }
 }
 
-/* On paper: just the text */
+/* The address line shown only on paper. */
+.print-source {
+  display: none;
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+
+/* On paper: the article as a clean, black-on-white document, with the notes numbered at the end. */
+@page {
+  margin: 2cm 2.2cm;
+}
 @media print {
+  /* Always light on paper, even when the screen is dark. */
+  :root,
+  :root:not([data-theme='light']),
+  :root[data-theme='dark'] {
+    --bg: #fff;
+    --surface: #f3f3f3;
+    --text: #000;
+    --muted: #444;
+    --rule: #bbb;
+    --accent: #000;
+    --accent-strong: #000;
+    color-scheme: light;
+    /* The type scale in points for paper (it is in screen sizes above). */
+    --step--2: 7.5pt;
+    --step--1: 8.5pt;
+    --step-0: 11pt;
+    --step-1: 13pt;
+    --step-2: 15pt;
+    --step-3: 22pt;
+    --step-4: 26pt;
+  }
   .site-header nav,
   .site-footer ul,
+  .footer-top,
+  .footer-signup,
+  .newsletter,
   .toc,
+  .toc-sheet,
   .related,
   .more-link,
-  .skip-link {
-    display: none;
+  .skip-link,
+  .reader-tools,
+  .reading-progress,
+  .toast,
+  .heading-link,
+  .note-box,
+  .sidenotes,
+  .article-tools,
+  .cite-actions,
+  .tag-filter {
+    display: none !important;
   }
   body {
+    min-height: 0;
     background: #fff;
     color: #000;
-    font-size: 11.5pt;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+  .wrap,
+  .measure {
+    width: 100%;
+  }
+  .site-header {
+    padding: 0 0 0.5rem;
+    border-bottom: 1px solid #bbb;
+  }
+  main {
+    padding: 0;
+  }
+  .post-header {
+    max-width: none;
+    margin: 1.2rem 0;
+  }
+  .post-header h1 {
+    font-size: 22pt;
+  }
+  .kicker {
+    color: #000;
+  }
+  .dek {
+    max-width: none;
+  }
+  .article-body.has-toc,
+  .article-body {
+    display: block;
+  }
+  .article-main {
+    width: 100%;
+    min-height: 0 !important;
   }
   .prose a,
   .tags a {
     color: inherit;
     text-decoration: none;
   }
-  .article-main {
-    width: 100%;
+  /* The address of each outside link, so a reader of the paper can find it. A link that already shows its address is left alone. */
+  .prose a[href^='http']:not([data-bare-url])::after {
+    content: ' (' attr(href) ')';
+    display: inline;
+    width: auto;
+    height: auto;
+    margin-left: 0;
+    background: none;
+    opacity: 1;
+    -webkit-mask: none;
+    mask: none;
+    font-size: 0.8em;
+    word-break: break-all;
   }
-  .prose pre {
-    overflow: visible;
-    white-space: pre-wrap;
+  /* No marks on paper, only the printed addresses above. */
+  .prose a[data-bare-url]::after,
+  .prose a[href$='.pdf' i]:not([href^='http'])::after,
+  .sidenote a::after,
+  .note-box a::after {
+    content: none;
+  }
+  .prose p,
+  .prose li {
+    orphans: 3;
+    widows: 3;
   }
   .prose h2,
   .prose h3 {
     break-after: avoid; /* never leave a heading alone at the bottom of a page */
   }
+  .prose blockquote,
+  .prose pre,
+  .prose table,
+  .prose figure,
+  .prose .footnotes li {
+    break-inside: avoid;
+  }
+  .prose pre {
+    overflow: visible;
+    white-space: pre-wrap;
+  }
+  /* The numbered notes at the end, even when the screen showed them in the margin. */
+  .has-sidenotes .prose .footnotes {
+    display: block;
+  }
+  .prose .footnotes {
+    margin-top: 1.5rem;
+    break-before: auto;
+  }
   .prose a[data-footnote-backref] {
     display: none; /* the back arrows are useless on paper */
+  }
+  .cite-end {
+    margin: 1.5rem 0 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid #bbb;
+  }
+  .cite-end .section-head {
+    margin-top: 0;
+  }
+  .print-source {
+    display: block;
   }
   .button {
     border: 1px solid #000;
     background: none;
     color: #000;
+  }
+}
+/* ------------------------------------------------------------------
+   Link icons: a small mark after a link in an article says what it leads to.
+   They are drawn by the stylesheet alone (no script), hidden from screen readers, and left off on paper.
+   The kind is told from the address: the lists below are easy to extend.
+------------------------------------------------------------------- */
+:root {
+  --icon-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M8 7h9v9'/%3E%3C/svg%3E");
+  --icon-pdf: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h8l4 4v14H6zM14 3v4h4'/%3E%3C/svg%3E");
+  --icon-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18H6zM9.5 8h5M9.5 12h5M9.5 16h3'/%3E%3C/svg%3E");
+  --icon-case: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18M6 21h12M4 7h16M4 7l-2.5 6a3 3 0 0 0 5 0zM20 7l-2.5 6a3 3 0 0 0 5 0z'/%3E%3C/svg%3E");
+  --icon-statute: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-5.5L21 9M5.5 10v8M10 10v8M14 10v8M18.5 10v8M3 21h18'/%3E%3C/svg%3E");
+}
+/* The mark itself. A link with no kind below has nothing to draw. */
+:is(.prose, .sidenote, .note-box) a::after {
+  content: var(--link-mark, none);
+  display: inline-block;
+  width: 0.66em;
+  height: 0.66em;
+  margin-left: 0.3em;
+  background-color: currentColor;
+  opacity: 0.7;
+  vertical-align: 0.04em;
+  -webkit-mask: var(--link-icon, none) no-repeat center / contain;
+  mask: var(--link-icon, none) no-repeat center / contain;
+  transition: opacity var(--dur-2) var(--ease);
+}
+:is(.prose, .sidenote, .note-box) a:hover::after {
+  opacity: 1;
+}
+/* Any outside link gets the arrow... */
+:is(.prose, .sidenote, .note-box) a:where([href^='http']:not([href*='ordavidmenashe.com'])) {
+  --link-mark: '';
+  --link-icon: var(--icon-external);
+}
+/* ...unless it is a statute or regulation, a court opinion, a paper, or a PDF (later kinds win over earlier ones). */
+:is(.prose, .sidenote, .note-box)
+  a:is(
+    [href*='law.cornell.edu/uscode' i],
+    [href*='law.cornell.edu/cfr' i],
+    [href*='uscode.house.gov' i],
+    [href*='ecfr.gov' i],
+    [href*='federalregister.gov' i],
+    [href*='govinfo.gov/content/pkg/USCODE' i],
+    [href*='govinfo.gov/content/pkg/CFR' i],
+    [href*='govinfo.gov/content/pkg/PLAW' i],
+    [href*='govinfo.gov/content/pkg/STATUTE' i],
+    [href*='congress.gov' i],
+    [href*='sec.gov/rules' i],
+    [href*='leginfo.legislature.ca.gov' i],
+    [href*='eur-lex.europa.eu' i],
+    [href*='legislation.gov.uk' i]
+  ) {
+  --link-mark: '';
+  --link-icon: var(--icon-statute);
+}
+:is(.prose, .sidenote, .note-box)
+  a:is(
+    [href*='courtlistener.com' i],
+    [href*='casetext.com' i],
+    [href*='law.justia.com/cases' i],
+    [href*='supreme.justia.com' i],
+    [href*='cite.case.law' i],
+    [href*='static.case.law' i],
+    [href*='supremecourt.gov' i],
+    [href*='uscourts.gov' i],
+    [href*='scholar.google.com/scholar_case' i],
+    [href*='law.cornell.edu/supremecourt' i],
+    [href*='govinfo.gov/content/pkg/USCOURTS' i],
+    [href*='casemine.com' i]
+  ) {
+  --link-mark: '';
+  --link-icon: var(--icon-case);
+}
+:is(.prose, .sidenote, .note-box) a[href*='ssrn.com' i] {
+  --link-mark: '';
+  --link-icon: var(--icon-paper);
+}
+:is(.prose, .sidenote, .note-box) a:is([href$='.pdf' i], [href*='.pdf?' i], [href*='.pdf#' i]) {
+  --link-mark: '';
+  --link-icon: var(--icon-pdf);
+}
+/* The footnote numbers and their back arrows are not outside links. */
+:is(.prose, .sidenote, .note-box) a:is([data-footnote-ref], [data-footnote-backref], .sidenote-back)::after {
+  content: none;
+}
+
+/* ------------------------------------------------------------------
+   Moving between pages: a short fade. Browsers that do not support it just load the next page,
+   and anyone who asks their device for less motion gets no transition at all.
+------------------------------------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: page-out var(--dur-2) var(--ease) both;
+}
+::view-transition-new(root) {
+  animation: page-in var(--dur-3) var(--ease) both;
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
   }
 }
 
@@ -1230,6 +2113,7 @@ p {
 ------------------------------------------------------------------- */
 .about h1,
 .contact-page h1,
+.colophon h1,
 .videos-page h1 {
   margin: var(--space-6) 0;
 }
@@ -1272,35 +2156,26 @@ p {
 .about-links a {
   display: inline-block;
   padding: 0.35rem 0;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
 }
 .about-main .prose > p:first-child {
-  font-size: 1.18em;
-  line-height: 1.5;
+  font-size: var(--step-1);
+  line-height: 1.45;
 }
 .about .prose h2 {
   margin: 2.4em 0 0.8em;
   padding-top: 1.1rem;
   border-top: 1px solid var(--rule);
-  color: var(--muted);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
 }
 .now {
-  padding: clamp(1.25rem, 2.5vw, 1.75rem);
-  background: var(--surface);
-  font-size: 0.92em;
+  padding: var(--space-4) 0 0;
+  border-top: 1px solid var(--text);
+  font-size: var(--step-small);
 }
 .now h2 {
   margin: 0 0 var(--space-4);
-  color: var(--accent);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
 }
 .now-list ul {
   margin: 0;
@@ -1319,8 +2194,8 @@ p {
 .now-updated {
   margin: var(--space-4) 0 0;
   color: var(--muted);
-  font-size: 0.9em;
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 @media (max-width: 54rem) {
   .about-grid {
@@ -1351,7 +2226,7 @@ p {
   margin: 0;
 }
 .contact-list .contact-email {
-  font-size: clamp(1.4rem, 1rem + 1.8vw, 2.1rem);
+  font-size: var(--step-2);
   line-height: 1.2;
 }
 .contact-email a {
@@ -1360,12 +2235,48 @@ p {
 .newsletter p {
   max-width: 30rem;
 }
+.contact-note {
+  max-width: 30rem;
+  margin: var(--space-4) 0 var(--space-5);
+  color: var(--muted);
+}
+.contact-copy {
+  display: inline-flex;
+  margin-left: var(--space-3);
+  vertical-align: middle;
+}
+.signup-message {
+  min-height: 0;
+  margin: var(--space-3) 0 0;
+  max-width: 30rem;
+}
+.signup-message:empty {
+  display: none;
+}
+.signup-message.is-error {
+  color: var(--text);
+  font-style: italic;
+}
+.footer-signup {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--rule);
+}
+.newsletter-compact .newsletter-blurb {
+  margin-bottom: var(--space-3);
+}
+.newsletter-compact .signup {
+  max-width: 30rem;
+}
+.article-end .newsletter {
+  margin: 0 0 var(--section);
+}
 .signup label {
   display: block;
   margin-bottom: var(--space-2);
   color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .signup-row {
   display: flex;
@@ -1381,19 +2292,19 @@ p {
   border-radius: 0;
   background: var(--bg);
   color: var(--text);
-  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 1rem; /* 16px or more, so phones do not zoom in when the field is tapped */
+  transition: border-color var(--dur-2) var(--ease);
 }
 button.button {
   border: 0;
   cursor: pointer;
-  font: inherit;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
 }
 .signup-note {
   margin-top: var(--space-3);
   color: var(--muted);
-  font-size: 0.9em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 @media (min-width: 54rem) {
   .has-signup .contact-grid {
@@ -1425,8 +2336,8 @@ button.button {
   max-width: 40rem;
   margin: 0 0 var(--space-7);
   color: var(--muted);
-  font-size: 1.12em;
-  line-height: 1.5;
+  font-size: var(--step-1);
+  line-height: 1.45;
 }
 .video-group + .video-group {
   margin-top: var(--section);
@@ -1440,14 +2351,14 @@ button.button {
 .video-card h2,
 .video-card h3 {
   margin: var(--space-3) 0 0.15rem;
-  font-size: 1.3em;
+  font-size: var(--step-1);
   line-height: 1.2;
 }
 .video-date {
   margin: 0 0 var(--space-2);
   color: var(--muted);
-  font-size: 0.92em;
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .video-card .summary {
   margin: 0;
@@ -1460,7 +2371,7 @@ button.button {
     border: 1px solid ButtonText;
   }
   .now {
-    border: 1px solid CanvasText;
+    border-top-color: CanvasText;
   }
 }
 

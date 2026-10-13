@@ -1,0 +1,73 @@
+---
+import type { CitePiece } from '../lib/cite';
+
+/**
+ * "Cite this" and the download links. At the top of an article it is a collapsed line; at the end it is a
+ * section of its own. The copy and print buttons are hidden until scripts run, because they cannot work without them.
+ */
+interface Props {
+  variant: 'top' | 'end';
+  pieces: CitePiece[];
+  pdf?: string;
+  ssrn?: string;
+}
+const { variant, pieces, pdf, ssrn } = Astro.props;
+const textId = `cite-text-${variant}`;
+const external = (href: string) => (href.startsWith('http') ? { rel: 'noopener' } : {});
+---
+
+{
+  variant === 'top' ? (
+    <div class="article-tools">
+      <details class="cite">
+        <summary>Cite this</summary>
+        <div class="cite-body">
+          <p class="cite-text" id={textId}>
+            {pieces.map((piece) => (piece.italic ? <i>{piece.text}</i> : piece.text))}
+          </p>
+          <p class="cite-actions">
+            <button class="text-button" type="button" data-copy-cite={textId} data-needs-js hidden>Copy citation</button>
+          </p>
+        </div>
+      </details>
+      <p class="article-actions">
+        <button class="text-button" type="button" data-print data-needs-js hidden>Print or save as PDF</button>
+        {pdf && <a href={pdf} {...external(pdf)}>Download PDF</a>}
+        {ssrn && <a href={ssrn} {...external(ssrn)}>SSRN</a>}
+      </p>
+    </div>
+  ) : (
+    <section class="cite-end" aria-labelledby="cite-end-title">
+      <h2 class="section-head" id="cite-end-title">Cite this article</h2>
+      <p class="cite-text" id={textId}>
+        {pieces.map((piece) => (piece.italic ? <i>{piece.text}</i> : piece.text))}
+      </p>
+      <p class="cite-actions">
+        <button class="text-button" type="button" data-copy-cite={textId} data-needs-js hidden>Copy citation</button>
+        <button class="text-button" type="button" data-print data-needs-js hidden>Print or save as PDF</button>
+        {pdf && <a href={pdf} {...external(pdf)}>Download PDF</a>}
+        {ssrn && <a href={ssrn} {...external(ssrn)}>SSRN</a>}
+      </p>
+    </section>
+  )
+}
+
+<script>
+  import { confirmOnButton, copyToClipboard } from '../scripts/ui';
+
+  document.addEventListener('click', async (event) => {
+    const target = event.target as Element | null;
+    const print = target?.closest('[data-print]');
+    if (print) {
+      window.print();
+      return;
+    }
+    const button = target?.closest<HTMLElement>('[data-copy-cite]');
+    if (!button) return;
+    const source = document.getElementById(button.dataset.copyCite ?? '');
+    if (!source) return;
+    const text = (source.textContent ?? '').trim();
+    const copied = await copyToClipboard(text, source.innerHTML.trim());
+    confirmOnButton(button, copied ? 'Citation copied' : 'Could not copy. Select the citation and copy it by hand.', copied ? 'Copied' : 'Select and copy');
+  });
+</script>

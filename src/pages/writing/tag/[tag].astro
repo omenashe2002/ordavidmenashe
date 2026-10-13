@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostList from '../../../components/PostList.astro';
 import TagFilter from '../../../components/TagFilter.astro';
-import { getPosts, tagsInUse, tagSlug } from '../../../lib/posts';
+import { getPosts, MIN_POSTS_FOR_FILTER, tagsInUse, tagSlug } from '../../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -18,7 +18,8 @@ const tagged = posts.filter((post) => post.data.tags.includes(tag));
 <BaseLayout title={`Writing on ${tag}`} description={`Articles tagged ${tag} by Or Menashe.`} wide>
   <div class="writing-page">
     <h1>Writing</h1>
-    <TagFilter posts={posts} tags={tags} current={tag} />
+    {posts.length >= MIN_POSTS_FOR_FILTER && <TagFilter tags={tags} current={tag} />}
     <PostList posts={tagged} />
+    {posts.length < MIN_POSTS_FOR_FILTER && <p class="more-link"><a href="/writing/">&larr; All writing</a></p>}
   </div>
 </BaseLayout>

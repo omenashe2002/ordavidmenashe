@@ -15,6 +15,7 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 | The top of the Home page | `src/content/pages/home.md` |
 | The About page | `src/content/pages/about.md` |
 | "What I'm working on now" | `src/content/pages/now.md` |
+| The Colophon page (how the site is made) | `src/content/pages/colophon.md` |
 | Email, LinkedIn, newsletter signup, topics, footer disclaimer | `src/site.ts` |
 | Your photo | `src/assets/or-menashe.jpg` |
 
@@ -45,12 +46,14 @@ Write your article here. Leave a blank line between paragraphs.
 - **draft**: `true` keeps the article off the website while you write. The file is still visible on GitHub. `false` publishes it.
 - **featured** (optional): add a new line `featured: true` anywhere between the two lines of three dashes at the top, for example under `draft: false`. If you put it below the dashes it shows up as ordinary text in the article. It shows the article as a large panel under "Selected writing" on the Home page, and on the Writing page when there is other writing too. Up to two featured articles are shown, the most recent first. Delete the line to stop featuring it.
 - **kicker** (optional): a new line between the same two lines of dashes, such as `kicker: "Forthcoming in the Fordham Journal"`. It appears at the top of the article and on its large panel if it is featured. Keep it in quotation marks.
+- **status**, **draftDate** and **updatedDate** (optional): new lines between the same two lines of dashes. `status: draft` (or `forthcoming`, or `published`) adds a small label beside the dates. It is only a label: it does not hide anything. To keep an article off the site, use `draft: true`. `draftDate: 2026-03-01` adds "Draft of March 1, 2026", and `updatedDate: 2026-11-15` adds "Updated November 15, 2026". Once you add any of these, `date` is shown as "Posted". The dates must make sense together: `draftDate` cannot come after `date`, and `updatedDate` cannot come before it, or the build stops and says so. Search engines are told the same dates.
+- **citation**, **pdf** and **ssrn** (optional): every article has a "Cite this" box at the top and "Cite this article" at the end, with a Copy citation button. The site writes the citation for you in Bluebook form (as an unpublished manuscript while `status` is `draft` or `forthcoming`, otherwise as a web page). Check that it is what you want. A forthcoming piece stays an unpublished manuscript in the citation until you give the journal's citation with `citation:`. To replace it, add `citation: "Or Menashe, *Title of the article*, 12 Fordham J. Corp. & Fin. L. 1 (2027)."`, with asterisks around anything that should be italic. `pdf: "https://..."` (or a file you uploaded to `public`, such as `pdf: "/my-article.pdf"`) adds a Download PDF link, and `ssrn: "https://ssrn.com/abstract=..."` adds an SSRN link. Without those lines no such links appear. The Print or save as PDF button works on every article: in the window that opens, choose Save as PDF as the printer.
 
 In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. Put a footnote at the end of a sentence, not on a heading. The article *Registered Agents of the DAO* shows headings, italics and footnotes; open its file on GitHub to see how they are written. It has no quotation and no link written as `[link text](https://address)`, so use the examples above for those.
 
 To add a picture to an article: open `public`, click **Add file**, then **Upload files**, and drop in the picture (rename it first, with no spaces, for example `chart.jpg`). In the article write `![A short description of the picture](/chart.jpg)` where it belongs. The description is for people who cannot see the picture.
 
-These happen on their own: the reading time; a contents list beside the text (above it, on a phone) for any article of about six minutes or more with at least three `##` sections; a "Keep reading" list of other articles at the bottom, chosen by shared topics; the RSS feed; and a link-preview picture with the article's title and your portrait.
+These happen on their own: the reading time; a small mark after outside links that says where they lead (an arrow for any outside site, scales for a court opinion, a building for a statute or regulation, a page for an SSRN paper or a PDF); a contents list beside the text (above it on a phone, with a Contents button that stays on screen while reading) for any article of about six minutes or more with at least three `##` sections; a thin progress bar, the time left and a Top button for longer pieces; footnotes shown in the right margin on wide screens (and as a small box that opens under the number on narrower ones); a small link icon beside each heading that copies the address of that section; a clean printable version; a "Keep reading" list of other articles at the bottom, chosen by shared topics; the RSS feed; and a link-preview picture with the article's title and your portrait.
 
 If a setting is misspelled, a footnote has no matching note, or a date is impossible, the build stops and says which file and what to fix. The old site stays live.
 
@@ -68,18 +71,19 @@ draft: false
 ---
 ```
 
-Six explainer videos by other creators are on the page for now (three on digital assets, three on how AI works). They use two extra lines: `credit:`, who made the video and when, which is shown instead of the date, and `group:`, the heading it is listed under. For those six, `date:` only sets the order. When you have your own videos, delete the six files whose `credit:` names someone else, and delete the text in `src/content/pages/videos.md` or reword it. Your own videos need neither extra line. Any video that has a `group:` line is listed under that heading.
+Six explainer videos by other creators are on the page for now (three on digital assets, three on how AI works). They use two extra lines: `credit:`, who made the video and when, which is shown instead of the date, and `group:`, the heading it is listed under. For those six, `date:` only sets the order. When you have your own videos, delete the six files whose `credit:` names someone else, and delete the file `src/content/pages/videos.md` to remove the sentence at the top of the Videos page, or edit only the words under its second line of three dashes. Your own videos need neither extra line. Any video that has a `group:` line is listed under that heading.
 
 ## Write the weekly newsletter
 
 Each week's issue is a file in `src/content/newsletter`. It appears on the Writing page under "Weekly newsletter", on its own page, and in the RSS feed. Until the first issue is published, the page says "The first issue is coming soon."
 
-1. Open `src`, then `content`, then `newsletter`. Click **Add file**, then **Create new file**.
-2. Name it for the week, with no spaces, ending in `.md`, for example `2026-10-20.md`. The name becomes the address: `ordavidmenashe.com/writing/newsletter/2026-10-20/`.
-3. Open `_template.md` in the same folder, copy its text, and paste it into the big box. Fill in the title, date and one-sentence description, and write the issue under the second line of dashes. The topic line is optional; delete it if the issue has no single topic.
-4. Click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again.
+1. Open `src`, then `content`, then `newsletter`, and click `_template.md`. Click the copy icon at the top right of the file (**Copy raw file**).
+2. Click `newsletter` in the path at the top to go back to the folder. Click **Add file**, then **Create new file**.
+3. Check that the path above the name box reads `ordavidmenashe / src / content / newsletter /`. Type a name for the week, with no spaces, ending in `.md`, for example `2026-10-20.md`. The name becomes the address: `ordavidmenashe.com/writing/newsletter/2026-10-20/`.
+4. Click in the big box and paste. Change the `title:`, `date:` and `description:` lines. Delete the sample sentences under the second line of three dashes and write your issue there. The topic line is optional; delete it if the issue has no single topic.
+5. Click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again.
 
-Issues are numbered automatically in date order, so the first one is Issue 1. To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, edit `src/content/pages/newsletter.md`.
+Issues are numbered automatically in date order, so the first one is Issue 1. To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, open `src/content/pages/newsletter.md` and edit only the sentence below the second line of three dashes.
 
 ## Change the words on a page
 
@@ -92,12 +96,12 @@ Issues are numbered automatically in date order, so the first one is Issue 1. To
 
 ## Turn on the newsletter signup
 
-The Contact page shows a signup form only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
+The signup form (on the Writing page, at the end of every article and issue, on the Contact page, and in the footer of the other pages) shows only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
 
 1. Create a free account at buttondown.com and choose a username. As of October 2026 the free plan covers your first 100 subscribers. Past 100 you can keep collecting addresses but cannot send until you add billing and pick a paid plan, which starts at $9 a month. Check their pricing page for the current terms.
 2. In Buttondown, open **Settings**, then **Embedding**, and copy the code under **Form**. Find the part that reads `action="https://buttondown.com/api/emails/embed-subscribe/yourname"`.
 3. In `site.ts`, put only that address between the single quotation marks after `newsletter:`, so the line reads `newsletter: 'https://buttondown.com/api/emails/embed-subscribe/yourname',`. Click **Commit changes**.
-4. Open the Contact page a minute or two later and check that the form appears. If the address does not start with https:// or contains spaces or quotation marks, the site will not publish and the message says so. The site cannot tell whether the username in the address is right. Subscribe once with your own email address and check that the confirmation email arrives. If it does not, compare the address in `site.ts` with the one under Settings, then Embedding in Buttondown.
+4. Open the Writing page a minute or two later and check that the form appears. If the address does not start with https:// or contains spaces or quotation marks, the site will not publish and the message says so. The site cannot tell whether the username in the address is right. Subscribe once with your own email address and check that the confirmation email arrives. If it does not, compare the address in `site.ts` with the one under Settings, then Embedding in Buttondown.
 5. To switch the form off, empty the quotation marks again.
 
 Buttondown asks every new subscriber to confirm their address by email. Every email you send includes an unsubscribe link, so keep it.
@@ -121,7 +125,7 @@ Use GitHub's search box to find each phrase and check every file it lists.
 | third-year | `about.md` and `home.md` | when you graduate |
 | expected May 2027 | `about.md` and `home.md` (`credentials:`) | after you graduate |
 | a law student at Fordham Law | `about.md` (the `description:` line at the top) and `site.ts` | when you graduate |
-| forthcoming | `about.md`, the `kicker:` line of the featured article, and the italic first paragraph of `registered-agents-of-the-dao.md` (a search also lists `_template.md` and `content.config.ts`; leave those two alone) | when the note is published |
+| forthcoming | `about.md`, and in `registered-agents-of-the-dao.md` the `kicker:` line, the `status:` line (change it to `published`) and the italic first paragraph. A search for the word also lists files under `src/lib` and `src/styles` and the `_template.md` files: leave those alone | when the note is published |
 | The current draft is on this site | `about.md` | when the note is published, or if you hide, rename or delete the article (the link would break) |
 | Senior Notes Editor | `about.md`, `now.md`, and `home.md` (`credentials:`) | when your term as editor ends |
 | Wyoming Stable Token Commission | `about.md`, `now.md`, and `home.md` (`credentials:`) | when that role ends |
@@ -130,3 +134,16 @@ Use GitHub's search box to find each phrase and check every file it lists.
 | Harvey | `about.md` and `home.md` (`credentials:`) | when that role ends |
 | Legal IQ | `about.md` | if you stop working on it |
 | (not searchable) the `updated:` line in `now.md` | `now.md` | each time you change that list |
+
+## Turn on visitor counts
+
+The site is set up to count visits with Vercel Web Analytics. It uses no cookies, so no cookie banner is needed, and it only counts the live site, not previews. Nothing is counted until you switch it on once:
+
+1. In Vercel, open your project, then the **Analytics** tab, and click **Enable**.
+2. Wait for the site to publish again (any change to any file does it), then open the live site once. The first visits show up in the Analytics tab within a few minutes.
+
+On the free plan Vercel counts up to 50,000 events a month, and the free plan is meant for personal, non-commercial sites. If the count ever passes that, Vercel says so in the dashboard and stops recording until the next month.
+
+## Change the Colophon page
+
+The Colophon page (linked from the footer) is the file `src/content/pages/colophon.md`. Edit only the words below the second line of three dashes. It says the site counts visits with Vercel Web Analytics and sends the newsletter through Buttondown. If you decide not to use either, delete that sentence, or the page will say something that is not true.

@@ -5,7 +5,7 @@ import sharp from 'sharp';
 
 /**
  * Draws the picture shown when a link to an article is shared (LinkedIn, Slack, iMessage, X):
- * the article's title in EB Garamond on the site's paper color, with the portrait and web address.
+ * the article's title in EB Garamond on the site's paper color, with the OM monogram, the portrait and the web address.
  * It runs while the site is being built, so every article gets its own card without any extra work.
  */
 const WIDTH = 1200;
@@ -22,7 +22,7 @@ const MAT = '#f2eadb';
 const fontFile = (name: string) =>
   fs.readFileSync(path.resolve('node_modules/@fontsource/eb-garamond/files', name));
 
-let cache: { fonts: Parameters<typeof satori>[1]['fonts']; portrait: string; wide: string } | undefined;
+let cache: { fonts: Parameters<typeof satori>[1]['fonts']; portrait: string; wide: string; monogram: string } | undefined;
 async function resources() {
   if (!cache) {
     // .rotate() turns a photo the right way up when it carries a rotation tag, as phone photos do.
@@ -40,6 +40,8 @@ async function resources() {
         { name: 'EB Garamond', data: fontFile('eb-garamond-latin-600-normal.woff'), weight: 600, style: 'normal' },
         { name: 'EB Garamond', data: fontFile('eb-garamond-latin-400-italic.woff'), weight: 400, style: 'italic' },
       ],
+      // The OM monogram is the site's icon (public/favicon.svg), drawn as outlines so it needs no font.
+      monogram: `data:image/svg+xml;base64,${fs.readFileSync(path.resolve('public/favicon.svg')).toString('base64')}`,
       portrait: `data:image/jpeg;base64,${small.toString('base64')}`,
       wide: `data:image/jpeg;base64,${blended.toString('base64')}`,
     };
@@ -62,18 +64,34 @@ function titleSize(title: string) {
   return 54;
 }
 
-export async function shareCard(options: { title: string; kicker?: string; tags: readonly string[] }): Promise<Buffer> {
-  const { fonts, portrait } = await resources();
-  const { title, kicker, tags } = options;
+const STATUS_WORDS = { draft: 'Draft', forthcoming: 'Forthcoming', published: 'Published' } as const;
+
+export async function shareCard(options: {
+  title: string;
+  kicker?: string;
+  tags: readonly string[];
+  status?: keyof typeof STATUS_WORDS;
+}): Promise<Buffer> {
+  const { fonts, portrait, monogram } = await resources();
+  const { title, kicker, tags, status } = options;
 
   const card = el('div', { display: 'flex', width: WIDTH, height: HEIGHT, background: PAPER, fontFamily: 'EB Garamond' }, [
-    el('div', { width: 14, height: HEIGHT, background: COPPER }),
-    el('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1, padding: '76px 96px 68px 82px' }, [
-      el(
-        'div',
-        { fontSize: 28, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: COPPER, lineHeight: 1.3, maxWidth: 1000 },
-        kicker ?? 'Writing',
-      ),
+    el('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1, padding: '68px 88px 64px 96px' }, [
+      el('div', { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }, [
+        el('div', { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxWidth: 880 }, [
+          ...(status
+            ? [
+                el(
+                  'div',
+                  { display: 'flex', marginBottom: 16, padding: '2px 16px', border: `2px solid ${INK}`, borderRadius: 4, fontSize: 24, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: INK },
+                  STATUS_WORDS[status],
+                ),
+              ]
+            : []),
+          el('div', { fontSize: 28, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: MUTED, lineHeight: 1.3 }, kicker ?? 'Writing'),
+        ]),
+        el('img', { width: 76, height: 76, borderRadius: 14 }, undefined, { src: monogram, width: 76, height: 76 }),
+      ]),
       el('div', { fontSize: titleSize(title), fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.012em', color: INK, maxWidth: 1000, lineClamp: 5 }, title),
       el('div', { display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '2px solid #ddd5c4', paddingTop: 24 }, [
         el('div', { display: 'flex', alignItems: 'center' }, [
@@ -87,7 +105,7 @@ export async function shareCard(options: { title: string; kicker?: string; tags:
             el('div', { fontSize: 26, fontStyle: 'italic', color: MUTED }, 'ordavidmenashe.com'),
           ]),
         ]),
-        el('div', { fontSize: 26, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: COPPER }, tags.join('  ·  ')),
+        el('div', { fontSize: 26, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: MUTED }, tags.join('  ·  ')),
       ]),
     ]),
   ]);
@@ -111,12 +129,12 @@ async function render(card: Node, fonts: Parameters<typeof satori>[1]['fonts']):
 
 /** The general card, shown when the Home page or any page other than an article is shared: the tagline and the portrait. */
 export async function generalCard(): Promise<Buffer> {
-  const { fonts, wide } = await resources();
+  const { fonts, wide, monogram } = await resources();
   const abs = (style: Style): Style => ({ position: 'absolute', display: 'flex', ...style });
   const card = el('div', { display: 'flex', position: 'relative', width: WIDTH, height: HEIGHT, background: PAPER, fontFamily: 'EB Garamond' }, [
-    el('div', abs({ left: 0, top: 0, width: 14, height: HEIGHT, background: COPPER })),
-    el('div', abs({ left: 96, top: 92, fontSize: 32, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: COPPER }), 'Or Menashe'),
-    el('div', abs({ left: 96, top: 176, width: 620, fontSize: 96, fontWeight: 500, lineHeight: 1.03, letterSpacing: '-0.014em', color: INK }), 'Law, digital assets, and AI.'),
+    el('img', abs({ left: 96, top: 80, width: 76, height: 76, borderRadius: 14 }), undefined, { src: monogram, width: 76, height: 76 }),
+    el('div', abs({ left: 192, top: 98, fontSize: 40, fontWeight: 600, letterSpacing: '-0.01em', color: INK }), 'Or Menashe'),
+    el('div', abs({ left: 96, top: 210, width: 620, fontSize: 92, fontWeight: 500, lineHeight: 1.03, letterSpacing: '-0.014em', color: INK }), 'Law, digital assets, and AI.'),
     el('div', abs({ left: 96, bottom: 84, width: 560, borderTop: '2px solid #ddd5c4', paddingTop: 24, fontSize: 30, fontStyle: 'italic', color: MUTED }), 'ordavidmenashe.com'),
     el('div', abs({ right: 96, top: 66, boxSizing: 'border-box', width: 384, height: 498, border: `5px solid ${FRAME}` }), [
       el('div', { display: 'flex', boxSizing: 'border-box', flex: 1, border: `1px solid ${LIP}`, padding: 4, background: MAT }, [

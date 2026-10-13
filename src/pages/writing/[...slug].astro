@@ -2,8 +2,10 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleBody from '../../components/ArticleBody.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { getPosts, readingMinutes, relatedPosts, shortTabTitle, tableOfContents } from '../../lib/posts';
 import { articleSchema, personSchema } from '../../lib/seo';
+import { citationPieces } from '../../lib/cite';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -17,6 +19,12 @@ const minutes = readingMinutes(post.body);
 // (the "Footnotes" heading that is added automatically does not count).
 const toc = tableOfContents(headings);
 const showToc = minutes >= 6 && toc.filter((item) => item.slug !== 'footnote-label').length >= 3;
+const path = `/writing/${post.id}/`;
+const cite = {
+  pieces: citationPieces(post.data, new URL(path, Astro.site!).href),
+  pdf: post.data.pdf,
+  ssrn: post.data.ssrn,
+};
 ---
 
 <BaseLayout
@@ -25,18 +33,24 @@ const showToc = minutes >= 6 && toc.filter((item) => item.slug !== 'footnote-lab
   description={post.data.description}
   type="article"
   publishedTime={post.data.date}
+  modifiedTime={post.data.updatedDate}
   tags={post.data.tags}
   image={`/og/${post.id}.png`}
   imageAlt={`${post.data.title}, by Or Menashe`}
-  structuredData={[articleSchema(post, Astro.site!, `/writing/${post.id}/`, `/og/${post.id}.png`), personSchema(Astro.site!)]}
+  structuredData={[articleSchema(post, Astro.site!, path, `/og/${post.id}.png`), personSchema(Astro.site!)]}
   wide
+  inlineSignup
 >
   <ArticleBody
     title={post.data.title}
     description={post.data.description}
     date={post.data.date}
+    status={post.data.status}
+    draftDate={post.data.draftDate}
+    updatedDate={post.data.updatedDate}
     tags={post.data.tags}
     minutes={minutes}
+    cite={cite}
     kicker={post.data.kicker}
     toc={toc}
     showToc={showToc}
@@ -45,5 +59,6 @@ const showToc = minutes >= 6 && toc.filter((item) => item.slug !== 'footnote-lab
     backLabel="All writing"
   >
     <Content />
+    <NewsletterSignup slot="after" id="article-signup" heading="Weekly newsletter" blurb="Each issue by email. It is free, and you can unsubscribe at any time." />
   </ArticleBody>
 </BaseLayout>

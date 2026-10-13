@@ -3,16 +3,16 @@ import { tagSlug } from '../lib/posts';
 
 interface Props {
   tags: readonly string[];
+  /** Show the topics as plain words instead of links. Used for newsletter issues, which have no topic pages. */
+  plain?: boolean;
 }
-const { tags } = Astro.props;
+const { tags, plain = false } = Astro.props;
 ---
 
 <ul class="tags" aria-label="Topics">
   {
     tags.map((tag) => (
-      <li>
-        <a href={`/writing/tag/${tagSlug(tag)}/`}>{tag}</a>
-      </li>
+      <li>{plain ? tag : <a href={`/writing/tag/${tagSlug(tag)}/`}>{tag}</a>}</li>
     ))
   }
 </ul>

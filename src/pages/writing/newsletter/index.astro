@@ -11,7 +11,7 @@ const introPage = await getEntry('pages', 'newsletter');
 const Intro = introPage?.body?.trim() ? (await render(introPage)).Content : undefined;
 ---
 
-<BaseLayout title="Weekly newsletter" description="A weekly note on digital assets, DeFi, AI, and law by Or Menashe." wide>
+<BaseLayout title="Weekly newsletter" description="A weekly note on digital assets, DeFi, AI, and law by Or Menashe." wide inlineSignup>
   <div class="writing-page newsletter-page">
     <h1>Weekly newsletter</h1>
     {Intro && <div class="videos-intro"><Intro /></div>}

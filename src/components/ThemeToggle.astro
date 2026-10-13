@@ -1,0 +1,58 @@
+---
+/**
+ * Lets a visitor choose System, Light or Dark. "System" follows the device. The choice is remembered in the browser,
+ * and applied before the page is drawn by a tiny script in the page head (see BaseLayout.astro).
+ * Hidden until scripts run, because without them the page simply follows the device.
+ */
+---
+
+<fieldset class="theme-toggle" data-theme-toggle data-needs-js hidden>
+  <legend class="sr-only">Color theme</legend>
+  <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+  <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+  <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+</fieldset>
+
+<script>
+  import '../scripts/ui';
+
+  const root = document.documentElement;
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-theme-choice]')];
+  const colors = { light: '#faf6ee', dark: '#16140f' };
+  const metas = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
+  const original = metas.map((meta) => meta.content);
+
+  const saved = (): 'light' | 'dark' | 'system' => {
+    try {
+      const value = localStorage.getItem('theme');
+      return value === 'light' || value === 'dark' ? value : 'system';
+    } catch {
+      return 'system';
+    }
+  };
+
+  const apply = (choice: 'light' | 'dark' | 'system') => {
+    if (choice === 'system') delete root.dataset.theme;
+    else root.dataset.theme = choice;
+    metas.forEach((meta, index) => (meta.content = choice === 'system' ? original[index] : colors[choice]));
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.themeChoice === choice)));
+  };
+
+  apply(saved());
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const choice = button.dataset.themeChoice as 'light' | 'dark' | 'system';
+      try {
+        if (choice === 'system') localStorage.removeItem('theme');
+        else localStorage.setItem('theme', choice);
+      } catch {
+        // The choice still applies to this page; it just will not be remembered.
+      }
+      apply(choice);
+    });
+  }
+  // A choice made in another tab applies here too.
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'theme' || event.key === null) apply(saved());
+  });
+</script>

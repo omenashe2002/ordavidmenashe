@@ -12,6 +12,9 @@ export async function getPosts(): Promise<Post[]> {
   );
 }
 
+/** The row of topic filters on the Writing page appears only once there are at least this many articles. */
+export const MIN_POSTS_FOR_FILTER = 4;
+
 /** The part of a topic's web address: "Crypto" becomes "crypto". */
 export const tagSlug = (tag: string) => tag.toLowerCase();
 
@@ -24,6 +27,10 @@ export function tagsInUse(posts: Post[]) {
 export function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
+
+/** The label shown for an article's status setting. */
+export const STATUS_LABEL = { draft: 'Draft', forthcoming: 'Forthcoming', published: 'Published' } as const;
+export type Status = keyof typeof STATUS_LABEL;
 
 /** Approximate reading time in minutes, at about 220 words a minute. */
 export function readingMinutes(body: string | undefined) {

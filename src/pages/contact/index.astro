@@ -8,16 +8,22 @@ const linkedinLabel = SITE.linkedin.replace(/^https?:\/\/(www\.)?/, '');
 const hasSignup = SITE.newsletter.trim() !== ''; // already checked at build time by checkSiteSettings()
 ---
 
-<BaseLayout title="Contact" description="How to reach Or Menashe." wide>
+<BaseLayout title="Contact" description="How to reach Or Menashe." wide inlineSignup>
   <div class:list={['contact-page', { 'has-signup': hasSignup }]}>
     <h1>Contact</h1>
     <div class="contact-grid">
       <section aria-labelledby="direct-title">
         <h2 id="direct-title" class="section-head">Get in touch</h2>
+        <p class="contact-note">
+          Write to me about my research, about speaking or collaborating, or about an idea worth discussing. I read every message and usually reply within a few days.
+        </p>
         <dl class="contact-list">
           <div>
             <dt>Email</dt>
-            <dd class="contact-email"><a href={`mailto:${SITE.email}`}>{SITE.email}</a></dd>
+            <dd class="contact-email">
+              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              <button class="text-button contact-copy" type="button" data-copy-email={SITE.email} data-needs-js hidden>Copy address</button>
+            </dd>
           </div>
           <div>
             <dt>LinkedIn</dt>
@@ -29,3 +35,14 @@ const hasSignup = SITE.newsletter.trim() !== ''; // already checked at build tim
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  import { confirmOnButton, copyToClipboard } from '../../scripts/ui';
+
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as Element | null)?.closest<HTMLElement>('[data-copy-email]');
+    if (!button) return;
+    const copied = await copyToClipboard(button.dataset.copyEmail ?? '');
+    confirmOnButton(button, copied ? 'Email address copied' : 'Could not copy. Select the address and copy it by hand.', copied ? 'Copied' : 'Select and copy');
+  });
+</script>
