@@ -265,7 +265,13 @@ function openBox(ref: HTMLAnchorElement) {
   box.style.top = `${refBox.bottom - mainBox.top + 8}px`;
   boxRef = ref;
   box.focus({ preventScroll: true });
-  box.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' });
+  // Bring the whole box into view, leaving room under it for the reading bar that floats at the bottom of the screen.
+  const bar = document.querySelector<HTMLElement>('.reader-tools');
+  const reserve = bar ? bar.offsetHeight + 28 : 12;
+  const edge = box.getBoundingClientRect();
+  const behavior = reduceMotion() ? 'auto' : 'smooth';
+  if (edge.bottom > window.innerHeight - reserve) window.scrollBy({ top: Math.min(edge.bottom - (window.innerHeight - reserve), Math.max(edge.top - 12, 0)), behavior });
+  else if (edge.top < 12) window.scrollBy({ top: edge.top - 12, behavior });
 }
 
 /* ------------------------------------------------------------------

@@ -904,8 +904,12 @@ p {
   }
   .post-when {
     flex-direction: row;
-    gap: 0.9rem;
+    flex-wrap: wrap; /* a long row drops to a new line instead of breaking inside a date */
+    gap: 0 0.9rem;
     padding-top: 0;
+  }
+  .post-when > * {
+    white-space: nowrap;
   }
 }
 
@@ -1670,7 +1674,11 @@ p {
   margin: 0 0 0.5em;
 }
 .note-box-foot {
+  position: sticky; /* the link out of a long note stays in view at the bottom of the box */
+  bottom: 0;
   margin: var(--space-2) 0 0;
+  padding: 0.35rem 0 0.25rem;
+  background: var(--bg);
   font-family: var(--font-ui);
   font-size: var(--step--1);
 }
@@ -1904,6 +1912,8 @@ p {
   .site-footer ul,
   .footer-top,
   .footer-signup,
+  .contact-copy,
+  .video-facade,
   .newsletter,
   .toc,
   .toc-sheet,
@@ -1999,7 +2009,10 @@ p {
   .prose pre,
   .prose table,
   .prose figure,
-  .prose .footnotes li {
+  .prose .footnotes li,
+  .featured,
+  .video-card,
+  .post-list > li {
     break-inside: avoid;
   }
   .prose pre {
