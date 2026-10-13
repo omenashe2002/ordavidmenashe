@@ -19,7 +19,7 @@ A warm paper tone, ink, and one copper accent, used only for links and things yo
 
 ## Privacy
 
-This site sets no cookies and runs no advertising or tracking scripts. Visits are counted with Vercel Web Analytics, which does not use cookies and does not follow you to other sites. If you subscribe to the weekly newsletter, it is sent through Buttondown, and nothing is shared with Buttondown until you submit your email address.
+This site sets no cookies and shows no advertising. Visits are counted with Vercel Web Analytics, which does not use cookies and does not follow you to other sites. If you subscribe to the weekly newsletter, it is sent through Buttondown, and nothing is shared with Buttondown until you submit your email address.
 
 ## Source
 

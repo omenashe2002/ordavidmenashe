@@ -22,7 +22,7 @@ draft: false   # true keeps the article off the website while you write it (the 
 # draftDate: 2026-03-01   # when the draft was written
 # updatedDate: 2026-10-12   # when you last revised it
 # Optional: for the "Cite this" box and download links. Delete the # and the space after it on the lines you want.
-# citation: "Or Menashe, Note, *Title of the article*, Fordham J. Corp. & Fin. L. (forthcoming 2027)."   # replaces the automatic citation; *asterisks* make italics. Once the journal gives you the volume and first page, it looks like: 12 Fordham J. Corp. & Fin. L. 1 (2027)
+# citation: "Or Menashe, Note, *Title of the article*, Fordham J. Corp. & Fin. L. (forthcoming 2027)."   # replaces the automatic citation; *asterisks* make italics. Once the journal gives you the volume and first page, it looks like: VOLUME Fordham J. Corp. & Fin. L. PAGE (2027), with the real numbers
 # pdf: "/my-article.pdf"   # a file you upload to the public folder, or a full https:// address
 # ssrn: "https://ssrn.com/abstract=1234567"
 ---

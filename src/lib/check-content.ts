@@ -172,6 +172,7 @@ export function checkContentFolder(folder: string) {
     const end = lines.findIndex((line, i) => i > 0 && line.trim() === '---');
     if (end === -1) fail(file, 'The settings block at the top is missing its closing line of three dashes (---).');
     const known = KNOWN_SETTINGS[path.basename(root)];
+    const written = new Set<string>();
     for (const line of lines.slice(1, end)) {
       // A line that starts with a space is read as part of the line above it, which confuses the whole block.
       const indented = known && /^[ \t]+([A-Za-z]+)\s*:(?:\s|$)/.exec(line)?.[1];
@@ -180,9 +181,25 @@ export function checkContentFolder(folder: string) {
       }
       const name = known && /^([^\s#'"\-[{][^:]*?)\s*:(?:\s|$)/.exec(line)?.[1];
       if (name) checkSettingName(file, name, known);
+      // The same setting twice would stop the build with a message only a programmer could read.
+      const first = /^([A-Za-z]+)\s*:(?:\s|$)/.exec(line)?.[1];
+      if (first) {
+        if (written.has(first)) {
+          fail(file, `The setting "${first}" is written twice at the top of the file. Keep one ${first} line and delete the other (if you meant to change it, edit the line that is already there).`);
+        }
+        written.add(first);
+      }
       const setting = /^(title|description|date|draftDate|updatedDate|kicker|credit|group|citation|eyebrow|headline|buttonText|buttonLink|linkText|linkLink|updated):\s*(.*)$/.exec(line);
       if (!setting) continue;
       const [, key, value] = setting;
+      if (key === 'citation') {
+        // The words inside the quotation marks, without any # comment after them. Asterisks make italics, in pairs.
+        const words = /^"([^"]*)"|^'([^']*)'/.exec(value.trim());
+        const text = words ? (words[1] ?? words[2]) : value.split(/\s#/)[0];
+        if (/\*\*/.test(text) || (text.match(/\*/g) ?? []).length % 2 === 1) {
+          fail(file, 'The citation has an asterisk without a partner. Put one asterisk before and one after the words that should be in italics, like *this*, and use no other asterisks.');
+        }
+      }
       if (['date', 'draftDate', 'updatedDate'].includes(key)) checkDate(file, value);
       else if (['credit', 'group', 'citation', 'kicker'].includes(key) && value.trim() === '') {
         fail(file, `The ${key} line is empty. Put the words between quotation marks, or delete the whole ${key} line.`);
