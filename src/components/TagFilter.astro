@@ -1,26 +1,24 @@
 ---
-import { tagSlug, type Post } from '../lib/posts';
+import { tagSlug } from '../lib/posts';
 
 interface Props {
-  posts: Post[];
   tags: readonly string[];
   /** The topic being viewed, or undefined when viewing all writing. */
   current?: string;
 }
-const { posts, tags, current } = Astro.props;
-const count = (tag: string) => posts.filter((post) => post.data.tags.includes(tag as never)).length;
+const { tags, current } = Astro.props;
 ---
 
 <nav class="tag-filter" aria-label="Filter by topic">
   <ul>
     <li>
-      <a href="/writing/" aria-current={current === undefined ? 'page' : undefined}>All <span>{posts.length}</span></a>
+      <a href="/writing/" aria-current={current === undefined ? 'page' : undefined}>All</a>
     </li>
     {
       tags.map((tag) => (
         <li>
           <a href={`/writing/tag/${tagSlug(tag)}/`} aria-current={current === tag ? 'page' : undefined}>
-            {tag} <span>{count(tag)}</span>
+            {tag}
           </a>
         </li>
       ))

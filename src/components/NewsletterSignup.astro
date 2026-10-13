@@ -9,12 +9,15 @@ interface Props {
   /** Heading shown above the form; leave empty when the page already has one. */
   heading?: string;
   headingLevel?: 2 | 3;
+  /** A one-line version for the footer: no heading, no explanation under the form. */
+  compact?: boolean;
 }
 const {
   id = 'signup',
   blurb = 'New writing by email. It is free, and you can unsubscribe at any time.',
   heading,
   headingLevel = 2,
+  compact = false,
 } = Astro.props;
 // The form is shown only once a newsletter service's form address has been added in src/site.ts.
 const action = SITE.newsletter.trim() || undefined;
@@ -23,18 +26,70 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
 
 {
   action && (
-    <section class="newsletter" aria-labelledby={heading ? `${id}-title` : undefined} aria-label={heading ? undefined : 'Newsletter signup'}>
+    <section
+      class:list={['newsletter', { 'newsletter-compact': compact }]}
+      aria-labelledby={heading ? `${id}-title` : undefined}
+      aria-label={heading ? undefined : 'Newsletter signup'}
+      data-newsletter
+    >
       {heading && <Heading class="section-head" id={`${id}-title`}>{heading}</Heading>}
-      <p>{blurb}</p>
+      <p class="newsletter-blurb">{blurb}</p>
       <form class="signup" action={action} method="post" target="_blank">
         <label for={`${id}-email`}>Email address</label>
         <div class="signup-row">
-          <input id={`${id}-email`} type="email" name="email" autocomplete="email" required />
+          <input id={`${id}-email`} type="email" name="email" autocomplete="email" required aria-describedby={`${id}-message`} />
           <input type="hidden" name="embed" value="1" />
           <button class="button" type="submit">Subscribe</button>
         </div>
       </form>
-      <p class="signup-note">A confirmation page opens in a new tab, and you will get an email to confirm your address.</p>
+      <p class="signup-message" id={`${id}-message`} data-signup-message role="status" />
+      {!compact && <p class="signup-note" data-signup-note>A confirmation page opens in a new tab, and you will get an email to confirm your address.</p>}
     </section>
   )
 }
+
+<script>
+  // With scripts, the form is sent in the background and the answer appears in the page.
+  // Without them, the form still works: it opens the newsletter service's own page in a new tab.
+  const FAILED = 'That did not go through. Please check your connection and try again, or email me instead.';
+
+  for (const section of document.querySelectorAll<HTMLElement>('[data-newsletter]')) {
+    const form = section.querySelector<HTMLFormElement>('form.signup');
+    const message = section.querySelector<HTMLElement>('[data-signup-message]');
+    const note = section.querySelector<HTMLElement>('[data-signup-note]');
+    const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const input = form?.querySelector<HTMLInputElement>('input[type="email"]');
+    if (!form || !message || !button || !input) continue;
+    form.removeAttribute('target');
+    note?.setAttribute('hidden', '');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      const label = button.textContent ?? 'Subscribe';
+      button.disabled = true;
+      button.textContent = 'Sending';
+      message.classList.remove('is-error');
+      message.textContent = '';
+      try {
+        // The newsletter service answers with a web page, not data, so only whether the request left is known.
+        await fetch(form.action, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form) as unknown as Record<string, string>),
+        });
+        form.hidden = true;
+        message.textContent = `Almost done. Open the email sent to ${input.value} and click the link to confirm. It can take a minute, and it may land in your spam folder.`;
+      } catch {
+        message.classList.add('is-error');
+        message.textContent = FAILED;
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  }
+</script>

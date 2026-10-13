@@ -30,6 +30,8 @@ interface Props {
   tags?: readonly string[];
   /** Facts about the page for search engines (schema.org), written out as JSON. */
   structuredData?: Record<string, unknown>[];
+  /** True on pages that already show a newsletter signup, so the footer does not show a second one. */
+  inlineSignup?: boolean;
 }
 
 const {
@@ -45,7 +47,10 @@ const {
   noindex = false,
   tags = [],
   structuredData = [],
+  inlineSignup = false,
 } = Astro.props;
+// Visitor counts (Vercel Web Analytics) are collected only on the live site, never on previews or on a local copy.
+const countVisits = process.env.VERCEL_ENV === 'production';
 const pageTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | ${SITE.tagline}`;
 const tabTitle = headTitle ? `${headTitle} | ${SITE.name}` : pageTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -103,6 +108,16 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {jsonLd.map((data) => <script type="application/ld+json" set:html={data} />)}
+    {
+      countVisits && (
+        <>
+          <script is:inline>
+            window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+          </script>
+          <script is:inline defer src="/_vercel/insights/script.js"></script>
+        </>
+      )
+    }
     <link rel="preload" href={garamondRoman} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={garamondItalic} as="font" type="font/woff2" crossorigin />
   </head>
@@ -120,6 +135,6 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
         )
       }
     </main>
-    <Footer />
+    <Footer showSignup={!inlineSignup} />
   </body>
 </html>

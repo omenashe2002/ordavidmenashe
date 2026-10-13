@@ -12,6 +12,9 @@ export async function getPosts(): Promise<Post[]> {
   );
 }
 
+/** The row of topic filters on the Writing page appears only once there are at least this many articles. */
+export const MIN_POSTS_FOR_FILTER = 4;
+
 /** The part of a topic's web address: "Crypto" becomes "crypto". */
 export const tagSlug = (tag: string) => tag.toLowerCase();
 

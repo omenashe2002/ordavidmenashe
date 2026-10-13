@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleBody from '../../components/ArticleBody.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { getPosts, readingMinutes, relatedPosts, shortTabTitle, tableOfContents } from '../../lib/posts';
 import { articleSchema, personSchema } from '../../lib/seo';
 import { citationPieces } from '../../lib/cite';
@@ -38,6 +39,7 @@ const cite = {
   imageAlt={`${post.data.title}, by Or Menashe`}
   structuredData={[articleSchema(post, Astro.site!, path, `/og/${post.id}.png`), personSchema(Astro.site!)]}
   wide
+  inlineSignup
 >
   <ArticleBody
     title={post.data.title}
@@ -57,5 +59,6 @@ const cite = {
     backLabel="All writing"
   >
     <Content />
+    <NewsletterSignup slot="after" id="article-signup" heading="Weekly newsletter" blurb="Each issue by email. It is free, and you can unsubscribe at any time." />
   </ArticleBody>
 </BaseLayout>

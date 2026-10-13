@@ -4,7 +4,7 @@ import PostList from '../../components/PostList.astro';
 import FeaturedPiece from '../../components/FeaturedPiece.astro';
 import TagFilter from '../../components/TagFilter.astro';
 import NewsletterSection from '../../components/NewsletterSection.astro';
-import { getPosts, tagsInUse } from '../../lib/posts';
+import { getPosts, MIN_POSTS_FOR_FILTER, tagsInUse } from '../../lib/posts';
 import { getIssues } from '../../lib/issues';
 
 const posts = await getPosts();
@@ -15,7 +15,7 @@ const featured = posts.filter((post) => post.data.featured).slice(0, 2);
 const showFeatured = featured.length > 0 && posts.length > featured.length;
 ---
 
-<BaseLayout title="Writing" description="Articles and a weekly newsletter on digital assets, DeFi, AI, and law by Or Menashe." wide>
+<BaseLayout title="Writing" description="Articles and a weekly newsletter on digital assets, DeFi, AI, and law by Or Menashe." wide inlineSignup>
   <div class="writing-page">
     <h1>Writing</h1>
     {
@@ -32,7 +32,7 @@ const showFeatured = featured.length > 0 && posts.length > featured.length;
     {issues.length > 0 && <NewsletterSection issues={issues} />}
     <section aria-labelledby="all-writing">
       <h2 class="section-head" id="all-writing">All writing</h2>
-      {tags.length > 0 && <TagFilter posts={posts} tags={tags} />}
+      {tags.length > 0 && posts.length >= MIN_POSTS_FOR_FILTER && <TagFilter tags={tags} />}
       {
         posts.length > 0 ? (
           <PostList posts={posts} level={3} />

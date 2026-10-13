@@ -45,12 +45,14 @@ Write your article here. Leave a blank line between paragraphs.
 - **draft**: `true` keeps the article off the website while you write. The file is still visible on GitHub. `false` publishes it.
 - **featured** (optional): add a new line `featured: true` anywhere between the two lines of three dashes at the top, for example under `draft: false`. If you put it below the dashes it shows up as ordinary text in the article. It shows the article as a large panel under "Selected writing" on the Home page, and on the Writing page when there is other writing too. Up to two featured articles are shown, the most recent first. Delete the line to stop featuring it.
 - **kicker** (optional): a new line between the same two lines of dashes, such as `kicker: "Forthcoming in the Fordham Journal"`. It appears at the top of the article and on its large panel if it is featured. Keep it in quotation marks.
+- **status**, **draftDate** and **updatedDate** (optional): new lines between the same two lines of dashes. `status: draft` (or `forthcoming`, or `published`) adds a small label beside the dates. `draftDate: 2026-03-01` adds "Draft of March 1, 2026", and `updatedDate: 2026-11-15` adds "Updated November 15, 2026". `date` is always shown as "Posted". The dates must make sense together: `draftDate` cannot come after `date`, and `updatedDate` cannot come before it, or the build stops and says so. Search engines are told the same dates.
+- **citation**, **pdf** and **ssrn** (optional): every article has a "Cite this" box at the top and "Cite this article" at the end, with a Copy citation button. The site writes the citation for you in Bluebook form (as an unpublished manuscript while `status` is `draft` or `forthcoming`, otherwise as a web page). Check that it is what you want. To replace it, add `citation: "Or Menashe, *Title of the article*, 12 Fordham J. Corp. & Fin. L. 1 (2027)."`, with asterisks around anything that should be italic. `pdf: "https://..."` (or a file you uploaded to `public`, such as `pdf: "/my-article.pdf"`) adds a Download PDF link, and `ssrn: "https://ssrn.com/abstract=..."` adds an SSRN link. Without those lines no such links appear. The Print or save as PDF button works on every article: in the window that opens, choose Save as PDF as the printer.
 
 In the text, write `## Heading` (two pound signs, then a space), `*italics*` (asterisks touching the word), `[link text](https://address)`, and start a line with `>` for a quotation. A footnote is `[^1]` in the text plus a line `[^1]: your note` further down. Put a footnote at the end of a sentence, not on a heading. The article *Registered Agents of the DAO* shows headings, italics and footnotes; open its file on GitHub to see how they are written. It has no quotation and no link written as `[link text](https://address)`, so use the examples above for those.
 
 To add a picture to an article: open `public`, click **Add file**, then **Upload files**, and drop in the picture (rename it first, with no spaces, for example `chart.jpg`). In the article write `![A short description of the picture](/chart.jpg)` where it belongs. The description is for people who cannot see the picture.
 
-These happen on their own: the reading time; a contents list beside the text (above it, on a phone) for any article of about six minutes or more with at least three `##` sections; a "Keep reading" list of other articles at the bottom, chosen by shared topics; the RSS feed; and a link-preview picture with the article's title and your portrait.
+These happen on their own: the reading time; a contents list beside the text (above it on a phone, with a Contents button that stays on screen while reading) for any article of about six minutes or more with at least three `##` sections; a thin progress bar, the time left and a Top button for longer pieces; footnotes shown in the right margin on wide screens (and as a small box that opens under the number on narrower ones); a small link icon beside each heading that copies the address of that section; a clean printable version; a "Keep reading" list of other articles at the bottom, chosen by shared topics; the RSS feed; and a link-preview picture with the article's title and your portrait.
 
 If a setting is misspelled, a footnote has no matching note, or a date is impossible, the build stops and says which file and what to fix. The old site stays live.
 
@@ -93,12 +95,12 @@ Issues are numbered automatically in date order, so the first one is Issue 1. To
 
 ## Turn on the newsletter signup
 
-The signup form (on the Writing page, at the end of every article and issue, and on the Contact page) shows only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
+The signup form (on the Writing page, at the end of every article and issue, on the Contact page, and in the footer of the other pages) shows only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
 
 1. Create a free account at buttondown.com and choose a username. As of October 2026 the free plan covers your first 100 subscribers. Past 100 you can keep collecting addresses but cannot send until you add billing and pick a paid plan, which starts at $9 a month. Check their pricing page for the current terms.
 2. In Buttondown, open **Settings**, then **Embedding**, and copy the code under **Form**. Find the part that reads `action="https://buttondown.com/api/emails/embed-subscribe/yourname"`.
 3. In `site.ts`, put only that address between the single quotation marks after `newsletter:`, so the line reads `newsletter: 'https://buttondown.com/api/emails/embed-subscribe/yourname',`. Click **Commit changes**.
-4. Open the Contact page a minute or two later and check that the form appears. If the address does not start with https:// or contains spaces or quotation marks, the site will not publish and the message says so. The site cannot tell whether the username in the address is right. Subscribe once with your own email address and check that the confirmation email arrives. If it does not, compare the address in `site.ts` with the one under Settings, then Embedding in Buttondown.
+4. Open the Writing page a minute or two later and check that the form appears. If the address does not start with https:// or contains spaces or quotation marks, the site will not publish and the message says so. The site cannot tell whether the username in the address is right. Subscribe once with your own email address and check that the confirmation email arrives. If it does not, compare the address in `site.ts` with the one under Settings, then Embedding in Buttondown.
 5. To switch the form off, empty the quotation marks again.
 
 Buttondown asks every new subscriber to confirm their address by email. Every email you send includes an unsubscribe link, so keep it.
@@ -131,3 +133,12 @@ Use GitHub's search box to find each phrase and check every file it lists.
 | Harvey | `about.md` and `home.md` (`credentials:`) | when that role ends |
 | Legal IQ | `about.md` | if you stop working on it |
 | (not searchable) the `updated:` line in `now.md` | `now.md` | each time you change that list |
+
+## Turn on visitor counts
+
+The site is set up to count visits with Vercel Web Analytics. It uses no cookies, so no cookie banner is needed, and it only counts the live site, not previews. Nothing is counted until you switch it on once:
+
+1. In Vercel, open your project, then the **Analytics** tab, and click **Enable**.
+2. Wait for the site to publish again (any change to any file does it), then open the live site once. The first visits show up in the Analytics tab within a few minutes.
+
+On the free plan Vercel counts up to 50,000 events a month, and the free plan is meant for personal, non-commercial sites. If the count ever passes that, Vercel says so in the dashboard and stops recording until the next month.

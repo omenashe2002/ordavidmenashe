@@ -1,11 +1,25 @@
 ---
 import { SITE } from '../site';
 import ThemeToggle from './ThemeToggle.astro';
+import NewsletterSignup from './NewsletterSignup.astro';
+
+interface Props {
+  /** Show the newsletter signup (when a newsletter is set up in src/site.ts). */
+  showSignup?: boolean;
+}
+const { showSignup = true } = Astro.props;
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer wrap">
+  {
+    showSignup && SITE.newsletter.trim() !== '' && (
+      <div class="footer-signup">
+        <NewsletterSignup id="footer-signup" compact blurb="Each issue of the weekly newsletter by email. Free, and you can unsubscribe at any time." />
+      </div>
+    )
+  }
   <div class="footer-main">
     <p class="disclaimer">{SITE.disclaimer}</p>
     <p class="copyright">&copy; {year} {SITE.name}</p>

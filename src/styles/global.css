@@ -791,11 +791,6 @@ p {
   color: var(--text);
   border-bottom-color: var(--accent);
 }
-.tag-filter span {
-  font-size: 0.82em;
-  font-variant-caps: normal;
-  letter-spacing: 0;
-}
 
 .more-link {
   margin-top: 2.5rem;
@@ -1161,15 +1156,16 @@ p {
   transform: translateX(4px);
 }
 
+/* Tablets: the text and the portrait stay side by side, with a narrower portrait. */
 @media (max-width: 54rem) {
   .hero {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) clamp(11rem, 30vw, 17rem);
+    gap: clamp(1.5rem, 4vw, 2.5rem);
   }
   .portrait {
     --frame-w: 3px;
     --mat-w: 3px;
-    justify-self: start;
-    max-width: 17rem;
+    max-width: none; /* fills its column */
   }
   .proof {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1181,6 +1177,16 @@ p {
   .featured,
   .featured-grid[data-count='2'] {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Phones: the portrait goes below the buttons, as wide as the text column (up to 20rem). */
+@media (max-width: 36rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .portrait {
+    justify-self: start;
+    max-width: min(100%, 20rem);
   }
 }
 @media (max-width: 40rem) {
@@ -2023,6 +2029,43 @@ p {
 }
 .newsletter p {
   max-width: 30rem;
+}
+.contact-note {
+  max-width: 30rem;
+  margin: var(--space-4) 0 var(--space-5);
+  color: var(--muted);
+}
+.contact-copy {
+  display: inline-flex;
+  margin-left: var(--space-3);
+  font-size: 0.5em;
+  vertical-align: middle;
+}
+.signup-message {
+  min-height: 0;
+  margin: var(--space-3) 0 0;
+  max-width: 30rem;
+}
+.signup-message:empty {
+  display: none;
+}
+.signup-message.is-error {
+  color: var(--text);
+  font-style: italic;
+}
+.footer-signup {
+  flex: 1 0 100%;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+.newsletter-compact .newsletter-blurb {
+  margin-bottom: var(--space-3);
+}
+.newsletter-compact .signup {
+  max-width: 30rem;
+}
+.article-end .newsletter {
+  margin: 0 0 var(--section);
 }
 .signup label {
   display: block;
