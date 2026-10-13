@@ -64,7 +64,7 @@
   --frame: #46301c;
   --frame-lip: #c19a4f;
   --frame-mat: #f2eadb;
-  --frame-shadow: 0 10px 22px -16px rgb(29 27 23 / 0.5);
+  --frame-shadow: 0 8px 18px -14px rgb(29 27 23 / 0.45);
   --button-bg: var(--text); /* the main call-to-action button */
   --button-fg: var(--bg);
 
@@ -100,7 +100,7 @@
     --frame: #8c6c37; /* aged gold in dark mode */
     --frame-lip: #d9bb70;
     --frame-mat: #241f17;
-    --frame-shadow: 0 10px 24px -14px rgb(0 0 0 / 0.8);
+    --frame-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.75);
   }
 }
 
@@ -775,8 +775,8 @@ p {
 }
 
 .portrait {
-  --frame-w: 7px; /* thickness of the frame */
-  --mat-w: 6px; /* width of the cream mat between frame and photo */
+  --frame-w: 4px; /* thickness of the frame */
+  --mat-w: 4px; /* width of the cream mat between frame and photo */
   justify-self: end;
   width: 100%;
   max-width: 27rem;
@@ -941,8 +941,8 @@ p {
     grid-template-columns: minmax(0, 1fr);
   }
   .portrait {
-    --frame-w: 6px;
-    --mat-w: 5px;
+    --frame-w: 3px;
+    --mat-w: 3px;
     justify-self: start;
     max-width: 17rem;
   }
@@ -1256,8 +1256,8 @@ p {
   grid-row: 2;
 }
 .about .portrait {
-  --frame-w: 6px;
-  --mat-w: 5px;
+  --frame-w: 3px;
+  --mat-w: 3px;
   justify-self: auto;
   max-width: none;
 }
