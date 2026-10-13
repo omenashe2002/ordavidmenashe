@@ -41,7 +41,7 @@ export default defineConfig({
     processor: satteri({ mdastPlugins: [keepSectionSignWithNumber] }),
     // Code in articles is colored by the site's own light and dark styles (see global.css).
     shikiConfig: {
-      themes: { light: 'github-light', dark: 'github-dark' },
+      themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' },
       defaultColor: false,
     },
   },

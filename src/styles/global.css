@@ -467,7 +467,7 @@ p {
   cursor: pointer;
   transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
-.theme-toggle button:first-child {
+.theme-toggle button:first-of-type {
   padding-left: 0;
 }
 .theme-toggle button:hover {
@@ -639,6 +639,7 @@ p {
   left: 50%;
   bottom: var(--space-5);
   z-index: 40;
+  width: max-content;
   max-width: calc(100vw - 2 * var(--gutter));
   padding: 0.55rem 1.1rem;
   border: 1px solid var(--rule);
@@ -739,8 +740,9 @@ p {
   overflow-x: auto;
   margin: 0 0 1.2em;
   padding: 1em;
+  border: 1px solid var(--rule); /* a rule on the page's own background, so every code color stays readable */
   border-radius: 4px;
-  background: var(--surface);
+  background: var(--bg);
   font-size: 0.85em;
   line-height: 1.45;
 }
@@ -2008,6 +2010,10 @@ p {
   .has-sidenotes .prose .footnotes {
     display: block;
   }
+  .astro-code,
+  .astro-code span {
+    color: var(--shiki-light) !important; /* code in its dark-on-white colors, whatever the screen showed */
+  }
   .prose .footnotes {
     margin-top: 1.5rem;
     break-before: auto;
@@ -2561,16 +2567,24 @@ p {
 }
 .contact-copy {
   display: inline-flex;
-  margin-left: var(--space-3);
-  vertical-align: middle;
+}
+.contact-list .contact-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-3); /* the button sits beside the address, or under it, without an indent */
+}
+.signup-retry {
+  margin: var(--space-2) 0 0;
 }
 .signup-message {
   min-height: 0;
   margin: var(--space-3) 0 0;
   max-width: 30rem;
 }
-.signup-message:empty {
-  display: none;
+.signup-message:empty,
+.signup-retry:has([hidden]) {
+  margin: 0; /* an empty message stays in the page, so screen readers hear it when it fills */
 }
 .signup-message.is-error {
   color: var(--text);
@@ -2685,6 +2699,14 @@ button.button {
 
 /* Windows high-contrast mode draws no backgrounds, so give buttons and the "now" panel an outline */
 @media (forced-colors: active) {
+  .theme-toggle button {
+    border-bottom-color: Canvas;
+  }
+  .theme-toggle button[aria-pressed='true'] {
+    border-bottom-color: Highlight;
+    font-weight: 600;
+    text-decoration: underline;
+  }
   .button,
   button.button {
     border: 1px solid ButtonText;
