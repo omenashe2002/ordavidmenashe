@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { SITE } from '../site';
 
 export type Issue = CollectionEntry<'newsletter'>;
 
@@ -10,14 +11,18 @@ export async function getIssues(): Promise<Issue[]> {
   );
 }
 
-/** An issue's number: the "issue:" line if the file has one, otherwise its place in date order (the first issue is 1). */
+/**
+ * An issue's number: the "issue:" line if the file has one, otherwise its place in date order (the first issue is 1).
+ * A welcome post (issue: 0) is not counted, so the first weekly issue is still Issue 1.
+ */
 export function issueNumber(issue: Issue, all: Issue[]): number {
-  if (issue.data.issue) return issue.data.issue;
-  const oldestFirst = [...all].reverse();
+  if (issue.data.issue !== undefined) return issue.data.issue;
+  const oldestFirst = all.filter((other) => other.data.issue !== 0).reverse();
   return oldestFirst.findIndex((other) => other.id === issue.id) + 1;
 }
 
-/** "Weekly newsletter, issue 3" */
+/** "If Only I Knew \u00b7 Issue 3", or "If Only I Knew \u00b7 Welcome" for a welcome post (the name comes from src/site.ts) */
 export function issueLabel(issue: Issue, all: Issue[]): string {
-  return `Weekly newsletter \u00b7 Issue ${issueNumber(issue, all)}`;
+  const number = issueNumber(issue, all);
+  return `${SITE.newsletterName} \u00b7 ${number === 0 ? 'Welcome' : `Issue ${number}`}`;
 }

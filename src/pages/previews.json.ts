@@ -1,6 +1,7 @@
 import { getEntry } from 'astro:content';
 import { formatDate, getPosts, STATUS_LABEL } from '../lib/posts';
 import { getIssues, issueLabel } from '../lib/issues';
+import { SITE } from '../site';
 
 // The short summaries shown when a visitor with a mouse points at a link to another page of this site.
 // One small file, listing every page by its address, made while the site is built: /previews.json.
@@ -35,7 +36,7 @@ export async function GET() {
   previews['/writing/'] = { title: 'Writing', description: 'Articles and a weekly newsletter on digital assets, DeFi, AI, and law.', label: 'Section' };
   previews['/videos/'] = { title: 'Videos', description: 'Videos on digital assets, AI, and law, picked by Or Menashe.', label: 'Section' };
   previews['/contact/'] = { title: 'Contact', description: 'How to reach Or Menashe.', label: 'Page' };
-  previews['/writing/newsletter/'] = { title: 'Weekly newsletter', description: 'A weekly note on digital assets, DeFi, AI, and law.', label: 'Section' };
+  previews['/writing/newsletter/'] = { title: SITE.newsletterName, description: 'A weekly newsletter by Or Menashe on what is changing in law, AI, crypto and business, and what to do about it.', label: 'Section' };
 
   return new Response(JSON.stringify(previews), { headers: { 'Content-Type': 'application/json' } });
 }

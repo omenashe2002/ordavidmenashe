@@ -6,6 +6,7 @@ import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { getPosts, readingMinutes, relatedPosts, shortTabTitle, tableOfContents } from '../../lib/posts';
 import { articleSchema, personSchema } from '../../lib/seo';
 import { citationPieces } from '../../lib/cite';
+import { SITE } from '../../site';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -60,6 +61,6 @@ const cite = {
     backLabel="All writing"
   >
     <Content />
-    <NewsletterSignup slot="after" id="article-signup" heading="Weekly newsletter" blurb="Each issue by email. It is free, and you can unsubscribe at any time." />
+    <NewsletterSignup slot="after" id="article-signup" heading={SITE.newsletterName} blurb="The weekly newsletter, by email. It is free, and you can unsubscribe at any time." />
   </ArticleBody>
 </BaseLayout>

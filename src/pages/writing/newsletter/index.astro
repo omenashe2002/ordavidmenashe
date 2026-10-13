@@ -4,16 +4,22 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostList from '../../../components/PostList.astro';
 import NewsletterSignup from '../../../components/NewsletterSignup.astro';
 import { getIssues } from '../../../lib/issues';
+import { SITE } from '../../../site';
 
 const issues = await getIssues();
-// The short introduction comes from src/content/pages/newsletter.md. Delete its text to hide it.
+// The introduction comes from src/content/pages/newsletter.md. Delete its text to hide it.
 const introPage = await getEntry('pages', 'newsletter');
 const Intro = introPage?.body?.trim() ? (await render(introPage)).Content : undefined;
 ---
 
-<BaseLayout title="Weekly newsletter" description="A weekly note on digital assets, DeFi, AI, and law by Or Menashe." wide inlineSignup>
+<BaseLayout
+  title={SITE.newsletterName}
+  description="A weekly newsletter by Or Menashe: what is changing in law, AI, crypto and business, what is at stake, and what you might actually do about it."
+  wide
+  inlineSignup
+>
   <div class="writing-page newsletter-page">
-    <h1>Weekly newsletter</h1>
+    <h1>{SITE.newsletterName}</h1>
     {Intro && <div class="videos-intro"><Intro /></div>}
     {
       issues.length > 0 ? (

@@ -19,7 +19,7 @@ const hasNow = Boolean(now?.body?.trim());
   {
     showSignup && SITE.newsletter.trim() !== '' && (
       <div class="footer-signup">
-        <NewsletterSignup id="footer-signup" compact blurb="Each issue of the weekly newsletter by email. Free, and you can unsubscribe at any time." />
+        <NewsletterSignup id="footer-signup" compact blurb={`${SITE.newsletterName}, the weekly newsletter, by email. Free, and you can unsubscribe at any time.`} />
       </div>
     )
   }
@@ -34,7 +34,7 @@ const hasNow = Boolean(now?.body?.trim());
         <ul>
           {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
           {hasNow && <li><a href="/now/">Now</a></li>}
-          <li><a href="/writing/newsletter/">Weekly newsletter</a></li>
+          <li><a href="/writing/newsletter/">{SITE.newsletterName}</a></li>
         </ul>
       </nav>
       <section aria-labelledby="footer-elsewhere">

@@ -2,16 +2,17 @@
 import PostList from './PostList.astro';
 import NewsletterSignup from './NewsletterSignup.astro';
 import type { Issue } from '../lib/issues';
+import { SITE } from '../site';
 
-/** The "Weekly newsletter" part of the Writing page: the latest issues, a link to all of them, and the signup form. */
+/** The newsletter part of the Writing page: the latest issues, a link to all of them, and the signup form. */
 interface Props {
   issues: Issue[];
 }
 const { issues } = Astro.props;
 ---
 
-<section class="newsletter-section" aria-labelledby="weekly-newsletter">
-  <h2 class="section-head" id="weekly-newsletter">Weekly newsletter</h2>
+<section class="newsletter-section" aria-labelledby="newsletter-section">
+  <h2 class="section-head" id="newsletter-section">{SITE.newsletterName}</h2>
   {
     issues.length > 0 ? (
       <>
@@ -22,7 +23,7 @@ const { issues } = Astro.props;
       </>
     ) : (
       <p>
-        A short note each week. The first issue is coming soon. <a href="/writing/newsletter/">About the newsletter &rarr;</a>
+        A short note each week. The first issue is coming soon. <a href="/writing/newsletter/">About {SITE.newsletterName} &rarr;</a>
       </p>
     )
   }

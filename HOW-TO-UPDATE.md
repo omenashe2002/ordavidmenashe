@@ -11,12 +11,12 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 | An article | `src/content/writing/` (one file per article) |
 | A video | `src/content/videos/` (one file per video) |
 | A weekly newsletter issue | `src/content/newsletter/` (one file per issue) |
-| The short introductions on the Videos and Weekly newsletter pages | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
+| The short introduction on the Videos page, and the sentence at the top of the newsletter page (If Only I Knew) | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
 | The top of the Home page | `src/content/pages/home.md` |
 | The About page | `src/content/pages/about.md` |
 | "What I’m working on now" (the Now page) | `src/content/pages/now.md` |
 | The Colophon page (how the site is made) | `src/content/pages/colophon.md` |
-| Email, LinkedIn, newsletter signup, topics, footer disclaimer | `src/site.ts` |
+| Email, LinkedIn, newsletter name and signup, topics, footer disclaimer | `src/site.ts` |
 | Your photo | `src/assets/or-menashe.jpg` |
 
 To edit a file: open it on GitHub, click the pencil icon, change it, click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again. Change only the words, not the punctuation around them. Colons, dashes, brackets and quotation marks matter.
@@ -86,9 +86,9 @@ draft: false
 
 Six explainer videos by other creators are on the page for now (three on digital assets, three on how AI works). They use two extra lines: `credit:`, who made the video and when, which is shown instead of the date, and `group:`, the heading it is listed under. For those six, `date:` only sets the order. When you have your own videos, delete the six files whose `credit:` names someone else, and delete the file `src/content/pages/videos.md` to remove the sentence at the top of the Videos page, or edit only the words under its second line of three dashes. Your own videos need neither extra line. Any video that has a `group:` line is listed under that heading.
 
-## Write the weekly newsletter
+## Write the weekly newsletter (If Only I Knew)
 
-Each week's issue is a file in `src/content/newsletter`. It appears on the Writing page under "Weekly newsletter", on its own page, and in the RSS feed. Until the first issue is published, the page says "The first issue is coming soon."
+Each week's issue is a file in `src/content/newsletter`. It appears on the Writing page under the newsletter's name, "If Only I Knew", on its own page, and in the RSS feed. The name is set once, by `newsletterName:` in `src/site.ts`, and every page and share picture uses it. Use the same name in your Buttondown settings, so the confirmation email shows it. The first post, `welcome.md` (the introduction to the newsletter), is already there. Its `issue: 0` line marks it as a welcome post and not a numbered issue, so the first weekly issue you write is Issue 1. To hide the welcome post, change `draft: false` to `draft: true` in that file; with no posts at all, the page says "The first issue is coming soon."
 
 1. Open `src`, then `content`, then `newsletter`, and click `_template.md`. Click the copy icon at the top right of the file (**Copy raw file**).
 2. Click `newsletter` in the path at the top to go back to the folder. Click **Add file**, then **Create new file**.
@@ -96,7 +96,7 @@ Each week's issue is a file in `src/content/newsletter`. It appears on the Writi
 4. Click in the big box and paste. Change the `title:`, `date:` and `description:` lines. Delete the sample sentences under the second line of three dashes and write your issue there. The topic line is optional; delete it if the issue has no single topic.
 5. Click **Commit changes**, keep "Commit directly to the main branch", and click **Commit changes** again.
 
-Issues are numbered automatically in date order, so the first one is Issue 1. To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, open `src/content/pages/newsletter.md` and edit only the sentence below the second line of three dashes.
+Issues are numbered automatically in date order, so the first one is Issue 1 (a welcome post with `issue: 0` is not counted). To pick the number yourself, add a line such as `issue: 7`. Headings, italics, links, quotations and footnotes work exactly as in an article. The site and your email service are separate: if you send the issue by email through Buttondown, paste the same text into a new email there. To change the sentence at the top of the newsletter page, open `src/content/pages/newsletter.md` and edit only the sentence below the second line of three dashes. Delete it to remove the sentence.
 
 ## Change the words on a page
 

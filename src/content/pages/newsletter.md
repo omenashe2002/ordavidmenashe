@@ -1,6 +1,6 @@
 ---
-title: "Weekly newsletter"
-description: "The short introduction at the top of the weekly newsletter page."
+title: "If Only I Knew"
+description: "The short introduction at the top of the newsletter page."
 ---
 
-A short note each week on digital assets, DeFi, AI, and law.
+Each week I’ll cover what’s changing in law, AI, crypto, business, and whatever else seems likely to matter.
