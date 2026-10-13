@@ -6,6 +6,7 @@ import '../styles/global.css';
 // Ask the browser to fetch the main font immediately, so text appears in Garamond without a flash.
 import garamondRoman from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
 import garamondItalic from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-italic.woff2?url';
+import instrumentSans from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -120,6 +121,7 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
     }
     <link rel="preload" href={garamondRoman} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={garamondItalic} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrumentSans} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

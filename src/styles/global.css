@@ -1,4 +1,4 @@
-/*! EB Garamond is licensed under the SIL Open Font License 1.1. The license text is at /fonts/EB-Garamond-OFL.txt */
+/*! EB Garamond and Instrument Sans are licensed under the SIL Open Font License 1.1. The license texts are at /fonts/EB-Garamond-OFL.txt and /fonts/Instrument-Sans-OFL.txt */
 
 /* ------------------------------------------------------------------
    Fonts: EB Garamond, bundled with the site (no requests to Google).
@@ -45,6 +45,37 @@
     U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Instrument Sans: the companion sans-serif for navigation, dates, labels, buttons and forms. */
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2')
+    format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-ext-wght-normal.woff2')
+    format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* A stand-in sized to match Instrument Sans, shown for a moment while the real font arrives, so nothing jumps. */
+@font-face {
+  font-family: 'Instrument Sans Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 104%;
+  ascent-override: 93.3%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
 /* ------------------------------------------------------------------
    Colors. To change the whole look of the site, change these values.
    (Dark mode switches on automatically when a visitor's device is set to dark.)
@@ -83,7 +114,25 @@
   --section: clamp(3.5rem, 7vw, 6.5rem); /* space between big sections of a page */
 
   --font-body: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  --font-ui: 'Instrument Sans', 'Instrument Sans Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* The type scale. Every size on the site is one of these. The two small steps are for the sans-serif interface
+     text (navigation, dates, labels, buttons); the rest are Garamond, from the text itself up to the home headline. */
+  --step--2: 0.75rem; /* 12px: the smallest labels */
+  --step--1: 0.875rem; /* 14px: navigation, dates, tags, buttons, forms */
+  --step-small: calc(var(--step-0) * 0.82); /* footnotes, citations and other small Garamond text */
+  --step-0: clamp(1.25rem, 1.15rem + 0.5vw, 1.4rem); /* the text itself. Garamond is small for its size, so it is set a little larger */
+  --step-1: clamp(1.35rem, 1.2rem + 0.55vw, 1.65rem); /* introductions, sub-headings */
+  --step-2: clamp(1.55rem, 1.2rem + 1.1vw, 2.1rem); /* titles in lists, section headings in articles */
+  --step-3: clamp(2.1rem, 1.5rem + 2.6vw, 3.3rem); /* page and article titles */
+  --step-4: clamp(2.6rem, 1.3rem + 4.8vw, 5rem); /* the home headline */
+
+  /* How fast things change when a visitor hovers or presses. One speed and one curve for the whole site. */
+  --dur-1: 0.12s;
+  --dur-2: 0.2s;
+  --dur-3: 0.32s;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
 /* The dark colors are written twice, once for devices set to dark and once for a visitor who chose Dark with the
@@ -150,8 +199,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  /* Garamond is small for its size, so the text is set a little larger than usual. */
-  font-size: clamp(1.25rem, 1.15rem + 0.5vw, 1.4rem);
+  font-size: var(--step-0);
   line-height: 1.55;
   font-kerning: normal;
   text-rendering: optimizeLegibility;
@@ -185,7 +233,8 @@ main {
 
 a {
   color: var(--accent);
-  transition: color 0.18s ease, text-decoration-color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  transition: color var(--dur-2) var(--ease), text-decoration-color var(--dur-2) var(--ease),
+    text-underline-offset var(--dur-2) var(--ease), text-decoration-thickness var(--dur-2) var(--ease);
   text-decoration-line: underline;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.18em;
@@ -195,10 +244,35 @@ a:hover {
   color: var(--accent-strong);
   text-decoration-color: currentColor;
   text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.24em;
 }
 
 [hidden] {
   display: none !important;
+}
+
+/* Small capitals are used for one thing only: the small label above a block of content (a section name, the line above
+   a title, the name of a list). Everything else that is small and functional is set in the sans-serif. */
+.eyebrow,
+.kicker,
+.section-head,
+.section-title,
+.featured-kicker,
+.toc-title,
+.toc-inline summary,
+.cite summary,
+.proof-label,
+.contact-list dt,
+.now h2,
+.about .prose h2,
+.note-box-head,
+.toc-sheet-head {
+  color: var(--muted);
+  font-size: var(--step-0);
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
 }
 
 h1,
@@ -210,7 +284,7 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.1rem);
+  font-size: var(--step-3);
   letter-spacing: -0.01em;
   margin: 2rem 0 1rem;
 }
@@ -221,7 +295,7 @@ p {
 }
 
 .lede {
-  font-size: 1.15em;
+  font-size: var(--step-1);
   font-style: italic;
   color: var(--muted);
 }
@@ -259,11 +333,14 @@ p {
 .site-name {
   padding: 0.5rem 0;
   color: var(--text);
-  font-size: 1.3em;
-  font-weight: 600;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
+  font-size: var(--step-1);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
   text-decoration: none;
+}
+.site-name i {
+  margin-right: 0.04em;
 }
 .site-name:hover {
   color: var(--accent);
@@ -284,17 +361,20 @@ p {
   padding: 0.7rem 0 0.55rem;
   border-bottom: 2px solid transparent;
   color: var(--muted);
-  font-size: 1em;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.07em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.01em;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .site-header nav a:hover {
   color: var(--text);
+  border-bottom-color: var(--rule);
 }
 .site-header nav a[aria-current='page'] {
   color: var(--text);
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--text);
 }
 
 /* ------------------------------------------------------------------
@@ -308,7 +388,8 @@ p {
   border-top: 1px solid var(--rule);
   padding: var(--space-5) 0 var(--space-6);
   color: var(--muted);
-  font-size: 0.82em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   line-height: 1.5;
 }
 .site-footer p {
@@ -318,6 +399,8 @@ p {
   max-width: 42rem;
 }
 .site-footer .disclaimer {
+  font-family: var(--font-body);
+  font-size: var(--step-small);
   font-style: italic;
 }
 .site-footer ul {
@@ -358,15 +441,14 @@ p {
   background: none;
   color: var(--muted);
   font: inherit;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
   cursor: pointer;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .theme-toggle button:hover {
   color: var(--text);
 }
 .theme-toggle button[aria-pressed='true'] {
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--text);
   color: var(--text);
 }
 @media (max-width: 40rem) {
@@ -387,23 +469,19 @@ p {
 }
 .post-header h1 {
   margin: 0 0 var(--space-4);
-  font-size: clamp(2.2rem, 1.4rem + 3.2vw, 3.6rem);
+  font-size: var(--step-3);
   line-height: 1.08;
   letter-spacing: -0.014em;
 }
 .kicker {
   margin: 0 0 var(--space-3);
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
 }
 .dek {
   max-width: 40rem;
   margin: 0 0 var(--space-4);
   color: var(--muted);
-  font-size: 1.12em;
-  line-height: 1.45;
+  font-size: var(--step-1);
+  line-height: 1.4;
 }
 .post-meta {
   display: flex;
@@ -412,26 +490,28 @@ p {
   gap: 0.15rem 1rem;
   margin: 0;
   color: var(--muted);
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
 }
 
 /* A small label for where a piece stands: Draft, Forthcoming or Published. */
 .status-badge,
 .post-status {
   font-style: normal;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
+  font-weight: 600;
 }
 .status-badge {
-  padding: 0 0.55em;
+  padding: 0.05em 0.6em;
   border: 1px solid currentColor;
   border-radius: 2px;
   color: var(--text);
-  line-height: 1.35;
+  font-size: var(--step--2);
+  line-height: 1.5;
 }
 .post-status {
   color: var(--muted);
-  font-size: 0.92em;
+  font-weight: 500;
 }
 
 /* "Cite this" and the download links, at the top and the end of an article. */
@@ -446,9 +526,6 @@ p {
   align-items: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  color: var(--accent);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
   cursor: pointer;
   list-style: none;
 }
@@ -466,11 +543,11 @@ p {
   content: '\2212' / '';
 }
 .cite summary:hover {
-  color: var(--accent-strong);
+  color: var(--text);
 }
 .cite-text {
   margin: 0 0 var(--space-3);
-  font-size: 0.92em;
+  font-size: var(--step-small);
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
@@ -487,7 +564,8 @@ p {
 }
 .article-actions {
   padding: 0 0 var(--space-2);
-  font-size: 0.92em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .article-actions a,
 .cite-actions a {
@@ -519,12 +597,14 @@ p {
   border: 0;
   background: none;
   color: var(--accent);
-  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   text-decoration: underline;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.18em;
   text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
   cursor: pointer;
+  transition: color var(--dur-2) var(--ease), text-decoration-color var(--dur-2) var(--ease);
 }
 .text-button:hover {
   color: var(--accent-strong);
@@ -547,12 +627,13 @@ p {
   border-radius: 999px;
   background: var(--text);
   color: var(--bg);
-  font-size: 0.85em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   line-height: 1.3;
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, 0.5rem);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
 }
 .toast.is-visible {
   opacity: 1;
@@ -574,15 +655,17 @@ p {
   margin: 0;
   padding: 0;
   list-style: none;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   font-style: normal;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.08em;
 }
 .tags a {
-  color: var(--accent);
+  color: var(--muted);
   text-decoration: none;
 }
 .tags a:hover {
+  color: var(--accent);
   text-decoration: underline;
 }
 
@@ -595,12 +678,12 @@ p {
 
 /* Everything inside an article's body text */
 .prose h2 {
-  font-size: 1.55em;
+  font-size: var(--step-2);
   font-weight: 600;
   margin: 2.2em 0 0.5em;
 }
 .prose h3 {
-  font-size: 1.2em;
+  font-size: var(--step-1);
   font-style: italic;
   font-weight: 500;
   margin: 1.8em 0 0.4em;
@@ -616,7 +699,7 @@ p {
 .prose blockquote {
   margin: 1.5em 0;
   padding: 0 0 0 1.25em;
-  border-left: 2px solid var(--accent);
+  border-left: 2px solid var(--rule);
 }
 .prose blockquote p {
   margin-bottom: 0.6em;
@@ -672,7 +755,7 @@ p {
   width: 100%;
   margin: 0 0 1.2em;
   border-collapse: collapse;
-  font-size: 0.92em;
+  font-size: var(--step-small);
 }
 .prose th,
 .prose td {
@@ -702,11 +785,6 @@ p {
 
 .section-title {
   margin: 3rem 0 0.25rem;
-  color: var(--muted);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
 }
 
 .post-list {
@@ -729,15 +807,17 @@ p {
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding-top: 0.3em;
+  padding-top: 0.5em;
   color: var(--muted);
-  font-style: italic;
-  line-height: 1.4;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
 }
 .post-what h2,
 .post-what h3 {
   margin: 0 0 0.35rem;
-  font-size: 1.55em;
+  font-size: var(--step-2);
   font-weight: 500;
   line-height: 1.18;
 }
@@ -757,7 +837,7 @@ p {
   margin: 0 0 0.6rem;
 }
 .post-what .tags {
-  font-size: 0.92em;
+  margin-top: var(--space-1);
 }
 @media (max-width: 44rem) {
   .post-list > li {
@@ -783,16 +863,18 @@ p {
   padding: 0.55rem 0 0.4rem;
   border-bottom: 2px solid transparent;
   color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.08em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .tag-filter a:hover {
   color: var(--text);
 }
 .tag-filter a[aria-current='page'] {
   color: var(--text);
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--text);
 }
 
 .more-link {
@@ -818,7 +900,7 @@ p {
   margin-top: 3rem;
   padding-top: 1.1rem;
   border-top: 1px solid var(--rule);
-  font-size: 0.88em;
+  font-size: var(--step-small);
   line-height: 1.5;
 }
 .prose .footnotes ol {
@@ -859,14 +941,9 @@ p {
 .contact-list div {
   margin-bottom: 1.3rem;
 }
-.contact-list dt {
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
-}
 .contact-list dd {
   margin: 0;
-  font-size: 1.15em;
+  font-size: var(--step-1);
 }
 
 /* ------------------------------------------------------------------
@@ -916,8 +993,9 @@ p {
   border-color: transparent transparent transparent var(--bg);
 }
 .video-label {
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.09em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
 }
 @media (forced-colors: active) {
   .video-play {
@@ -940,10 +1018,6 @@ p {
 ------------------------------------------------------------------- */
 .eyebrow {
   margin: 0 0 var(--space-5);
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
 }
 
 .measure > .eyebrow:first-child {
@@ -959,14 +1033,14 @@ p {
 }
 .hero h1 {
   margin: 0 0 var(--space-5);
-  font-size: clamp(2.6rem, 1.3rem + 4.8vw, 5rem);
+  font-size: var(--step-4);
   line-height: 1.03;
   letter-spacing: -0.018em;
 }
 .hero-intro {
   max-width: 31em;
   color: var(--muted);
-  font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.55rem);
+  font-size: var(--step-1);
   line-height: 1.5;
 }
 .hero-intro p {
@@ -981,12 +1055,15 @@ p {
 }
 .button {
   display: inline-block;
-  padding: 0.8rem 1.7rem;
+  padding: 0.8rem 1.6rem;
   background: var(--button-bg);
   color: var(--button-fg);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.03em;
   text-decoration: none;
+  transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 .button:hover {
   background: var(--accent-strong);
@@ -1039,21 +1116,12 @@ p {
   list-style: none;
 }
 .proof li {
-  padding: 0 var(--space-5);
-  border-left: 1px solid var(--rule);
+  padding: 0 var(--space-5) 0 0;
   line-height: 1.3;
-}
-.proof li:first-child {
-  padding-left: 0;
-  border-left: 0;
 }
 .proof-label {
   display: block;
   margin-bottom: 0.2rem;
-  color: var(--muted);
-  font-size: 0.92em;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
 }
 .proof-text {
   display: block;
@@ -1064,26 +1132,12 @@ p {
   margin-top: var(--section);
 }
 .section-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
   margin: 0 0 var(--space-6);
-  color: var(--muted);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
-}
-.section-head::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--rule);
 }
 
 .featured-grid {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6) var(--space-7);
 }
 .featured-grid[data-count='2'] {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1092,15 +1146,10 @@ p {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-  gap: var(--space-6) var(--space-7);
-  align-content: start; /* when two panels sit side by side, the shorter one keeps its text at the top */
-  padding: clamp(1.5rem, 4vw, 3.5rem);
-  border: 1px solid transparent;
-  background: var(--surface);
-  transition: border-color 0.2s ease;
-}
-.featured:hover {
-  border-color: var(--accent);
+  gap: var(--space-4) var(--space-7);
+  align-content: start; /* when two pieces sit side by side, the shorter one keeps its text at the top */
+  padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--text);
 }
 .featured-grid[data-count='2'] .featured {
   grid-template-columns: minmax(0, 1fr);
@@ -1108,21 +1157,18 @@ p {
 .featured-kicker {
   display: block;
   margin-bottom: 0.4rem;
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.12em;
 }
 .featured-meta {
   margin: 0;
   color: var(--muted);
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   line-height: 1.5;
 }
 .featured h3 {
   margin: 0 0 var(--space-4);
-  font-size: clamp(1.7rem, 1.15rem + 1.7vw, 2.65rem);
-  line-height: 1.12;
+  font-size: var(--step-2);
+  line-height: 1.15;
   letter-spacing: -0.01em;
 }
 .featured h3 a {
@@ -1143,9 +1189,9 @@ p {
 }
 .featured-tags {
   margin-bottom: var(--space-4);
-  color: var(--accent);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .featured-cta {
   margin: 0;
@@ -1153,7 +1199,7 @@ p {
 }
 .featured-cta span {
   display: inline-block;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-2) var(--ease);
 }
 .featured:hover .featured-cta span {
   transform: translateX(4px);
@@ -1257,9 +1303,11 @@ p {
   padding: 0.3rem 0 0.3rem 0.9rem;
   border-left: 2px solid var(--rule);
   color: var(--muted);
-  font-size: 0.84em;
-  line-height: 1.3;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  line-height: 1.35;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .toc a:hover {
   color: var(--text);
@@ -1268,18 +1316,14 @@ p {
   outline-offset: -2px; /* drawn inside the link, so the scrolling list never cuts it off */
 }
 .toc a[aria-current='location'] {
-  border-left-color: var(--accent);
+  border-left-color: var(--text);
   color: var(--text);
 }
 .toc ol ol a {
   padding-left: 1.7rem;
-  font-size: 0.8em;
 }
 .toc-title {
   margin: 0 0 var(--space-3);
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
 }
 .toc-rail {
   display: none;
@@ -1293,9 +1337,6 @@ p {
   align-items: center;
   justify-content: space-between;
   min-height: 2.75rem;
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
   cursor: pointer;
   list-style: none;
 }
@@ -1367,7 +1408,7 @@ p {
     letter-spacing: 0.1em;
   }
   .dek {
-    font-size: 1.02em;
+    font-size: var(--step-0);
   }
 }
 
@@ -1395,7 +1436,7 @@ p {
   clip-path: none;
   white-space: normal;
   color: var(--muted);
-  font-size: 1em;
+  font-size: var(--step-0);
   font-weight: 500;
   font-variant-caps: all-small-caps;
   letter-spacing: 0.14em;
@@ -1453,9 +1494,9 @@ p {
   padding: 0.1em 0 0.1em 1.7em;
   border-radius: 2px;
   color: var(--muted);
-  font-size: 0.72em;
-  line-height: 1.42;
-  transition: background-color 0.4s ease;
+  font-size: var(--step-small);
+  line-height: 1.4;
+  transition: background-color var(--dur-3) var(--ease);
 }
 .sidenote:focus-visible {
   outline-offset: 4px;
@@ -1485,7 +1526,8 @@ p {
   border: 0;
   background: none;
   color: var(--accent);
-  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
   text-decoration: underline;
   text-underline-offset: 0.18em;
   cursor: pointer;
@@ -1521,7 +1563,7 @@ p {
   border-top: 2px solid var(--text);
   background: var(--bg);
   box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.4);
-  font-size: 0.8em;
+  font-size: var(--step-small);
   line-height: 1.5;
 }
 .note-box:focus-visible {
@@ -1535,9 +1577,7 @@ p {
   top: 0;
   padding-top: var(--space-1);
   background: var(--bg);
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
+  font-size: var(--step-small);
 }
 .note-box-close {
   min-width: 2.75rem;
@@ -1550,13 +1590,15 @@ p {
   font-size: 1.5em;
   line-height: 1;
   cursor: pointer;
+  transition: color var(--dur-1) var(--ease);
 }
 .note-box-body p {
   margin: 0 0 0.5em;
 }
 .note-box-foot {
   margin: var(--space-2) 0 0;
-  font-size: 0.92em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 
 /* Reading aids (set by script): a thin bar showing how far through the piece the reader is, and a small bar of buttons. */
@@ -1569,7 +1611,7 @@ p {
   height: 3px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dur-2) var(--ease);
 }
 .reading-progress.is-visible {
   opacity: 1;
@@ -1593,12 +1635,13 @@ p {
   border-radius: 999px;
   background: color-mix(in srgb, var(--bg) 94%, transparent);
   box-shadow: 0 8px 22px -12px rgb(0 0 0 / 0.45);
-  font-size: 0.72em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   line-height: 1;
   opacity: 0;
   visibility: hidden;
   transform: translateY(0.5rem);
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease), visibility var(--dur-2);
 }
 .reader-tools.is-visible {
   opacity: 1;
@@ -1620,9 +1663,9 @@ p {
   background: none;
   color: var(--text);
   font: inherit;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-weight: 500;
   cursor: pointer;
+  transition: color var(--dur-2) var(--ease);
 }
 .reader-button:hover {
   color: var(--accent);
@@ -1668,9 +1711,6 @@ p {
   justify-content: space-between;
   padding: 0 var(--space-4);
   border-bottom: 1px solid var(--rule);
-  color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
 }
 .toc-sheet-close {
   min-height: 2.75rem;
@@ -1678,8 +1718,8 @@ p {
   border: 0;
   background: none;
   color: var(--accent);
-  font: inherit;
-  letter-spacing: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
   cursor: pointer;
 }
 .toc-sheet-list {
@@ -1689,11 +1729,9 @@ p {
 }
 .toc-sheet-list a {
   padding-block: 0.6rem;
-  font-size: 0.9em;
 }
 .toc-sheet-list ol ol a {
   padding-block: 0.5rem;
-  font-size: 0.84em;
 }
 
 /* The link icon beside a heading (set by script): copies the address of that section. */
@@ -1712,7 +1750,7 @@ p {
   vertical-align: middle;
   opacity: 0;
   cursor: pointer;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  transition: opacity var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
 }
 .prose :is(h2, h3):hover .heading-link,
 .heading-link:focus-visible,
@@ -1758,7 +1796,8 @@ p {
   display: none;
   margin: 0.8rem 0 0;
   color: var(--muted);
-  font-size: 0.85em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 
 /* On paper: the article as a clean, black-on-white document, with the notes numbered at the end. */
@@ -1944,35 +1983,26 @@ p {
 .about-links a {
   display: inline-block;
   padding: 0.35rem 0;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
 }
 .about-main .prose > p:first-child {
-  font-size: 1.18em;
-  line-height: 1.5;
+  font-size: var(--step-1);
+  line-height: 1.45;
 }
 .about .prose h2 {
   margin: 2.4em 0 0.8em;
   padding-top: 1.1rem;
   border-top: 1px solid var(--rule);
-  color: var(--muted);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
 }
 .now {
-  padding: clamp(1.25rem, 2.5vw, 1.75rem);
-  background: var(--surface);
-  font-size: 0.92em;
+  padding: var(--space-4) 0 0;
+  border-top: 1px solid var(--text);
+  font-size: var(--step-small);
 }
 .now h2 {
   margin: 0 0 var(--space-4);
-  color: var(--accent);
-  font-size: 1em;
-  font-weight: 500;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.16em;
 }
 .now-list ul {
   margin: 0;
@@ -1991,8 +2021,8 @@ p {
 .now-updated {
   margin: var(--space-4) 0 0;
   color: var(--muted);
-  font-size: 0.9em;
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 @media (max-width: 54rem) {
   .about-grid {
@@ -2023,7 +2053,7 @@ p {
   margin: 0;
 }
 .contact-list .contact-email {
-  font-size: clamp(1.4rem, 1rem + 1.8vw, 2.1rem);
+  font-size: var(--step-2);
   line-height: 1.2;
 }
 .contact-email a {
@@ -2040,7 +2070,6 @@ p {
 .contact-copy {
   display: inline-flex;
   margin-left: var(--space-3);
-  font-size: 0.5em;
   vertical-align: middle;
 }
 .signup-message {
@@ -2073,8 +2102,8 @@ p {
   display: block;
   margin-bottom: var(--space-2);
   color: var(--muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .signup-row {
   display: flex;
@@ -2090,19 +2119,19 @@ p {
   border-radius: 0;
   background: var(--bg);
   color: var(--text);
-  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 1rem; /* 16px or more, so phones do not zoom in when the field is tapped */
+  transition: border-color var(--dur-2) var(--ease);
 }
 button.button {
   border: 0;
   cursor: pointer;
-  font: inherit;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
 }
 .signup-note {
   margin-top: var(--space-3);
   color: var(--muted);
-  font-size: 0.9em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 @media (min-width: 54rem) {
   .has-signup .contact-grid {
@@ -2134,8 +2163,8 @@ button.button {
   max-width: 40rem;
   margin: 0 0 var(--space-7);
   color: var(--muted);
-  font-size: 1.12em;
-  line-height: 1.5;
+  font-size: var(--step-1);
+  line-height: 1.45;
 }
 .video-group + .video-group {
   margin-top: var(--section);
@@ -2149,14 +2178,14 @@ button.button {
 .video-card h2,
 .video-card h3 {
   margin: var(--space-3) 0 0.15rem;
-  font-size: 1.3em;
+  font-size: var(--step-1);
   line-height: 1.2;
 }
 .video-date {
   margin: 0 0 var(--space-2);
   color: var(--muted);
-  font-size: 0.92em;
-  font-style: italic;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
 }
 .video-card .summary {
   margin: 0;
@@ -2169,7 +2198,7 @@ button.button {
     border: 1px solid ButtonText;
   }
   .now {
-    border: 1px solid CanvasText;
+    border-top-color: CanvasText;
   }
 }
 
