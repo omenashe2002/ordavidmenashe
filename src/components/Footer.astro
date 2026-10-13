@@ -9,8 +9,6 @@ interface Props {
 }
 const { showSignup = true } = Astro.props;
 const year = new Date().getFullYear();
-// The name is set as a wordmark: the first name in italics, the surname upright.
-const [givenName, ...rest] = SITE.name.split(' ');
 ---
 
 <footer class="site-footer wrap">
@@ -23,7 +21,7 @@ const [givenName, ...rest] = SITE.name.split(' ');
   }
   <div class="footer-top">
     <div class="footer-brand">
-      <a class="site-name" href="/"><i>{givenName}</i> {rest.join(' ')}</a>
+      <a class="site-name" href="/">{SITE.name}</a>
       <p class="footer-tagline">{SITE.tagline}</p>
     </div>
     <div class="footer-columns">

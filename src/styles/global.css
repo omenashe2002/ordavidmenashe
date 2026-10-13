@@ -342,9 +342,6 @@ p {
   line-height: 1.1;
   text-decoration: none;
 }
-.site-name i {
-  margin-right: 0.04em;
-}
 .site-name {
   transition: color var(--dur-2) var(--ease);
 }

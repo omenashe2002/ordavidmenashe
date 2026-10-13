@@ -2,14 +2,12 @@
 import { SITE, NAV } from '../site';
 
 const { currentPath } = Astro.props;
-// The name is set as a wordmark: the first name in italics, the surname upright.
-const [givenName, ...rest] = SITE.name.split(' ');
 // A link counts as "current" when the page address starts with it (so /writing/some-post/ highlights Writing).
 const isCurrent = (href: string) => currentPath.startsWith(href);
 ---
 
 <header class="site-header wrap">
-  <a class="site-name" href="/"><i>{givenName}</i> {rest.join(' ')}</a>
+  <a class="site-name" href="/">{SITE.name}</a>
   <nav aria-label="Main">
     <ul>
       {
