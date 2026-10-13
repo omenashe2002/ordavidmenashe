@@ -122,6 +122,7 @@
   --step--2: 0.75rem; /* 12px: the smallest labels */
   --step--1: 0.875rem; /* 14px: navigation, dates, tags, buttons, forms */
   --step-small: calc(var(--step-0) * 0.82); /* footnotes, citations and other small Garamond text */
+  --step-margin: calc(var(--step-0) * 0.72); /* notes set in the margin, where space is tight */
   --step-0: clamp(1.25rem, 1.15rem + 0.5vw, 1.4rem); /* the text itself. Garamond is small for its size, so it is set a little larger */
   --step-1: clamp(1.35rem, 1.2rem + 0.55vw, 1.65rem); /* introductions, sub-headings */
   --step-2: clamp(1.55rem, 1.2rem + 1.1vw, 2.1rem); /* titles in lists, section headings in articles */
@@ -407,7 +408,7 @@ p {
 }
 .footer-columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: var(--space-5) var(--space-6);
 }
 .footer-heading {
@@ -1525,8 +1526,8 @@ p {
   padding: 0.1em 0 0.1em 1.7em;
   border-radius: 2px;
   color: var(--muted);
-  font-size: var(--step-small);
-  line-height: 1.4;
+  font-size: var(--step-margin);
+  line-height: 1.42;
   transition: background-color var(--dur-3) var(--ease);
 }
 .sidenote:focus-visible {
@@ -1664,7 +1665,7 @@ p {
   padding: 0.1rem 0.35rem;
   border: 1px solid var(--rule);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  background: var(--bg);
   box-shadow: 0 8px 22px -12px rgb(0 0 0 / 0.45);
   font-family: var(--font-ui);
   font-size: var(--step--1);
@@ -1848,6 +1849,14 @@ p {
     --accent: #000;
     --accent-strong: #000;
     color-scheme: light;
+    /* The type scale in points for paper (it is in screen sizes above). */
+    --step--2: 7.5pt;
+    --step--1: 8.5pt;
+    --step-0: 11pt;
+    --step-1: 13pt;
+    --step-2: 15pt;
+    --step-3: 22pt;
+    --step-4: 26pt;
   }
   .site-header nav,
   .site-footer ul,
