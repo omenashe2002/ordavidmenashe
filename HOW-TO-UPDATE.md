@@ -110,7 +110,7 @@ Issues are numbered automatically in date order, so the first one is Issue 1. To
 
 ## Turn on the newsletter signup
 
-The signup form (on the Writing page, at the end of every article and issue, on the Contact page, and in the footer of the other pages) shows only when `newsletter:` in `site.ts` holds a form address. It is empty now, so no form appears. The form loads nothing from the newsletter service until someone subscribes.
+The signup form (on the Writing page, at the end of every article and issue, on the Contact page, and in the footer of the other pages) shows only when `newsletter:` in `site.ts` holds a form address. It is set now, to the Buttondown account `ordavid`, so the forms appear. The form loads nothing from the newsletter service until someone subscribes.
 
 1. Create a free account at buttondown.com and choose a username. As of October 2026 the free plan covers your first 100 subscribers. Past 100 you can keep collecting addresses but cannot send until you add billing and pick a paid plan, which starts at $9 a month. Check their pricing page for the current terms.
 2. In Buttondown, open **Settings**, then **Embedding**, and copy the code under **Form**. Find the part that reads `action="https://buttondown.com/api/emails/embed-subscribe/yourname"`.
