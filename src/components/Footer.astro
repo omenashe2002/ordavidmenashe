@@ -1,5 +1,6 @@
 ---
 import { SITE } from '../site';
+import ThemeToggle from './ThemeToggle.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -9,9 +10,12 @@ const year = new Date().getFullYear();
     <p class="disclaimer">{SITE.disclaimer}</p>
     <p class="copyright">&copy; {year} {SITE.name}</p>
   </div>
-  <ul>
-    <li><a href={`mailto:${SITE.email}`}>Email</a></li>
-    <li><a href={SITE.linkedin}>LinkedIn</a></li>
-    <li><a href="/rss.xml">RSS</a></li>
-  </ul>
+  <div class="footer-side">
+    <ul>
+      <li><a href={`mailto:${SITE.email}`}>Email</a></li>
+      <li><a href={SITE.linkedin}>LinkedIn</a></li>
+      <li><a href="/rss.xml">RSS</a></li>
+    </ul>
+    <ThemeToggle />
+  </div>
 </footer>

@@ -86,8 +86,10 @@
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
+/* The dark colors are written twice, once for devices set to dark and once for a visitor who chose Dark with the
+   theme control in the footer (it sets data-theme on the page). Keep the two lists identical. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #16140f;
     --surface: #1f1c16;
     --text: #ece7db;
@@ -102,6 +104,27 @@
     --frame-mat: #241f17;
     --frame-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.75);
   }
+}
+:root[data-theme='dark'] {
+  --bg: #16140f;
+  --surface: #1f1c16;
+  --text: #ece7db;
+  --muted: #a8a193;
+  --rule: #3a362c;
+  --accent: #e3a273;
+  --accent-strong: #f0c09b;
+  --button-bg: var(--accent);
+  --button-fg: #1a130c;
+  --frame: #8c6c37;
+  --frame-lip: #d9bb70;
+  --frame-mat: #241f17;
+  --frame-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.75);
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 /* ------------------------------------------------------------------
@@ -313,6 +336,47 @@ p {
 .site-footer a:hover {
   color: var(--accent);
 }
+.footer-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.theme-toggle button {
+  min-width: 3.4rem;
+  min-height: 2.5rem;
+  padding: 0 0.7rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.theme-toggle button:hover {
+  color: var(--text);
+}
+.theme-toggle button[aria-pressed='true'] {
+  border-bottom-color: var(--accent);
+  color: var(--text);
+}
+@media (max-width: 40rem) {
+  .footer-side {
+    align-items: flex-start;
+  }
+  .theme-toggle button:first-child {
+    padding-left: 0;
+  }
+}
 
 /* ------------------------------------------------------------------
    Articles (the page for a single post). Used from step 3 on.
@@ -372,6 +436,7 @@ p {
 
 /* "Cite this" and the download links, at the top and the end of an article. */
 .article-tools {
+  position: relative;
   max-width: 40rem;
   margin: var(--space-5) 0 0;
   border-top: 1px solid var(--rule);
@@ -429,6 +494,16 @@ p {
   display: inline-flex;
   align-items: center;
   min-height: 2.5rem;
+}
+/* Beside "Cite this" on the same line when there is room. */
+@media (min-width: 40rem) {
+  .article-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 2.75rem;
+    padding: 0;
+  }
 }
 .cite-end {
   margin: 0 0 var(--section);
@@ -767,10 +842,14 @@ p {
   color: var(--shiki-light);
 }
 @media (prefers-color-scheme: dark) {
-  .astro-code,
-  .astro-code span {
+  :root:not([data-theme='light']) .astro-code,
+  :root:not([data-theme='light']) .astro-code span {
     color: var(--shiki-dark);
   }
+}
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark);
 }
 
 /* ------------------------------------------------------------------
@@ -942,10 +1021,14 @@ p {
   filter: sepia(0.1) contrast(1.02);
 }
 @media (prefers-color-scheme: dark) {
-  .portrait img {
+  :root:not([data-theme='light']) .portrait img {
     mix-blend-mode: normal;
     filter: brightness(0.9) contrast(1.04);
   }
+}
+:root[data-theme='dark'] .portrait img {
+  mix-blend-mode: normal;
+  filter: brightness(0.9) contrast(1.04);
 }
 
 .proof {
@@ -1256,6 +1339,20 @@ p {
   }
 }
 
+/* On wide screens the contents list moves to the left, which leaves the right-hand margin free for the notes. */
+@media (min-width: 75rem) {
+  .article-body.has-toc {
+    grid-template-columns: 10.5rem minmax(0, var(--measure));
+    gap: 0 2rem;
+  }
+  .article-body.has-toc .article-main {
+    grid-column: 2;
+  }
+  .toc-rail {
+    grid-column: 1;
+  }
+}
+
 @media (max-width: 40rem) {
   .kicker {
     letter-spacing: 0.1em;
@@ -1318,6 +1415,322 @@ p {
   scroll-margin-top: var(--space-5);
 }
 
+/* Notes in the margin (wide screens, set by script): each one level with the line that points to it. */
+.article-main {
+  position: relative;
+}
+.sidenotes {
+  display: none;
+}
+.has-sidenotes .sidenotes {
+  --side-width: 16rem;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: calc(100% + 2rem);
+  width: var(--side-width);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.has-sidenotes .prose .footnotes {
+  display: none; /* the notes are in the margin; the list at the end still prints and is the fallback without scripts */
+}
+.sidenote {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding: 0.1em 0 0.1em 1.7em;
+  border-radius: 2px;
+  color: var(--muted);
+  font-size: 0.72em;
+  line-height: 1.42;
+  transition: background-color 0.4s ease;
+}
+.sidenote:focus-visible {
+  outline-offset: 4px;
+}
+.sidenote-num {
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  color: var(--text);
+  font-variant-numeric: lining-nums;
+  font-weight: 600;
+}
+.sidenote p {
+  margin: 0 0 0.4em;
+}
+.sidenote p:last-child {
+  display: inline;
+}
+.sidenote.is-long:not(.is-open) .sidenote-body {
+  max-height: 11.5em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, #000 78%, transparent);
+}
+.sidenote-more {
+  display: block;
+  margin: 0.2em 0 0;
+  padding: 0.3em 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+.sidenote-back {
+  margin-left: 0.4em;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+}
+.sidenote:hover .sidenote-back,
+.sidenote:focus-within .sidenote-back,
+.sidenote-back:focus-visible {
+  opacity: 1;
+}
+.sidenote.is-active,
+.sidenote.is-linked,
+.prose a[data-footnote-ref].is-linked {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.sidenote a {
+  overflow-wrap: anywhere;
+}
+
+/* The note box (narrower screens): opens right under the number, on top of the text. */
+.note-box {
+  position: absolute;
+  z-index: 20;
+  max-height: min(60vh, 26rem);
+  overflow-y: auto;
+  padding: 0 var(--space-4) var(--space-3);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
+  background: var(--bg);
+  box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.4);
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+.note-box:focus-visible {
+  outline-offset: -4px;
+}
+.note-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  padding-top: var(--space-1);
+  background: var(--bg);
+  color: var(--muted);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+}
+.note-box-close {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  margin-right: -0.9rem;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.5em;
+  line-height: 1;
+  cursor: pointer;
+}
+.note-box-body p {
+  margin: 0 0 0.5em;
+}
+.note-box-foot {
+  margin: var(--space-2) 0 0;
+  font-size: 0.92em;
+}
+
+/* Reading aids (set by script): a thin bar showing how far through the piece the reader is, and a small bar of buttons. */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 3px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.reading-progress.is-visible {
+  opacity: 1;
+}
+.reading-progress span {
+  display: block;
+  height: 100%;
+  background: var(--muted);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+.reader-tools {
+  position: fixed;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  box-shadow: 0 8px 22px -12px rgb(0 0 0 / 0.45);
+  font-size: 0.72em;
+  line-height: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+.reader-tools.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.reader-left {
+  padding: 0 0.6rem;
+  color: var(--muted);
+  font-variant-numeric: lining-nums;
+  white-space: nowrap;
+}
+.reader-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.reader-button:hover {
+  color: var(--accent);
+}
+.reader-contents {
+  display: none;
+}
+@media (max-width: 63.99rem) {
+  .reader-contents {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+.toast {
+  bottom: 5rem;
+}
+
+/* The list of sections, opened from the Contents button on narrow screens. */
+.toc-sheet {
+  position: fixed;
+  inset: auto 0 0;
+  width: min(100%, 36rem);
+  max-height: 75dvh;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+.toc-sheet[open] {
+  display: flex;
+  flex-direction: column;
+}
+.toc-sheet::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+.toc-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+}
+.toc-sheet-close {
+  min-height: 2.75rem;
+  padding: 0 0 0 var(--space-4);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+.toc-sheet-list {
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-5);
+  overscroll-behavior: contain;
+}
+.toc-sheet-list a {
+  padding-block: 0.6rem;
+  font-size: 0.9em;
+}
+.toc-sheet-list ol ol a {
+  padding-block: 0.5rem;
+  font-size: 0.84em;
+}
+
+/* The link icon beside a heading (set by script): copies the address of that section. */
+.heading-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -1rem 0 -1rem 0.1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.75em;
+  vertical-align: middle;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+.prose :is(h2, h3):hover .heading-link,
+.heading-link:focus-visible,
+.heading-link.is-done {
+  opacity: 1;
+}
+.heading-link:hover {
+  color: var(--accent);
+}
+.heading-link.is-done {
+  color: var(--text);
+}
+@media (hover: none) {
+  .heading-link {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress,
+  .reader-tools,
+  .heading-link,
+  .sidenote {
+    transition: none;
+  }
+}
+
 /* Windows high-contrast mode: use system colors and shapes, not the copper accent, for the current section and jump targets */
 @media (forced-colors: active) {
   .toc a[aria-current='location'] {
@@ -1332,39 +1745,143 @@ p {
   }
 }
 
-/* On paper: just the text */
+/* The address line shown only on paper. */
+.print-source {
+  display: none;
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+/* On paper: the article as a clean, black-on-white document, with the notes numbered at the end. */
+@page {
+  margin: 2cm 2.2cm;
+}
 @media print {
+  /* Always light on paper, even when the screen is dark. */
+  :root,
+  :root:not([data-theme='light']),
+  :root[data-theme='dark'] {
+    --bg: #fff;
+    --surface: #f3f3f3;
+    --text: #000;
+    --muted: #444;
+    --rule: #bbb;
+    --accent: #000;
+    --accent-strong: #000;
+    color-scheme: light;
+  }
   .site-header nav,
   .site-footer ul,
+  .footer-side,
+  .newsletter,
   .toc,
+  .toc-sheet,
   .related,
   .more-link,
-  .skip-link {
-    display: none;
+  .skip-link,
+  .reader-tools,
+  .reading-progress,
+  .toast,
+  .heading-link,
+  .note-box,
+  .sidenotes,
+  .article-tools,
+  .cite-actions,
+  .tag-filter {
+    display: none !important;
   }
   body {
+    min-height: 0;
     background: #fff;
     color: #000;
-    font-size: 11.5pt;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+  .wrap,
+  .measure {
+    width: 100%;
+  }
+  .site-header {
+    padding: 0 0 0.5rem;
+    border-bottom: 1px solid #bbb;
+  }
+  main {
+    padding: 0;
+  }
+  .post-header {
+    max-width: none;
+    margin: 1.2rem 0;
+  }
+  .post-header h1 {
+    font-size: 22pt;
+  }
+  .kicker {
+    color: #000;
+  }
+  .dek {
+    max-width: none;
+  }
+  .article-body.has-toc,
+  .article-body {
+    display: block;
+  }
+  .article-main {
+    width: 100%;
+    min-height: 0 !important;
   }
   .prose a,
   .tags a {
     color: inherit;
     text-decoration: none;
   }
-  .article-main {
-    width: 100%;
+  /* The address of each outside link, so a reader of the paper can find it. A link that already shows its address is left alone. */
+  .prose a[href^='http']:not([data-bare-url])::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    word-break: break-all;
   }
-  .prose pre {
-    overflow: visible;
-    white-space: pre-wrap;
+  .prose p,
+  .prose li {
+    orphans: 3;
+    widows: 3;
   }
   .prose h2,
   .prose h3 {
     break-after: avoid; /* never leave a heading alone at the bottom of a page */
   }
+  .prose blockquote,
+  .prose pre,
+  .prose table,
+  .prose figure,
+  .prose .footnotes li {
+    break-inside: avoid;
+  }
+  .prose pre {
+    overflow: visible;
+    white-space: pre-wrap;
+  }
+  /* The numbered notes at the end, even when the screen showed them in the margin. */
+  .has-sidenotes .prose .footnotes {
+    display: block;
+  }
+  .prose .footnotes {
+    margin-top: 1.5rem;
+    break-before: auto;
+  }
   .prose a[data-footnote-backref] {
     display: none; /* the back arrows are useless on paper */
+  }
+  .cite-end {
+    margin: 1.5rem 0 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid #bbb;
+  }
+  .cite-end .section-head {
+    margin-top: 0;
+  }
+  .print-source {
+    display: block;
   }
   .button {
     border: 1px solid #000;
@@ -1372,7 +1889,6 @@ p {
     color: #000;
   }
 }
-
 /* ------------------------------------------------------------------
    About, Contact and Videos
 ------------------------------------------------------------------- */

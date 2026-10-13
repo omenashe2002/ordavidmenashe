@@ -66,6 +66,13 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
     <meta name="description" content={description} />
     <meta name="author" content={SITE.name} />
     {noindex && <meta name="robots" content="noindex" />}
+    <!-- Applies a saved Light or Dark choice before the page is drawn, so there is no flash of the other theme. -->
+    <script is:inline>
+      try {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch (error) {}
+    </script>
     <meta name="theme-color" content="#faf6ee" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)" />
     {!noindex && <link rel="canonical" href={canonical} />}

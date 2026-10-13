@@ -57,31 +57,24 @@ const { items, variant } = Astro.props;
 
 <script>
   // Marks the section being read in the wide-screen list. Without JavaScript the list still works as links.
+  import { markCurrent } from '../scripts/toc';
+
   const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-rail a')];
-  const sections = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))));
   if (links.length > 0) {
     let waiting = false;
-    const update = () => {
-      waiting = false;
-      let current = -1;
-      sections.forEach((section, index) => {
-        if (section && section.getBoundingClientRect().top <= window.innerHeight * 0.3) current = index;
-      });
-      links.forEach((link, index) => {
-        if (index === current) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-      });
-    };
     window.addEventListener(
       'scroll',
       () => {
         if (!waiting) {
           waiting = true;
-          requestAnimationFrame(update);
+          requestAnimationFrame(() => {
+            waiting = false;
+            markCurrent(links);
+          });
         }
       },
       { passive: true },
     );
-    update();
+    markCurrent(links);
   }
 </script>
