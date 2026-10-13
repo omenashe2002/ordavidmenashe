@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { SITE } from '../site';
 
 export type Issue = CollectionEntry<'newsletter'>;
 
@@ -17,7 +18,7 @@ export function issueNumber(issue: Issue, all: Issue[]): number {
   return oldestFirst.findIndex((other) => other.id === issue.id) + 1;
 }
 
-/** "Weekly newsletter, issue 3" */
+/** "If Only I Knew · Issue 3" (the newsletter's name comes from src/site.ts) */
 export function issueLabel(issue: Issue, all: Issue[]): string {
-  return `Weekly newsletter \u00b7 Issue ${issueNumber(issue, all)}`;
+  return `${SITE.newsletterName} \u00b7 Issue ${issueNumber(issue, all)}`;
 }

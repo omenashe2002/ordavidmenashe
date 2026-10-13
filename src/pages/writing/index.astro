@@ -6,6 +6,7 @@ import TagFilter from '../../components/TagFilter.astro';
 import NewsletterSection from '../../components/NewsletterSection.astro';
 import { getPosts, MIN_POSTS_FOR_FILTER, tagsInUse } from '../../lib/posts';
 import { getIssues } from '../../lib/issues';
+import { SITE } from '../../site';
 
 const posts = await getPosts();
 const issues = await getIssues();
@@ -15,7 +16,7 @@ const featured = posts.filter((post) => post.data.featured).slice(0, 2);
 const showFeatured = featured.length > 0 && posts.length > featured.length;
 ---
 
-<BaseLayout title="Writing" description="Articles and a weekly newsletter on digital assets, DeFi, AI, and law by Or Menashe." wide inlineSignup>
+<BaseLayout title="Writing" description={`Articles, and the weekly newsletter ${SITE.newsletterName}, on digital assets, DeFi, AI, and law by Or Menashe.`} wide inlineSignup>
   <div class="writing-page">
     <h1>Writing</h1>
     {

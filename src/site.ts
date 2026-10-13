@@ -13,6 +13,9 @@ export const SITE = {
   description:
     'Long-form writing and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
   email: 'ordavidmenashe@gmail.com',
+  // The name of the weekly newsletter. It is the title of the newsletter page and appears in the footer and above the
+  // signup forms. Keep it between the quotation marks, and write it the same way in your newsletter service.
+  newsletterName: 'If Only I Knew',
   // The signup forms (Writing page, end of every article, Contact page, footer) appear only when this holds the
   // form address from your newsletter service (it starts with https://). Leave the two quotation marks empty
   // to hide them. See HOW-TO-UPDATE.md.

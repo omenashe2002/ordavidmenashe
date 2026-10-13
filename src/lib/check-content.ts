@@ -255,6 +255,9 @@ export function checkContentPlaces() {
 export function checkSiteSettings() {
   const web = /^https:\/\/[^\s"'<>]+$/;
   const newsletter = String(SITE.newsletter ?? '').trim();
+  if (String(SITE.newsletterName ?? '').trim() === '') {
+    fail(path.resolve('src/site.ts'), 'The newsletterName line is empty. Write the name of the newsletter between the quotation marks, for example: newsletterName: \'If Only I Knew\',');
+  }
   if (newsletter !== '' && !web.test(newsletter)) {
     fail(
       path.resolve('src/site.ts'),
