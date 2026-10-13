@@ -1165,7 +1165,7 @@ p {
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  object-position: 50% 22%;
+  object-position: 50% 22%; /* only matters for a photo too small to be cut to 4:5 by Portrait.astro */
   outline: 1px solid color-mix(in srgb, var(--frame) 60%, transparent); /* a hairline around the photo itself */
   /* The photo's light grey backdrop melts into the cream mat. */
   mix-blend-mode: multiply;
