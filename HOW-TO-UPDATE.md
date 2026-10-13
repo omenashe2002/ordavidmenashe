@@ -15,6 +15,7 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 | The top of the Home page | `src/content/pages/home.md` |
 | The About page | `src/content/pages/about.md` |
 | "What I'm working on now" | `src/content/pages/now.md` |
+| The Colophon page (how the site is made) | `src/content/pages/colophon.md` |
 | Email, LinkedIn, newsletter signup, topics, footer disclaimer | `src/site.ts` |
 | Your photo | `src/assets/or-menashe.jpg` |
 
@@ -52,7 +53,7 @@ In the text, write `## Heading` (two pound signs, then a space), `*italics*` (as
 
 To add a picture to an article: open `public`, click **Add file**, then **Upload files**, and drop in the picture (rename it first, with no spaces, for example `chart.jpg`). In the article write `![A short description of the picture](/chart.jpg)` where it belongs. The description is for people who cannot see the picture.
 
-These happen on their own: the reading time; a contents list beside the text (above it on a phone, with a Contents button that stays on screen while reading) for any article of about six minutes or more with at least three `##` sections; a thin progress bar, the time left and a Top button for longer pieces; footnotes shown in the right margin on wide screens (and as a small box that opens under the number on narrower ones); a small link icon beside each heading that copies the address of that section; a clean printable version; a "Keep reading" list of other articles at the bottom, chosen by shared topics; the RSS feed; and a link-preview picture with the article's title and your portrait.
+These happen on their own: the reading time; a small mark after outside links that says where they lead (an arrow for any outside site, scales for a court opinion, a building for a statute or regulation, a page for an SSRN paper or a PDF); a contents list beside the text (above it on a phone, with a Contents button that stays on screen while reading) for any article of about six minutes or more with at least three `##` sections; a thin progress bar, the time left and a Top button for longer pieces; footnotes shown in the right margin on wide screens (and as a small box that opens under the number on narrower ones); a small link icon beside each heading that copies the address of that section; a clean printable version; a "Keep reading" list of other articles at the bottom, chosen by shared topics; the RSS feed; and a link-preview picture with the article's title and your portrait.
 
 If a setting is misspelled, a footnote has no matching note, or a date is impossible, the build stops and says which file and what to fix. The old site stays live.
 
@@ -142,3 +143,7 @@ The site is set up to count visits with Vercel Web Analytics. It uses no cookies
 2. Wait for the site to publish again (any change to any file does it), then open the live site once. The first visits show up in the Analytics tab within a few minutes.
 
 On the free plan Vercel counts up to 50,000 events a month, and the free plan is meant for personal, non-commercial sites. If the count ever passes that, Vercel says so in the dashboard and stops recording until the next month.
+
+## Change the Colophon page
+
+The Colophon page (linked from the footer) is the file `src/content/pages/colophon.md`. Edit only the words below the second line of three dashes. It says the site counts visits with Vercel Web Analytics and sends the newsletter through Buttondown. If you decide not to use either, delete that sentence, or the page will say something that is not true.

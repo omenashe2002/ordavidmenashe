@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../site';
+import { SITE, NAV } from '../site';
 import ThemeToggle from './ThemeToggle.astro';
 import NewsletterSignup from './NewsletterSignup.astro';
 
@@ -8,8 +8,9 @@ interface Props {
   showSignup?: boolean;
 }
 const { showSignup = true } = Astro.props;
-
 const year = new Date().getFullYear();
+// The name is set as a wordmark: the first name in italics, the surname upright.
+const [givenName, ...rest] = SITE.name.split(' ');
 ---
 
 <footer class="site-footer wrap">
@@ -20,16 +21,38 @@ const year = new Date().getFullYear();
       </div>
     )
   }
-  <div class="footer-main">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="site-name" href="/"><i>{givenName}</i> {rest.join(' ')}</a>
+      <p class="footer-tagline">{SITE.tagline}</p>
+    </div>
+    <div class="footer-columns">
+      <nav aria-labelledby="footer-pages">
+        <h2 class="footer-heading" id="footer-pages">Pages</h2>
+        <ul>
+          {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          <li><a href="/writing/newsletter/">Weekly newsletter</a></li>
+        </ul>
+      </nav>
+      <section aria-labelledby="footer-elsewhere">
+        <h2 class="footer-heading" id="footer-elsewhere">Elsewhere</h2>
+        <ul>
+          <li><a href={`mailto:${SITE.email}`}>Email</a></li>
+          <li><a href={SITE.linkedin} rel="noopener">LinkedIn</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+      </section>
+      <section aria-labelledby="footer-site">
+        <h2 class="footer-heading" id="footer-site">Site</h2>
+        <ul>
+          <li><a href="/colophon/">Colophon</a></li>
+        </ul>
+        <ThemeToggle />
+      </section>
+    </div>
+  </div>
+  <div class="footer-legal">
     <p class="disclaimer">{SITE.disclaimer}</p>
     <p class="copyright">&copy; {year} {SITE.name}</p>
-  </div>
-  <div class="footer-side">
-    <ul>
-      <li><a href={`mailto:${SITE.email}`}>Email</a></li>
-      <li><a href={SITE.linkedin}>LinkedIn</a></li>
-      <li><a href="/rss.xml">RSS</a></li>
-    </ul>
-    <ThemeToggle />
   </div>
 </footer>

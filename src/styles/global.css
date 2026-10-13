@@ -266,8 +266,10 @@ a:hover {
 .now h2,
 .about .prose h2,
 .note-box-head,
-.toc-sheet-head {
+.toc-sheet-head,
+.footer-heading {
   color: var(--muted);
+  font-family: var(--font-body);
   font-size: var(--step-0);
   font-weight: 500;
   font-variant-caps: all-small-caps;
@@ -342,6 +344,9 @@ p {
 .site-name i {
   margin-right: 0.04em;
 }
+.site-name {
+  transition: color var(--dur-2) var(--ease);
+}
 .site-name:hover {
   color: var(--accent);
 }
@@ -381,32 +386,34 @@ p {
    Footer
 ------------------------------------------------------------------- */
 .site-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-4) var(--space-6);
   border-top: 1px solid var(--rule);
-  padding: var(--space-5) 0 var(--space-6);
+  padding: var(--space-6) 0;
   color: var(--muted);
   font-family: var(--font-ui);
   font-size: var(--step--1);
   line-height: 1.5;
 }
-.site-footer p {
-  margin: 0 0 0.35rem;
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-6) var(--space-7);
 }
-.site-footer .footer-main {
-  max-width: 42rem;
+.footer-brand .site-name {
+  display: inline-block;
+  padding: 0;
 }
-.site-footer .disclaimer {
-  font-family: var(--font-body);
-  font-size: var(--step-small);
-  font-style: italic;
+.footer-tagline {
+  margin: var(--space-1) 0 0;
+}
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--space-5) var(--space-6);
+}
+.footer-heading {
+  margin: 0 0 var(--space-2);
 }
 .site-footer ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-5);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -416,14 +423,31 @@ p {
   padding: 0.25rem 0; /* a taller target for fingers */
   color: var(--muted);
 }
-.site-footer a:hover {
+.site-footer .site-name {
+  color: var(--text);
+}
+.site-footer a:hover,
+.site-footer .site-name:hover {
   color: var(--accent);
 }
-.footer-side {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-3);
+.footer-legal {
+  max-width: 46rem;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--rule);
+}
+.footer-legal p {
+  margin: 0 0 0.35rem;
+}
+.footer-legal .disclaimer {
+  font-family: var(--font-body);
+  font-size: var(--step-small);
+  font-style: italic;
+}
+@media (max-width: 40rem) {
+  .footer-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .theme-toggle {
   display: flex;
@@ -444,20 +468,15 @@ p {
   cursor: pointer;
   transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
+.theme-toggle button:first-child {
+  padding-left: 0;
+}
 .theme-toggle button:hover {
   color: var(--text);
 }
 .theme-toggle button[aria-pressed='true'] {
   border-bottom-color: var(--text);
   color: var(--text);
-}
-@media (max-width: 40rem) {
-  .footer-side {
-    align-items: flex-start;
-  }
-  .theme-toggle button:first-child {
-    padding-left: 0;
-  }
 }
 
 /* ------------------------------------------------------------------
@@ -825,6 +844,7 @@ p {
 .post-what h3 a {
   color: var(--text);
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease);
 }
 .post-what h2 a:hover,
 .post-what h3 a:hover {
@@ -974,6 +994,16 @@ p {
 .video-facade:hover {
   border-color: var(--accent);
   color: var(--text);
+}
+.video-facade {
+  transition: border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.video-play {
+  transition: transform var(--dur-2) var(--ease);
+}
+.video-facade:hover .video-play,
+.video-facade:focus-visible .video-play {
+  transform: scale(1.07);
 }
 .video-play {
   position: relative;
@@ -1174,6 +1204,7 @@ p {
 .featured h3 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--dur-2) var(--ease);
 }
 .featured h3 a::after {
   content: '';
@@ -1820,7 +1851,8 @@ p {
   }
   .site-header nav,
   .site-footer ul,
-  .footer-side,
+  .footer-top,
+  .footer-signup,
   .newsletter,
   .toc,
   .toc-sheet,
@@ -1885,8 +1917,23 @@ p {
   /* The address of each outside link, so a reader of the paper can find it. A link that already shows its address is left alone. */
   .prose a[href^='http']:not([data-bare-url])::after {
     content: ' (' attr(href) ')';
+    display: inline;
+    width: auto;
+    height: auto;
+    margin-left: 0;
+    background: none;
+    opacity: 1;
+    -webkit-mask: none;
+    mask: none;
     font-size: 0.8em;
     word-break: break-all;
+  }
+  /* No marks on paper, only the printed addresses above. */
+  .prose a[data-bare-url]::after,
+  .prose a[href$='.pdf' i]:not([href^='http'])::after,
+  .sidenote a::after,
+  .note-box a::after {
+    content: none;
   }
   .prose p,
   .prose li {
@@ -1937,10 +1984,126 @@ p {
   }
 }
 /* ------------------------------------------------------------------
+   Link icons: a small mark after a link in an article says what it leads to.
+   They are drawn by the stylesheet alone (no script), hidden from screen readers, and left off on paper.
+   The kind is told from the address: the lists below are easy to extend.
+------------------------------------------------------------------- */
+:root {
+  --icon-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M8 7h9v9'/%3E%3C/svg%3E");
+  --icon-pdf: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h8l4 4v14H6zM14 3v4h4'/%3E%3C/svg%3E");
+  --icon-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18H6zM9.5 8h5M9.5 12h5M9.5 16h3'/%3E%3C/svg%3E");
+  --icon-case: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18M6 21h12M4 7h16M4 7l-2.5 6a3 3 0 0 0 5 0zM20 7l-2.5 6a3 3 0 0 0 5 0z'/%3E%3C/svg%3E");
+  --icon-statute: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-5.5L21 9M5.5 10v8M10 10v8M14 10v8M18.5 10v8M3 21h18'/%3E%3C/svg%3E");
+}
+/* The mark itself. A link with no kind below has nothing to draw. */
+:is(.prose, .sidenote, .note-box) a::after {
+  content: var(--link-mark, none);
+  display: inline-block;
+  width: 0.66em;
+  height: 0.66em;
+  margin-left: 0.3em;
+  background-color: currentColor;
+  opacity: 0.7;
+  vertical-align: 0.04em;
+  -webkit-mask: var(--link-icon, none) no-repeat center / contain;
+  mask: var(--link-icon, none) no-repeat center / contain;
+  transition: opacity var(--dur-2) var(--ease);
+}
+:is(.prose, .sidenote, .note-box) a:hover::after {
+  opacity: 1;
+}
+/* Any outside link gets the arrow... */
+:is(.prose, .sidenote, .note-box) a:where([href^='http']:not([href*='ordavidmenashe.com'])) {
+  --link-mark: '';
+  --link-icon: var(--icon-external);
+}
+/* ...unless it is a statute or regulation, a court opinion, a paper, or a PDF (later kinds win over earlier ones). */
+:is(.prose, .sidenote, .note-box)
+  a:is(
+    [href*='law.cornell.edu/uscode' i],
+    [href*='law.cornell.edu/cfr' i],
+    [href*='uscode.house.gov' i],
+    [href*='ecfr.gov' i],
+    [href*='federalregister.gov' i],
+    [href*='govinfo.gov/content/pkg/USCODE' i],
+    [href*='govinfo.gov/content/pkg/CFR' i],
+    [href*='govinfo.gov/content/pkg/PLAW' i],
+    [href*='govinfo.gov/content/pkg/STATUTE' i],
+    [href*='congress.gov' i],
+    [href*='sec.gov/rules' i],
+    [href*='leginfo.legislature.ca.gov' i],
+    [href*='eur-lex.europa.eu' i],
+    [href*='legislation.gov.uk' i]
+  ) {
+  --link-mark: '';
+  --link-icon: var(--icon-statute);
+}
+:is(.prose, .sidenote, .note-box)
+  a:is(
+    [href*='courtlistener.com' i],
+    [href*='casetext.com' i],
+    [href*='law.justia.com/cases' i],
+    [href*='supreme.justia.com' i],
+    [href*='cite.case.law' i],
+    [href*='static.case.law' i],
+    [href*='supremecourt.gov' i],
+    [href*='uscourts.gov' i],
+    [href*='scholar.google.com/scholar_case' i],
+    [href*='law.cornell.edu/supremecourt' i],
+    [href*='govinfo.gov/content/pkg/USCOURTS' i],
+    [href*='casemine.com' i]
+  ) {
+  --link-mark: '';
+  --link-icon: var(--icon-case);
+}
+:is(.prose, .sidenote, .note-box) a[href*='ssrn.com' i] {
+  --link-mark: '';
+  --link-icon: var(--icon-paper);
+}
+:is(.prose, .sidenote, .note-box) a:is([href$='.pdf' i], [href*='.pdf?' i], [href*='.pdf#' i]) {
+  --link-mark: '';
+  --link-icon: var(--icon-pdf);
+}
+/* The footnote numbers and their back arrows are not outside links. */
+:is(.prose, .sidenote, .note-box) a:is([data-footnote-ref], [data-footnote-backref], .sidenote-back)::after {
+  content: none;
+}
+
+/* ------------------------------------------------------------------
+   Moving between pages: a short fade. Browsers that do not support it just load the next page,
+   and anyone who asks their device for less motion gets no transition at all.
+------------------------------------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: page-out var(--dur-2) var(--ease) both;
+}
+::view-transition-new(root) {
+  animation: page-in var(--dur-3) var(--ease) both;
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* ------------------------------------------------------------------
    About, Contact and Videos
 ------------------------------------------------------------------- */
 .about h1,
 .contact-page h1,
+.colophon h1,
 .videos-page h1 {
   margin: var(--space-6) 0;
 }
@@ -2085,8 +2248,8 @@ p {
   font-style: italic;
 }
 .footer-signup {
-  flex: 1 0 100%;
-  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
   border-bottom: 1px solid var(--rule);
 }
 .newsletter-compact .newsletter-blurb {
