@@ -766,6 +766,21 @@ p {
 .prose figure {
   margin: 1.5em 0;
 }
+/* A picture or chart with its caption: <figure><img ...><figcaption>...</figcaption></figure> */
+.prose figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.prose figcaption {
+  margin-top: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: var(--muted);
+}
 /* A collapsible block in an article: a title line that opens and closes the text under it. */
 .prose details {
   margin: 1.6em 0;
