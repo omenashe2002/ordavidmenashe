@@ -718,6 +718,25 @@ p {
 .prose li {
   margin-bottom: 0.3em;
 }
+/* A list lettered (a), (b), (c), as in a list of recommendations: <ol class="lettered"> */
+.prose ol.lettered {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: lettered;
+}
+.prose ol.lettered > li {
+  position: relative;
+  padding-left: 2.4rem;
+  counter-increment: lettered;
+}
+.prose ol.lettered > li::before {
+  content: '(' counter(lettered, lower-alpha) ')';
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
 .prose blockquote {
   margin: 1.5em 0;
   padding: 0 0 0 1.25em;

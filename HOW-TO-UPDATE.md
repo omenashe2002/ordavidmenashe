@@ -10,6 +10,7 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 |---|---|
 | An article | `src/content/writing/` (one file per article) |
 | A video | `src/content/videos/` (one file per video) |
+| A designed paper (such as Who Pays When the Agent Pays?) | `src/papers/` (the page itself) and `src/content/writing/` (its summary page) |
 | A weekly newsletter issue | `src/content/newsletter/` (one file per issue) |
 | The short introduction on the Videos page, and the sentence at the top of the newsletter page (If Only I Knew) | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
 | The top of the Home page | `src/content/pages/home.md` |
@@ -107,6 +108,10 @@ Issues are numbered automatically in date order, so the first one is Issue 1 (a 
 - **Email, LinkedIn, footer disclaimer and the other lines in `site.ts`:** change only the words between the single quotation marks, and keep both quotation marks and the comma. Do not type a straight apostrophe (') inside the words, as in it's or doesn't. The site reads it as the end of the sentence and the build stops. Type the curly apostrophe instead (it’s, doesn’t), or reword. The LinkedIn address must start with https://; copy it from your browser's address bar while you are on your profile.
 - **Your photo** (it has a thin frame wherever it appears): open `src`, then `assets`, click **Add file**, then **Upload files**. GitHub keeps the file's name, so rename the new photo to exactly `or-menashe.jpg` on your computer first, then drop it in. It replaces the old one, and the Home page, About page and link-preview pictures all pick it up. It must be a real JPEG picture. A phone photo saved as HEIC stops the site from publishing, even if you rename the ending, so export it as JPEG first (in Photos or Preview, choose File, then Export). A portrait-shaped picture works best, about 4 across to 5 tall (for example 1000 by 1250 pixels, or larger). The site cuts it to that shape and keeps the top, so leave a little room above the head. A photo taken on a phone often carries the place and time it was taken inside the file. The website's own copies have that removed, but the file you upload stays in your public repository, and GitHub keeps every earlier version, so replacing it later does not erase it. Before you upload, take a screenshot of the photo and upload that instead, which carries none, or ask Claude to remove it first. If Vercel shows Error after a photo change, the picture is the likely cause.
 - **Delete an article or a video:** open the file, click the trash can icon, and commit. Do not delete `home.md`, `about.md`, `site.ts` or the photo. To remove something from those pages, edit the words instead.
+
+## A designed paper
+
+A paper that has its own design, figures or interactive parts, such as *Who Pays When the Agent Pays?*, is published in two pieces. The summary page, `src/content/writing/who-pays-when-the-agent-pays.md`, is an ordinary article: it appears in the Writing list, in search, in the RSS feed and in link previews, and it holds the authors, the executive summary and a link to the full paper. The full paper is the page `src/papers/who-pays-when-the-agent-pays.html`, published at `ordavidmenashe.com/papers/who-pays-when-the-agent-pays/`. It is a page of its own, with its own fonts (kept in `public/fonts/paper/`), so edit only its words there and ask Claude for anything else. A new paper needs its page, a small file under `src/pages/papers/` that publishes it, and a summary article, so ask Claude to set it up.
 
 ## Turn on the newsletter signup
 
