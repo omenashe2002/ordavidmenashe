@@ -12,8 +12,8 @@ const posts = await getPosts();
 const issues = await getIssues();
 const tags = tagsInUse(posts);
 const featured = posts.filter((post) => post.data.featured).slice(0, 2);
-// The "Selected writing" panels only make sense when there is other writing to set them apart from.
-const showFeatured = featured.length > 0 && posts.length > featured.length;
+// The "Selected writing" panels are shown whenever there are at least two articles; with a single article they would only repeat the list below.
+const showFeatured = featured.length > 0 && posts.length > 1;
 ---
 
 <BaseLayout title="Writing" description={`Articles, and the weekly newsletter ${SITE.newsletterName}, on digital assets, DeFi, AI, and law by Or Menashe.`} wide inlineSignup>

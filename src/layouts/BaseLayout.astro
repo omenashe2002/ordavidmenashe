@@ -36,6 +36,8 @@ interface Props {
   /** Whether site search covers this page, and the kind of page it is called in the results. */
   searchable?: boolean;
   searchKind?: string;
+  /** The address whose entry in the main menu is marked as the current one, when it is not the page's own (a paper belongs to Writing). */
+  menuPath?: string;
 }
 
 const {
@@ -54,6 +56,7 @@ const {
   inlineSignup = false,
   searchable = true,
   searchKind = 'Page',
+  menuPath,
 } = Astro.props;
 // Visitor counts (Vercel Web Analytics) are collected only on the live site, never on previews or on a local copy.
 const countVisits = process.env.VERCEL_ENV === 'production';
@@ -130,7 +133,7 @@ const jsonLd = structuredData.map((item) => JSON.stringify(item).replace(/</g, '
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header currentPath={Astro.url.pathname} />
+    <Header currentPath={menuPath ?? Astro.url.pathname} />
     <main id="main" class="wrap" data-pagefind-body={searchable && !noindex ? '' : undefined} data-pagefind-meta={`kind:${searchKind}`}>
       {
         wide ? (
