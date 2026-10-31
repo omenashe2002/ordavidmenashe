@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="The Agentic Liability Channeling Framework (ALCF) for hijacked AI agents: who bears the loss when an AI agent is tricked into paying the wrong party, and how a bond, an attestation and an insurance pool fix it.">
+<title>Who Pays When the Agent Pays? | Or David Menashe</title>
+<link rel="canonical" href="https://ordavidmenashe.com/papers/who-pays-when-the-agent-pays/">
+<meta name="author" content="Or David Menashe, Zach Zager, Jake Weintraub">
+<meta property="og:site_name" content="Or Menashe">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Who Pays When the Agent Pays?">
+<meta property="og:description" content="The Agentic Liability Channeling Framework (ALCF) for hijacked AI agents: who bears the loss when an AI agent is tricked into paying the wrong party, and how a bond, an attestation and an insurance pool fix it.">
+<meta property="og:url" content="https://ordavidmenashe.com/papers/who-pays-when-the-agent-pays/">
+<meta property="og:image" content="https://ordavidmenashe.com/og/who-pays-when-the-agent-pays.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Who Pays When the Agent Pays?">
+<meta name="twitter:description" content="The Agentic Liability Channeling Framework (ALCF) for hijacked AI agents: who bears the loss when an AI agent is tricked into paying the wrong party, and how a bond, an attestation and an insurance pool fix it.">
+<meta name="twitter:image" content="https://ordavidmenashe.com/og/who-pays-when-the-agent-pays.png">
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1218" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<!--analytics-->
+<style>
+/* Newsreader and IBM Plex (SIL Open Font License), served from this site. */
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/paper/newsreader-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:italic;font-weight:400;font-display:swap;src:url(/fonts/paper/newsreader-latin-400-italic.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/paper/newsreader-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/paper/newsreader-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/paper/ibm-plex-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/paper/ibm-plex-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/paper/ibm-plex-sans-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/paper/ibm-plex-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/paper/ibm-plex-mono-latin-500-normal.woff2) format("woff2")}
+</style>
+<style>
+/* Layout: a single reading column (~68ch) for the paper's text; figures break out to a wider measure. Amber = liability, blue = payment, teal = shield, red = anchor, as in the deck and the simulator. */
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --panel2:#eef0f4; --fg:#161a24; --muted:#5d6472; --line:#d8dce4;
+  --ink:#1f3a68; --askbg:#1f3a68;
+  --charge:#b8701a; --charge-soft:rgba(184,112,26,.13); --shield:#17869a; --shield-soft:rgba(23,134,154,.12);
+  --anchor:#bd3b3b; --anchor-soft:rgba(189,59,59,.12); --pool:#3458b8; --pool-soft:rgba(52,88,184,.12); --pool2:#6f4fc4;
+  --node:#ffffff; --node-line:#b9c0cf; --own:#8d94a3; --cp:#c9a227;
+  --display:"Newsreader",Georgia,"Times New Roman",serif; --body:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif; --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1218; --panel:#161b25; --panel2:#1c2230; --fg:#e8e6df; --muted:#9299a8; --line:#283040;
+  --ink:#9db4e0; --askbg:#1c2230;
+  --charge:#f0a43c; --charge-soft:rgba(240,164,60,.16); --shield:#5fd3e3; --shield-soft:rgba(95,211,227,.14);
+  --anchor:#ef5f5f; --anchor-soft:rgba(239,95,95,.16); --pool:#7da4ff; --pool-soft:rgba(125,164,255,.16); --pool2:#b59cff;
+  --node:#1b2232; --node-line:#36425c; --own:#6b7385; --cp:#e7c76a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1218; --panel:#161b25; --panel2:#1c2230; --fg:#e8e6df; --muted:#9299a8; --line:#283040;
+  --ink:#9db4e0; --askbg:#1c2230;
+  --charge:#f0a43c; --charge-soft:rgba(240,164,60,.16); --shield:#5fd3e3; --shield-soft:rgba(95,211,227,.14);
+  --anchor:#ef5f5f; --anchor-soft:rgba(239,95,95,.16); --pool:#7da4ff; --pool-soft:rgba(125,164,255,.16); --pool2:#b59cff;
+  --node:#1b2232; --node-line:#36425c; --own:#6b7385; --cp:#e7c76a; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:18px;line-height:1.6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 80px}
+.page{max-width:1120px;margin:0 auto}
+.col{max-width:70ch;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);font-weight:500;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.1rem,5vw,3.4rem);letter-spacing:-.01em}
+h2{font-size:1.75rem;margin-top:2.6rem;margin-bottom:.9rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+h2 .num{font-family:var(--mono);font-size:.8rem;letter-spacing:.12em;color:var(--muted);display:block;margin-bottom:.4rem;font-weight:400}
+h3{font-size:1.3rem;margin:1.8rem 0 .5rem}
+p{margin:0 0 1.05rem}
+a{color:var(--pool);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--charge)}
+sup.fn{font-family:var(--sans);font-size:.62em;line-height:0;vertical-align:baseline;position:relative;top:-.55em;margin-left:1px}
+sup.fn a{text-decoration:none;color:var(--charge);font-weight:600;padding:0 2px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header.hero{display:flex;flex-direction:column;gap:14px;padding-bottom:28px;margin-bottom:12px;border-bottom:2px solid var(--fg)}
+header .sub{font-family:var(--display);font-size:1.35rem;font-style:italic;color:var(--muted);max-width:40ch}
+.byline{display:flex;flex-wrap:wrap;gap:6px 28px;font-family:var(--sans);font-size:.92rem;color:var(--muted)}
+.byline b{font-weight:600;color:var(--fg)}
+ol.recs{margin:0 0 1.05rem;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+ol.recs li{display:grid;grid-template-columns:2.2rem 1fr;gap:6px}
+ol.recs li .k{font-family:var(--mono);color:var(--charge);font-size:.85rem;padding-top:.3rem}
+
+/* figures */
+figure{margin:1.8rem 0 2rem;max-width:1120px;margin-left:auto;margin-right:auto}
+figure.wide{width:min(100%,1120px)}
+figcaption{font-family:var(--sans);font-size:.84rem;color:var(--muted);margin-top:10px;max-width:80ch}
+figcaption b{color:var(--fg);font-weight:600}
+.frame{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;overflow-x:auto}
+.frame svg{width:100%;height:auto;display:block;min-width:560px}
+.frame.tight svg{min-width:0}
+svg text{font-family:var(--sans)}
+.sv-t{font-size:15px;font-weight:600;fill:var(--fg)}
+.sv-s{font-size:11.5px;fill:var(--muted)}
+.sv-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;fill:var(--muted)}
+.sv-amber{fill:var(--charge)} .sv-blue{fill:var(--pool)} .sv-red{fill:var(--anchor)} .sv-teal{fill:var(--shield)}
+.bx{fill:var(--panel);stroke:var(--node-line);stroke-width:1.3}
+.bx.amber{fill:var(--charge-soft);stroke:var(--charge)}
+.bx.blue{fill:var(--pool-soft);stroke:var(--pool)}
+.bx.red{fill:var(--anchor-soft);stroke:var(--anchor)}
+.bx.teal{fill:var(--shield-soft);stroke:var(--shield)}
+.ar{fill:none;stroke:var(--charge);stroke-width:2}
+.ar.blue{stroke:var(--pool)} .ar.dash{stroke-dasharray:5 5} .ar.grey{stroke:var(--node-line)} .ar.red{stroke:var(--anchor)}
+.big{font-family:var(--display);font-size:40px;fill:var(--fg)}
+
+/* summary strip and tables */
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.strip div{background:var(--panel);padding:14px 14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.strip h4{font-size:1.05rem}
+.strip p{font-family:var(--sans);font-size:.86rem;color:var(--muted);margin:0;line-height:1.45}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.9rem;line-height:1.45}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td:first-child{font-family:var(--display);font-size:1.05rem;white-space:nowrap}
+.tbl{overflow-x:auto}
+.tbl table{min-width:640px}
+
+/* shields cards */
+.ref{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.rc{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.rc .pos{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--charge)}
+.rc .pos.out{color:var(--muted)}
+.rc h4{font-size:1.35rem}
+.rc .blk{display:flex;flex-direction:column;gap:3px}
+.rc .blk .t{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase}
+.rc .blk.s .t{color:var(--shield)} .rc .blk.a .t{color:var(--anchor)} .rc .blk.f .t{color:var(--pool)}
+.rc ul{margin:0;padding-left:16px;font-family:var(--sans);font-size:.84rem;color:var(--muted)}
+.rc li{margin:2px 0}
+.rc p{font-family:var(--sans);font-size:.84rem;color:var(--muted);margin:0}
+
+/* payment example */
+.ex{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.exc{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.exc h4{font-size:1.15rem}
+.bar{display:flex;height:34px;border-radius:3px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.seg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.74rem;color:#0b0e14;white-space:nowrap;overflow:hidden;transition:flex-grow .35s ease}
+@media (prefers-reduced-motion:reduce){.seg{transition:none}}
+.seg.developer{background:var(--charge)} .seg.inter{background:var(--shield)} .seg.cp{background:var(--cp)}
+.seg.bond{background:var(--pool)} .seg.pool{background:var(--pool2)} .seg.user{background:var(--anchor)} .seg.own{background:var(--own)}
+.seg.bond,.seg.pool,.seg.user{color:#fff}
+.exc p{font-family:var(--sans);font-size:.86rem;color:var(--muted);margin:0}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.66rem;color:var(--muted);margin-top:-4px}
+
+/* treasury */
+.tre{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+.tre .rows{display:flex;flex-direction:column}
+.tre .row{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tre .row:last-child{border-bottom:0}
+.tre .row h4{font-size:1.1rem}
+.tre .row p{font-family:var(--sans);font-size:.88rem;color:var(--muted);margin:0}
+.ask{background:var(--askbg);color:#fff;border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.ask h4{font-size:1.3rem;color:#fff}
+.ask p{font-family:var(--sans);font-size:.9rem;margin:0;color:rgba(255,255,255,.85)}
+.ask p span{color:var(--charge);font-weight:600}
+
+/* notes */
+ol.notes{padding-left:0;list-style:none;counter-reset:n;display:flex;flex-direction:column;gap:9px;font-family:var(--sans);font-size:.88rem;color:var(--muted);line-height:1.5}
+ol.notes li{display:grid;grid-template-columns:2rem 1fr;gap:8px}
+ol.notes li .n{font-family:var(--mono);color:var(--charge);font-size:.8rem;padding-top:2px}
+ol.notes li .n a{color:inherit;text-decoration:none}
+ol.notes li:target{background:var(--charge-soft);border-radius:4px;padding:4px 6px;margin:-4px -6px}
+ol.notes a{word-break:break-word}
+.back{text-decoration:none;color:var(--muted);margin-left:6px}
+
+/* ===== Simulator (ported from the ALCF Liability Flow artifact) ===== */
+.sim{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:16px}
+.sim .lede{font-family:var(--sans);font-size:.92rem;color:var(--muted);max-width:90ch;margin:0}
+.stage{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+.diagram{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0;overflow-x:auto}
+.diagram svg{width:100%;height:auto;display:block;min-width:560px}
+.payout{margin:6px;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-family:var(--sans)}
+.payhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.payhead .v{font-family:var(--display);font-size:1.25rem}
+.paylist{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.84rem}
+.paylist span{display:inline-flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums}
+.paylist i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.why{font-size:.86rem;color:var(--muted);margin:0}
+.controls{display:flex;flex-direction:column;gap:12px;min-width:0;font-family:var(--sans)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.card.active{border-color:var(--charge);box-shadow:0 0 0 1px var(--charge-soft),0 0 24px var(--charge-soft)}
+.card .head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.card .head h4{font-size:1.2rem}
+.card .head .st{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right}
+.st.holds{color:var(--shield)} .st.rests{color:var(--charge)} .st.anch{color:var(--anchor)}
+.grp{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.grp.s{color:var(--shield)} .grp.a{color:var(--anchor)}
+label.tg{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;font-size:.86rem;cursor:pointer;padding:3px 0}
+label.tg input{appearance:none;width:34px;height:18px;border-radius:9px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .15s}
+label.tg input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--fg);transition:transform .15s}
+label.tg input:checked{background:var(--shield)}
+label.tg input:checked::after{transform:translateX(16px);background:#06202a}
+label.tg.a input:checked{background:var(--anchor)}
+label.tg.a input:checked::after{background:#2a0a0a}
+label.tg input:disabled{opacity:.4;cursor:not-allowed}
+label.tg:has(input:disabled){color:var(--muted);cursor:not-allowed}
+label.tg input:focus-visible{outline:2px solid var(--charge);outline-offset:2px}
+.note{font-size:.78rem;color:var(--pool);background:var(--pool-soft);border-radius:4px;padding:6px 9px}
+.flowto{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:6px;margin-top:2px}
+.segc{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;width:100%}
+.segc button{flex:1;background:transparent;border:0;border-right:1px solid var(--line);color:var(--muted);font:inherit;font-size:.82rem;line-height:1.25;padding:7px 4px;cursor:pointer}
+.segc button:last-child{border-right:0}
+.segc button[aria-pressed="true"]{background:var(--charge-soft);color:var(--charge)}
+.segc button:focus-visible{outline:2px solid var(--charge);outline-offset:-2px}
+.amt{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.amt input[type=range]{width:100%;accent-color:var(--charge)}
+.amt output{font-family:var(--mono);font-size:.9rem;font-variant-numeric:tabular-nums;min-width:8ch;text-align:right}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button{background:transparent;border:1px solid var(--line);color:var(--muted);font:inherit;font-size:.78rem;padding:5px 10px;border-radius:999px;cursor:pointer}
+.presets button:hover{color:var(--fg);border-color:var(--node-line)}
+.presets button:focus-visible{outline:2px solid var(--charge);outline-offset:2px}
+.reset{align-self:flex-start;background:transparent;border:1px solid var(--line);color:var(--muted);font:inherit;font-size:.8rem;padding:6px 12px;border-radius:4px;cursor:pointer}
+.reset:hover{color:var(--fg)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:-6px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;background:transparent;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted);font:inherit;font-size:.86rem;padding:9px 12px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--charge)}
+.tab:focus-visible{outline:2px solid var(--charge);outline-offset:-2px}
+.tab .dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none}
+.tab .dot.holds{background:var(--shield)} .tab .dot.rests{background:var(--charge);box-shadow:0 0 8px var(--charge)} .tab .dot.anch{background:var(--anchor)}
+.chan{fill:none;stroke:var(--node-line);stroke-width:2;stroke-dasharray:4 6;opacity:.5}
+.chan.live{stroke:var(--charge);stroke-width:4;stroke-dasharray:10 8;opacity:1;filter:drop-shadow(0 0 6px var(--charge));animation:flow 1.1s linear infinite}
+.pay{fill:none;stroke:var(--pool);stroke-width:1.2;stroke-dasharray:2 7;opacity:.18}
+.pay.live{stroke-width:3;stroke-dasharray:3 7;opacity:1;filter:drop-shadow(0 0 6px var(--pool));animation:flow 1.1s linear infinite}
+.ctl{fill:none;stroke:var(--node-line);stroke-width:1.2;opacity:.7}
+.txp{fill:none;stroke:var(--muted);stroke-width:1.5;opacity:.6}
+.tx{fill:var(--shield)} .tx.bad{fill:var(--anchor)}
+@keyframes flow{to{stroke-dashoffset:-36}}
+@media (prefers-reduced-motion:reduce){.chan.live,.pay.live{animation:none}.tx{display:none}}
+.nd .ring{fill:var(--node);stroke:var(--node-line);stroke-width:1.5}
+.nd .lbl{font-family:var(--display);font-size:22px;fill:var(--fg);text-anchor:middle}
+.nd .sub{font-family:var(--mono);font-size:9.5px;fill:var(--muted);text-anchor:middle;letter-spacing:.08em}
+.nd .shieldArc{fill:none;stroke:var(--shield);stroke-width:5;stroke-linecap:round;opacity:.15}
+.nd.holds .shieldArc{opacity:1;filter:drop-shadow(0 0 6px var(--shield))}
+.nd .anchorG{opacity:.15}
+.nd.anch .anchorG{opacity:1;filter:drop-shadow(0 0 6px var(--anchor))}
+.nd .anchorG path{stroke:var(--anchor);stroke-width:2.5;fill:none;stroke-linecap:round}
+.nd.liable .ring{stroke:var(--charge);stroke-width:3;fill:var(--charge-soft);filter:drop-shadow(0 0 16px var(--charge))}
+.nd.payer .ring{stroke:var(--pool);stroke-width:3}
+.nd{cursor:pointer}
+.agent .core{fill:var(--charge);filter:drop-shadow(0 0 14px var(--charge))}
+.agent .halo{fill:none;stroke:var(--charge);opacity:.35;animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{r:24;opacity:.5}100%{r:56;opacity:0}}
+@media (prefers-reduced-motion:reduce){.agent .halo{animation:none;opacity:.2}}
+.agent .lbl{font-family:var(--mono);font-size:10px;fill:var(--muted);text-anchor:middle;letter-spacing:.1em}
+.badge rect{fill:var(--shield-soft);stroke:var(--shield);stroke-width:1.2}
+.badge text{font-family:var(--mono);font-size:9px;fill:var(--shield);text-anchor:middle;letter-spacing:.06em}
+.badge.bad rect{fill:var(--anchor-soft);stroke:var(--anchor)} .badge.bad text{fill:var(--anchor)}
+.box rect{fill:transparent;stroke:var(--pool);stroke-width:1.5;stroke-dasharray:3 5;opacity:.55}
+.box.live rect{fill:var(--pool-soft);stroke-dasharray:none;stroke-width:2.5;opacity:1;filter:drop-shadow(0 0 12px var(--pool))}
+.box.off{opacity:.3}
+.box .t{font-family:var(--display);font-size:19px;fill:var(--pool);text-anchor:middle}
+.box .s{font-family:var(--mono);font-size:9px;fill:var(--muted);text-anchor:middle;letter-spacing:.06em}
+.box .amtx{font-family:var(--mono);font-size:11px;fill:var(--fg);text-anchor:middle}
+#b-pool .t{fill:var(--pool2)}
+.victim rect{fill:var(--panel2);stroke:var(--node-line);stroke-width:1.5}
+.victim .t{font-family:var(--display);font-size:21px;fill:var(--fg);text-anchor:middle}
+.victim .s{font-family:var(--mono);font-size:9.5px;fill:var(--muted);text-anchor:middle;letter-spacing:.06em}
+.gate rect{fill:none;stroke:var(--node-line);stroke-dasharray:2 6;stroke-width:1.2}
+.gate text,.colhead{font-family:var(--mono);font-size:9.5px;fill:var(--muted);letter-spacing:.12em}
+.colhead.amber{fill:var(--charge)}
+.legend .bg{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.legend text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.legend tspan.k{font-weight:500;fill:var(--fg)}
+.legend line{stroke-width:4;stroke-linecap:round}
+.legend .lc{stroke:var(--charge)} .legend .lp{stroke:var(--pool);stroke-dasharray:3 5} .legend .ls{stroke:var(--shield)} .legend .la{stroke:var(--anchor)}
+
+@media (max-width:1020px){
+  .stage{grid-template-columns:1fr}
+  .ref{grid-template-columns:1fr 1fr}
+  .strip{grid-template-columns:1fr 1fr}
+  .tre{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  .ref{grid-template-columns:1fr}
+  .strip{grid-template-columns:1fr}
+  .ex{grid-template-columns:1fr}
+  .tre .row{grid-template-columns:1fr;gap:4px}
+}
+
+.sitebar{display:flex;flex-wrap:wrap;gap:.2rem .7rem;margin:0 0 1.4rem;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sitebar a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sitebar a:hover{text-decoration-thickness:2px}
+
+/* Added for this site: text in the amber and teal accents is darker on the light page, and dark text sits on the pale bars in the dark theme, so every label is readable. */
+:root{--charge-ink:#8f5510;--shield-ink:#0e6f80}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--charge-ink:var(--charge);--shield-ink:var(--shield)}}
+:root[data-theme="dark"]{--charge-ink:var(--charge);--shield-ink:var(--shield)}
+sup.fn a,ol.recs li .k,ol.notes li .n,.rc .pos,.segc button[aria-pressed="true"]{color:var(--charge-ink)}
+.rc .pos.out{color:var(--muted)}
+.rc .blk.s .t,.grp.s{color:var(--shield-ink)}
+.ask p span{color:#f2b65f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg.bond,:root:not([data-theme="light"]) .seg.pool,:root:not([data-theme="light"]) .seg.user{color:#0f1218}}
+:root[data-theme="dark"] .seg.bond,:root[data-theme="dark"] .seg.pool,:root[data-theme="dark"] .seg.user{color:#0f1218}
+</style>
+</head>
+<body>
+
+<main class="page" id="main" data-pagefind-body data-pagefind-meta="kind:Paper">
+<div class="col">
+<nav class="sitebar" aria-label="Back to the site" data-pagefind-ignore><a href="/writing/who-pays-when-the-agent-pays/">&larr; Summary</a><span aria-hidden="true">&middot;</span><a href="/writing/">Writing</a><span aria-hidden="true">&middot;</span><a href="/">Or Menashe</a></nav>
+<header class="hero">
+  <span class="eyebrow">Paul Hastings Fintech Crypto Legal Hackathon · Team Agent of Register · November 2026</span>
+  <h1>Who Pays When the Agent Pays?</h1>
+  <p class="sub">The Agentic Liability Channeling Framework for Hijacked AI Agents<sup class="fn"><a href="#fn1" id="ref1">1</a></sup></p>
+  <div class="byline">
+    <span><b>Or David Menashe</b> · Fordham University School of Law</span>
+    <span><b>Zach Zager</b> · Brooklyn Law School</span>
+    <span><b>Jake Weintraub</b> · Brooklyn Law School</span>
+  </div>
+</header>
+
+<h2><span class="num">I</span>Executive Summary</h2>
+<p>Commercial law assumes a human at the end of the liability chain. Payments law presumes a human behind every transfer and sorts each transaction as either authorized or unauthorized. In 2026, that assumption is degrading. In our hypothetical example below, Meridian Capital’s AI agent was told to pay $5 million on a confirmed trade. It read a forged confirmation and sent $40 million to an attacker. The transfer was authorized in form but unauthorized in substance, and no existing regime, whether Regulation E, UCC Article 4A, agency law, Uniform Electronic Transactions Act (UETA), or the GENIUS Act, addresses who bears that loss.</p>
+<p>This paper proposes the Agentic Liability Channeling Framework (“ALCF”). Under the ALCF, liability begins with the product developer and flows to the User, and each can shield itself through reasonable ex ante conduct: clear disclosure and real controls for developers, and transaction limits and human verification for Users. Before an agent can transact, its User posts a bond with an Agentic Collateral Trustee sized to what the agent can reach, and the Trustee issues a Bond Attestation that the agent carries into every transaction, which is the ALCF’s answer to “know your agent.” Separately, the Trustee places the posted collateral in a vault or other investment vehicle tied to low- or no-risk, yield-paying instruments, with a portion of yield being used to fund the insurance pool. The Trustee screens the User, and the intermediary screens the payee. Intermediaries and counterparties are only liable where they fail to take reasonable action, knew or should have known they were dealing with a rogue agent, ignored the attestation, or took part in wrongdoing. Harmed parties are always paid. They collect first from the User’s bond, then from any party that failed a shield, jointly and severally. Where every party acted reasonably, a market-wide insurance pool pays the loss and restores the User’s bond. We propose that the Department of the Treasury administer the regime under an amendment to the GENIUS Act.</p>
+</div>
+
+<figure class="wide">
+  <div class="strip">
+    <div><span class="eyebrow">The problem</span><h4 aria-level="3">Authorized in form, unauthorized in substance</h4><p>A hijacked agent’s transfer is both. No existing regime says who bears the loss.</p></div>
+    <div><span class="eyebrow">Shields</span><h4 aria-level="3">Liability flows developer to User</h4><p>Each earns a shield by reasonable conduct taken in advance.</p></div>
+    <div><span class="eyebrow">Bond and attestation</span><h4 aria-level="3">Bond the User, attest the agent</h4><p>A bond sized to the agent’s reach, held by a Trustee; the agent carries the attestation into every transaction.</p></div>
+    <div><span class="eyebrow">Order of payment</span><h4 aria-level="3">Harmed parties are always paid</h4><p>First the bond, then any party that failed a shield. Where every party acted reasonably, the pool pays and restores the bond.</p></div>
+    <div><span class="eyebrow">Who runs it</span><h4 aria-level="3">The Department of the Treasury</h4><p>Under an amendment to the GENIUS Act.</p></div>
+  </div>
+  <figcaption><b>The framework in five parts.</b> Bond the User, attest the agent, channel the payment.</figcaption>
+</figure>
+
+<div class="col">
+<p>In the absence of regulation, we recommend the following.</p>
+<ol class="recs">
+  <li><span class="k">(a)</span><span>Developers should prioritize transparency: disclose risks of AI and bad actors, treat external data as untrusted by design, give Users a kill switch, and keep decision logs.</span></li>
+  <li><span class="k">(b)</span><span>Users, particularly large financial institutions, should never give an agent authority beyond what the transaction requires, and always build in human verification layers. Users should fund agent wallets per transaction, allowlist counterparties, and require human approval above a set amount.</span></li>
+  <li><span class="k">(c)</span><span>Intermediaries should offer the guardrail tools the ALCF requires now: allowlists, per-transaction limits, verification thresholds, and immediate halts.</span></li>
+  <li><span class="k">(d)</span><span>Wallet providers should also define by contract what happens when an agent is compromised, rather than relying on a transfer being authorized in form.</span></li>
+  <li><span class="k">(e)</span><span>Counterparties should ask for evidence that an agent is backed by posted collateral before transacting at size and, where possible, settle delivery versus payment.</span></li>
+  <li><span class="k">(f)</span><span>Issuers should treat the GENIUS Act freeze capability as an operational process that responds within minutes, not as a compliance checkbox.</span></li>
+  <li><span class="k">(g)</span><span>Treasury should solicit comment on agent attestation standards now, on its own authority, and Congress should amend the GENIUS Act to give Treasury the authority to designate Agentic Collateral Trustees, set bond standards, and administer the insurance pool, its assessments and premiums, and its backstop, and to require issuers to act on certified freeze requests and protect those that freeze in good faith.</span></li>
+</ol>
+
+<h2><span class="num">II</span>Introduction</h2>
+<p>Meridian Capital, an institutional investor, agrees to buy 50,000 tokenized shares from Harbor Securities LLC, with settlement in SCD, a GENIUS Act payment stablecoin issued by StableCo. Meridian does not run settlement itself. It uses Agent X, an AI agent built by AgentCo. Agent X operates through a wallet run by WalletCo, and Meridian gives it one job: pay Harbor $5 million in SCD once BridgeCo, the messaging protocol carrying the shares across chains, confirms the shares were delivered. Because the shares and the SCD sit on different chains, the trade cannot settle atomically. Before the real confirmation arrives, Attacker Z sends Meridian a forged confirmation built to look like a BridgeCo message, with hidden instructions written for Agent X stating that delivery is complete, the settlement address has changed, and the full wallet balance should go to the new address. Agent X reads the forged confirmation the way it reads every confirmation. It cannot reliably tell data from instructions, so it follows them.</p>
+<p>Agent X sends Meridian’s entire balance, $40 million in SCD, to Z’s address. WalletCo approves the transaction because the request came from the agent Meridian authorized, using the credentials Meridian provisioned, within the policy limits Meridian set. Nothing in the chain of approvals looks wrong. Within minutes, Z moves the SCD through a series of fresh wallets. Then the real BridgeCo confirmation arrives. Harbor has delivered the shares but goes unpaid. Meridian still owes Harbor under the trade, and the wallet that was supposed to pay it is empty.</p>
+</div>
+
+<figure class="wide">
+  <div class="frame" tabindex="0" role="group" aria-label="The hypothetical">
+    <svg viewBox="0 0 1000 400" aria-label="Map of the hypothetical: Meridian, Agent X, WalletCo, Harbor, BridgeCo and Attacker Z">
+      <text class="sv-l" x="20" y="24">THE SETTLEMENT</text>
+      <text class="sv-s" x="190" y="24" style="font-style:italic;fill:var(--charge)">one job: pay Harbor $5M in SCD once BridgeCo confirms the shares were delivered</text>
+      <!-- top row -->
+      <g><rect class="bx" x="20" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="115" y="66" text-anchor="middle">Meridian Capital</text><text class="sv-s" x="115" y="86" text-anchor="middle">institutional investor (User)</text></g>
+      <path class="ar grey" d="M210 72 H246"/><path class="ar grey" d="M240 66 L250 72 L240 78 Z" style="fill:var(--node-line)"/>
+      <g><rect class="bx" x="250" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="345" y="66" text-anchor="middle">Agent X</text><text class="sv-s" x="345" y="86" text-anchor="middle">built by AgentCo (developer)</text></g>
+      <path class="ar grey" d="M440 72 H476"/><path d="M470 66 L480 72 L470 78 Z" style="fill:var(--node-line)"/>
+      <g><rect class="bx" x="480" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="575" y="66" text-anchor="middle">WalletCo</text><text class="sv-s" x="575" y="86" text-anchor="middle">runs the wallet (intermediary)</text></g>
+      <path class="ar dash grey" d="M670 72 H706"/><path d="M700 66 L710 72 L700 78 Z" style="fill:var(--node-line)"/>
+      <g><rect class="bx blue" x="710" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="805" y="66" text-anchor="middle">Harbor Securities</text><text class="sv-s" x="805" y="86" text-anchor="middle">seller of 50,000 tokenized shares</text></g>
+      <!-- bridge -->
+      <path class="ar dash grey" d="M805 104 V150"/>
+      <g><rect class="bx" x="710" y="152" width="190" height="56" rx="4"/><text class="sv-t" x="805" y="175" text-anchor="middle">BridgeCo</text><text class="sv-s" x="805" y="194" text-anchor="middle">carries the shares across chains</text></g>
+      <text class="sv-s" x="805" y="226" text-anchor="middle" style="fill:var(--pool);font-style:italic">the real confirmation arrives after the money is gone</text>
+      <!-- approval note -->
+      <text class="sv-s" x="588" y="150" style="fill:var(--charge)">approved: the authorized agent,</text>
+      <text class="sv-s" x="588" y="166" style="fill:var(--charge)">Meridian’s credentials, within</text>
+      <text class="sv-s" x="588" y="182" style="fill:var(--charge)">Meridian’s limits</text>
+      <!-- hijack -->
+      <text class="sv-l" x="20" y="250">THE HIJACK</text>
+      <g><rect class="bx red" x="20" y="266" width="250" height="90" rx="4"/><text class="sv-t" x="145" y="292" text-anchor="middle">Attacker Z</text><text class="sv-s" x="145" y="312" text-anchor="middle">pseudonymous; a forged BridgeCo message:</text><text class="sv-s" x="145" y="328" text-anchor="middle">delivery complete, address changed,</text><text class="sv-s" x="145" y="344" text-anchor="middle">send the full balance</text></g>
+      <path class="ar red" d="M270 300 C 310 300, 310 72, 345 104" style="fill:none"/>
+      <text class="sv-s" x="325" y="236" style="fill:var(--anchor);font-style:italic">hidden instructions</text>
+      <path class="ar red" d="M575 104 V266"/><path d="M569 258 L575 270 L581 258 Z" style="fill:var(--anchor)"/>
+      <g><rect class="bx red" x="455" y="270" width="240" height="70" rx="4"/><text class="sv-t" x="575" y="298" text-anchor="middle">$40M in SCD to Z</text><text class="sv-s" x="575" y="318" text-anchor="middle">moved through fresh wallets within minutes</text></g>
+      <!-- what is left -->
+      <text class="sv-l" x="740" y="250">WHAT IS LEFT</text>
+      <text class="big sv-red" x="740" y="298">$40M</text><text class="sv-s" x="740" y="318">gone; under current law Meridian bears it</text>
+      <text class="big sv-blue" x="740" y="360">$5M</text><text class="sv-s" x="740" y="380">owed to Harbor, which delivered and goes unpaid</text>
+      <text class="sv-s" x="20" y="388" style="font-style:italic">Every company in the hypothetical is fictional. StableCo, the SCD issuer, may be able to freeze the stolen tokens if someone asks in time.</text>
+    </svg>
+  </div>
+  <figcaption><b>The hypothetical.</b> One forged message turned a $5 million payment into a $40 million loss, and nothing in the chain of approvals looked wrong.</figcaption>
+</figure>
+
+<div class="col">
+<p>Z is pseudonymous. It is a wallet address with no name, no known jurisdiction, and no reachable assets except the stolen SCD, which is still moving. Every other party is findable. Meridian chose to deploy Agent X and set its limits. AgentCo built an agent that could not tell a confirmation from a command. WalletCo approved the transfer. BridgeCo carried the real message, and Z forged its format. StableCo may be able to freeze the stolen tokens if someone asks in time. Harbor did everything right and carries the loss until someone pays it.</p>
+<p>Who ought to bear the $40 million loss? Under current law, Meridian does, and it still owes Harbor. Agent X’s transfer was both authorized and unauthorized. It was authorized in form, because it came from the agent Meridian deployed, using Meridian’s credentials, within Meridian’s limits. It was unauthorized in substance, because Meridian never intended to pay Z. Current law has no category for that transfer, so it defaults to the form and leaves the loss with Meridian.</p>
+<p>A patchwork of agencies, statutes, regulations, and federal and state common law, all built for human-driven finance, regulates digital assets ex post by analogy. As the technology outpaces Congress and regulators, the analogy degrades. Congress enacted the GENIUS Act in July 2025<sup class="fn"><a href="#fn2" id="ref2">2</a></sup> to establish rules for stablecoin issuance, but did not address other market issues such as agentic finance. The SEC issued its innovation exemption for tokenized securities venues<sup class="fn"><a href="#fn3" id="ref3">3</a></sup> on September 17, 2026. The Clarity Act failed on September 15, 2026,<sup class="fn"><a href="#fn4" id="ref4">4</a></sup> leaving the SEC and CFTC to regulate under their existing authority. Jurisdiction over a single agentic transaction is spread across the SEC, CFTC, OCC, Federal Reserve, FDIC, FinCEN, OFAC, CFPB, and state money transmission regulators. None of them allocates loss when an agent is hijacked. The mechanism best placed to reach the money, the GENIUS Act’s freeze capability, which applies only to stablecoins and not any unpegged digital asset, is a way to recover funds, not a rule for allocating the loss.</p>
+<p>This gap matters now because agents are already transacting. In November 2024, a user convinced the AI agent Freysa to release a $47,000 prize pool by redefining how it understood its transfer function.<sup class="fn"><a href="#fn5" id="ref5">5</a></sup> By late 2025, Mastercard was enabling U.S. cardholders for Mastercard Agent Pay,<sup class="fn"><a href="#fn6" id="ref6">6</a></sup> Stripe’s Agentic Commerce Protocol<sup class="fn"><a href="#fn7" id="ref7">7</a></sup> was powering live purchases, and Coinbase’s x402 protocol<sup class="fn"><a href="#fn8" id="ref8">8</a></sup> let agents pay onchain. Attacks have followed. In April 2026, researchers claimed that compromised LLM routers were injecting malicious instructions into agent traffic,<sup class="fn"><a href="#fn9" id="ref9">9</a></sup> and that one had drained a client’s $500,000 wallet.<sup class="fn"><a href="#fn10" id="ref10">10</a></sup> This paper asks what federal regulatory change is needed to enable recovery when harm occurs.</p>
+
+<h2><span class="num">III</span>Existing Law and the Proposed Framework</h2>
+<p>Under the Electronic Fund Transfer Act and Regulation E, a consumer who furnishes an access device to someone who then exceeds the authority given is liable for the transfers, but a transfer by someone who obtained the device through fraud is unauthorized.<sup class="fn"><a href="#fn11" id="ref11">11</a></sup> A User who hands an agent their credentials has arguably furnished the device, yet a prompt injection looks a great deal like fraud, and the rule does not say which applies. Regulation E may not reach stablecoin wallets at all, since the CFPB withdrew its proposal to cover them,<sup class="fn"><a href="#fn12" id="ref12">12</a></sup> and it protects only consumers, so it would never reach an institution like Meridian.</p>
+<p>Other regulatory regimes do not fill this gap. The GENIUS Act regulates issuers, not losses. It does not tell a holder who bears the loss when an agent sends its stablecoins to the wrong party.<sup class="fn"><a href="#fn13" id="ref13">13</a></sup> UCC Article 4A asks whether a bank followed an agreed security procedure,<sup class="fn"><a href="#fn14" id="ref14">14</a></sup> a test for bank-to-customer verification that likely does not reach an on-chain transfer at all, since no bank receives a payment order. UCC Article 12 works against Meridian, as stablecoins are likely controllable electronic records, and a qualifying purchaser who obtains control of the stolen tokens for value, in good faith, and without notice takes them free of Meridian’s claim.<sup class="fn"><a href="#fn15" id="ref15">15</a></sup> Agency law treats software predominantly as an instrumentality, so the program’s acts are the acts of the person using it.<sup class="fn"><a href="#fn16" id="ref16">16</a></sup> UETA validates contracts formed by electronic agents<sup class="fn"><a href="#fn17" id="ref17">17</a></sup> but was written for a party’s own electronic agent, not for an agent hijacked by a third party.</p>
+</div>
+
+<figure class="wide">
+  <div class="frame tbl" tabindex="0" role="group" aria-label="Existing law">
+    <table>
+      <thead><tr><th>Regime</th><th>What it does</th><th>Why it fails for a hijacked agent</th></tr></thead>
+      <tbody>
+        <tr><td>Regulation E</td><td>A consumer who furnishes an access device to someone who exceeds the authority given is liable; a transfer by someone who obtained the device through fraud is unauthorized.</td><td>A User who hands an agent its credentials has arguably furnished the device, yet a prompt injection looks like fraud, and the rule does not say which applies. May not reach stablecoin wallets at all, and protects only consumers.</td></tr>
+        <tr><td>GENIUS Act</td><td>Regulates payment stablecoin issuers; gives issuers the capability to freeze on lawful order.</td><td>Regulates issuers, not losses. Does not say who bears the loss when an agent sends stablecoins to the wrong party. The freeze is a recovery tool, not an allocation rule.</td></tr>
+        <tr><td>UCC Article 4A</td><td>Asks whether a bank followed an agreed security procedure.</td><td>A bank-to-customer verification test that likely does not reach an on-chain transfer at all, since no bank receives a payment order.</td></tr>
+        <tr><td>UCC Article 12</td><td>A qualifying purchaser who obtains control of a controllable electronic record for value, in good faith, and without notice takes it free of prior claims.</td><td>Works against Meridian: stablecoins are likely controllable electronic records, so a downstream good-faith purchaser takes the stolen tokens free of Meridian’s claim.</td></tr>
+        <tr><td>Agency law, UETA</td><td>Agency law treats software as an instrumentality; UETA validates contracts formed by electronic agents.</td><td>The program’s acts are the acts of the person using it. UETA was written for a party’s own electronic agent, not one hijacked by a third party.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption><b>Existing law.</b> Each regime asks whether a human authorized the transfer. None has a category for a transfer that is authorized in form and unauthorized in substance.</figcaption>
+</figure>
+
+<div class="col">
+<p>Under our proposed ALCF, liability begins with product developers and can be traced to Users. Intermediaries and counterparties sit outside this chain and are not liable by default. Each participant can take reasonable steps (shields), which shift liability to the next participant in the chain or, after the User, to the market-wide insurance pool, or engage in unreasonable or harmful conduct (anchors), which fixes liability on it. A party that fails a shield is anchored to the extent the failure contributed to the harm.</p>
+</div>
+
+<figure class="wide">
+  <div class="frame" tabindex="0" role="group" aria-label="Liability flows one way">
+    <svg viewBox="0 0 1000 400" aria-label="Liability flows one way: developer, User, bond, insurance pool; intermediaries and counterparties sit outside the chain">
+      <circle cx="46" cy="72" r="18" style="fill:var(--charge)"/>
+      <text class="sv-s" x="46" y="112" text-anchor="middle">the agent’s act</text><text class="sv-s" x="46" y="127" text-anchor="middle">harm originates</text>
+      <path class="ar" d="M64 72 H96"/><path d="M90 66 L100 72 L90 78 Z" style="fill:var(--charge)"/>
+      <g><rect class="bx" x="100" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="195" y="66" text-anchor="middle">Developer</text><text class="sv-s" x="195" y="86" text-anchor="middle">built and licensed the agent</text></g>
+      <path class="ar" d="M290 72 H326"/><path d="M320 66 L330 72 L320 78 Z" style="fill:var(--charge)"/>
+      <g><rect class="bx" x="330" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="425" y="66" text-anchor="middle">User</text><text class="sv-s" x="425" y="86" text-anchor="middle">deployed it; posts the bond</text></g>
+      <path class="ar" d="M520 72 H556"/><path d="M550 66 L560 72 L550 78 Z" style="fill:var(--charge)"/>
+      <g><rect class="bx blue" x="560" y="40" width="190" height="64" rx="4"/><text class="sv-t" x="655" y="66" text-anchor="middle">Bond</text><text class="sv-s" x="655" y="86" text-anchor="middle">held by a Trustee; equal to reach</text></g>
+      <path class="ar" d="M750 72 H786"/><path d="M780 66 L790 72 L780 78 Z" style="fill:var(--charge)"/>
+      <g><rect class="bx blue" x="790" y="40" width="190" height="70" rx="4"/><text class="sv-t" x="885" y="64" text-anchor="middle">Insurance pool</text><text class="sv-s" x="885" y="86" text-anchor="middle">pays where every party held</text><text class="sv-s" x="885" y="100" text-anchor="middle">its shields</text></g>
+      <!-- shields / anchors notes -->
+      <g transform="translate(110 120)"><path d="M0 0 h7 v7 a3.5 4 0 0 1 -7 0 z" style="fill:none;stroke:var(--shield);stroke-width:1.4"/><text class="sv-s" x="14" y="8">shields pass it on</text></g>
+      <g transform="translate(110 142)"><path d="M3.5 0 v8 M0 5 c0 4 7 4 7 0" style="fill:none;stroke:var(--anchor);stroke-width:1.4;stroke-linecap:round"/><text class="sv-s" x="14" y="8">anchors fix it here</text></g>
+      <g transform="translate(340 120)"><path d="M0 0 h7 v7 a3.5 4 0 0 1 -7 0 z" style="fill:none;stroke:var(--shield);stroke-width:1.4"/><text class="sv-s" x="14" y="8">shields pass it on</text></g>
+      <g transform="translate(340 142)"><path d="M3.5 0 v8 M0 5 c0 4 7 4 7 0" style="fill:none;stroke:var(--anchor);stroke-width:1.4;stroke-linecap:round"/><text class="sv-s" x="14" y="8">anchors fix it here</text></g>
+      <text class="sv-s sv-blue" x="655" y="128" text-anchor="middle">pays first, at once</text>
+      <text class="sv-s sv-blue" x="885" y="128" text-anchor="middle">pays and restores the bond</text>
+      <!-- payment lines to harmed party -->
+      <path class="ar blue" d="M655 136 V220 H760"/>
+      <path class="ar blue dash" d="M885 136 V178"/>
+      <path d="M754 214 L764 220 L754 226 Z" style="fill:var(--pool)"/>
+      <path d="M879 174 L885 186 L891 174 Z" style="fill:var(--pool)"/>
+      <!-- gatekeepers -->
+      <path d="M20 186 H740" style="stroke:var(--line);stroke-width:1"/>
+      <text class="sv-l" x="20" y="208">GATEKEEPERS, OUTSIDE THE CHAIN: NOT LIABLE BY DEFAULT</text>
+      <g><rect class="bx" x="20" y="226" width="330" height="90" rx="4"/><text class="sv-t" x="185" y="256" text-anchor="middle">Intermediary</text><text class="sv-s" x="185" y="278" text-anchor="middle">wallet providers and payment platforms;</text><text class="sv-s" x="185" y="294" text-anchor="middle">best placed to see a rogue agent in real time</text></g>
+      <g><rect class="bx" x="370" y="226" width="330" height="90" rx="4"/><text class="sv-t" x="535" y="256" text-anchor="middle">Counterparty</text><text class="sv-s" x="535" y="278" text-anchor="middle">verified the attestation and</text><text class="sv-s" x="535" y="294" text-anchor="middle">transacted in good faith</text></g>
+      <g><rect class="bx blue" x="765" y="186" width="215" height="110" rx="4"/><text class="sv-t" x="872" y="226" text-anchor="middle">Harmed party</text><text class="sv-s" x="872" y="248" text-anchor="middle">paid from the bond, then</text><text class="sv-s" x="872" y="264" text-anchor="middle">anchored parties, then the pool</text></g>
+      <g transform="translate(30 332)"><path d="M3.5 0 v8 M0 5 c0 4 7 4 7 0" style="fill:none;stroke:var(--anchor);stroke-width:1.4;stroke-linecap:round"/><text class="sv-s" x="14" y="8">liable only on an anchor: knew or should have known, continued after notice, processed an unbonded agent, or took part in illicit behavior</text></g>
+      <text class="sv-s" x="20" y="378" style="font-style:italic">Amber: liability. Blue: payment to the harmed party, solid always, dashed if needed.</text>
+    </svg>
+  </div>
+  <figcaption><b>Liability flows one way.</b> Hold your shields and liability passes on. Trigger an anchor and it fixes on you, to the extent your failure contributed to the harm.</figcaption>
+</figure>
+
+<div class="col">
+<p>The ALCF begins with the product developer, the entity responsible for the design and sale of the AI agent which is used in the harm-producing transaction. For a developer to be shielded from liability, it must show that (1) it clearly and adequately disclosed the capabilities and risks associated with the particular model to the User; (2) the agent contains a restriction mechanism against clearly illicit behavior; (3) the agent contains a compliance mechanism the User can configure; (4) the agent’s code prevents untrusted data from changing the recipient, amount, or payment condition unless the user confirms through a channel the AI cannot control; (5) the developer has maintained auditable records of the agent’s configuration and decision logs; and (6) the User is capable of halting the agent’s activity on command. If a developer can meet all six, it will be shielded from liability. If the agent breaks one of its own disclosed restrictions other than on the User’s authenticated command, the limit was illusory, and the developer is liable. Where an agent is built on a model trained by another company, as most agents are, the developer under the ALCF is the party that built and licensed the use of the agent. It may allocate risk to the model provider by contract, but a harmed party needs to look only to the agent’s developer. Where no one sells or operates an open-source agent, the User who deploys it stands in the developer’s place.</p>
+<p>The User is the nexus of the agent’s actions. It gives the agent its permissions and access to funds, and it reaps the benefit of the agent’s transactions. Before its agent can transact, the User posts a bond with an Agentic Collateral Trustee equal to the agent’s reach, meaning the most the agent can move in aggregate, without human approval, while the bond is in place. Reach is the lower of the wallet balance and the aggregate limits the User has set. The Trustee issues the agent a Bond Attestation, and the agent may not transact until an intermediary or counterparty verifies it. Because reach changes as balances and limits change, the intermediary reports the agent’s limits to the Trustee in real time, and the attestation lapses if reach outgrows the bond.</p>
+<p>The bond is not a fee. The Trustee holds it in short-term Treasuries and Treasury-backed repo, matched to the duration of the User’s stated transactions, and returns it with most of its interest 90 days after the transactions settle with no harm claimed. A portion of the interest goes to funding an industry-wide insurance pool. The bond’s purpose is to change how Users deploy agents. Every dollar an agent can reach requires a dollar of bond, so a User that gives its agent $1 million to work with commits $2 million in capital. That cost pushes Users toward exactly the conduct the ALCF rewards: smaller mandates, tighter limits, and transactions that settle quickly, so locked funds come back sooner. The bond also ties every agent to a screened User with money set aside, so no harmed party is left chasing an empty wallet.</p>
+</div>
+
+<figure class="wide">
+  <div class="frame" tabindex="0" role="group" aria-label="Every dollar of reach needs a dollar of bond">
+    <svg viewBox="0 0 1000 300" aria-label="The bond cycle: User posts a bond with the Trustee, the Trustee holds it in a vault of short-term Treasuries, and it returns to the User with most of its interest while a portion funds the insurance pool">
+      <g><rect class="bx" x="20" y="60" width="200" height="78" rx="4"/><text class="sv-t" x="120" y="90" text-anchor="middle">User</text><text class="sv-s" x="120" y="110" text-anchor="middle">posts a bond equal to</text><text class="sv-s" x="120" y="125" text-anchor="middle">the agent’s reach</text></g>
+      <path class="ar blue" d="M220 99 H256"/><path d="M250 93 L260 99 L250 105 Z" style="fill:var(--pool)"/>
+      <g><rect class="bx blue" x="260" y="52" width="250" height="94" rx="4"/><text class="sv-t" x="385" y="82" text-anchor="middle">Agentic Collateral Trustee</text><text class="sv-s" x="385" y="102" text-anchor="middle">chartered trust company; screens the User;</text><text class="sv-s" x="385" y="117" text-anchor="middle">issues the Bond Attestation</text><text class="sv-s" x="385" y="135" text-anchor="middle" style="fill:var(--pool)">KYC stays here</text></g>
+      <path class="ar blue" d="M510 99 H546"/><path d="M540 93 L550 99 L540 105 Z" style="fill:var(--pool)"/>
+      <g><rect class="bx blue" x="550" y="60" width="200" height="78" rx="4"/><text class="sv-t" x="650" y="90" text-anchor="middle">Vault</text><text class="sv-s" x="650" y="110" text-anchor="middle">short-term Treasuries and</text><text class="sv-s" x="650" y="125" text-anchor="middle">Treasury-backed repo</text></g>
+      <path class="ar blue" d="M750 90 C 790 90, 790 48, 826 48"/><path d="M820 42 L830 48 L820 54 Z" style="fill:var(--pool)"/>
+      <path class="ar blue" d="M750 108 C 790 108, 790 150, 826 150"/><path d="M820 144 L830 150 L820 156 Z" style="fill:var(--pool)"/>
+      <g><rect class="bx" x="830" y="20" width="150" height="58" rx="4"/><text class="sv-t" x="905" y="42" text-anchor="middle" style="font-size:13px">Back to the User</text><text class="sv-s" x="905" y="58" text-anchor="middle" style="font-size:10.5px">with most of its interest,</text><text class="sv-s" x="905" y="71" text-anchor="middle" style="font-size:10.5px">90 days after settlement</text></g>
+      <g><rect class="bx blue" x="830" y="122" width="150" height="58" rx="4"/><text class="sv-t" x="905" y="144" text-anchor="middle" style="font-size:13px">A portion to the pool</text><text class="sv-s" x="905" y="160" text-anchor="middle" style="font-size:10.5px">funds the industry-wide</text><text class="sv-s" x="905" y="173" text-anchor="middle" style="font-size:10.5px">insurance pool</text></g>
+      <!-- three definitions -->
+      <path d="M20 200 H980" style="stroke:var(--line)"/>
+      <text class="sv-t" x="20" y="226" style="font-size:14px">Reach</text>
+      <text class="sv-s" x="20" y="246">The most the agent can move without human approval:</text><text class="sv-s" x="20" y="262">the lower of the wallet balance and the limits the User set.</text><text class="sv-s" x="20" y="278">The attestation lapses if reach outgrows the bond.</text>
+      <text class="sv-t sv-amber" x="350" y="226" style="font-size:14px">$5M, not $40M</text>
+      <text class="sv-s" x="350" y="246">A $40M wallet would need a $40M bond, so a User with one</text><text class="sv-s" x="350" y="262">$5M payment funds the trade and posts $5M. Even if every</text><text class="sv-s" x="350" y="278">other control failed, the attacker could take at most $5M.</text>
+      <text class="sv-t" x="680" y="226" style="font-size:14px">Know your agent</text>
+      <text class="sv-s" x="680" y="246">The Bond Attestation proves the agent is bonded, that the</text><text class="sv-s" x="680" y="262">bond covers its reach, which Trustee holds it, and when it</text><text class="sv-s" x="680" y="278">expires. It discloses nothing more.</text>
+    </svg>
+  </div>
+  <figcaption><b>Every dollar of reach needs a dollar of bond.</b> The bond is not a fee: the Trustee holds it in short-term Treasuries and returns it with most of its interest 90 days after the transactions settle with no harm claimed.</figcaption>
+</figure>
+
+<div class="col">
+<p>A User shields itself by (1) setting reasonable parameters for the agent’s scope of action, limits, and permitted counterparties, (2) requiring human verification for any transaction, or series of transactions within a set period, above a set amount, and (3) posting the bond. If any party failed a shield or is anchored, that party pays the loss, jointly and severally with any other anchored party, and a User is treated like anyone else. If every party holds its shield, the loss, accordingly, belongs to the market. For example, if an agent with a $100,000 bond causes $150,000 of harm, the harmed party collects $100,000 from the bond at once. If every party held its shields, the pool pays the remaining $50,000 and restores the bond, and the User is made whole. If the User failed a shield, it pays the $50,000 itself, and its bond is not restored. A User that knowingly uses its agent for illicit ends loses its shields, even where the harm far exceeds the intent. The shields protect a User from liability to others, not from the risk of their own choice. The User decides whether to deploy an agent and its reach, whereas the parties harmed by the agent decide neither.</p>
+</div>
+
+<figure class="wide">
+  <div class="ex">
+    <div class="exc">
+      <span class="eyebrow">Every party held its shields</span>
+      <h4 aria-level="3">A $100,000 bond; $150,000 of harm</h4>
+      <div class="bar"><div class="seg bond" style="flex:100 0 0">Bond $100,000</div><div class="seg pool" style="flex:50 0 0">Pool $50,000</div></div>
+      <div class="scale"><span>$0</span><span>$150,000</span></div>
+      <p>The harmed party collects $100,000 from the bond at once. The pool pays the remaining $50,000 and restores the bond, and the User is made whole.</p>
+    </div>
+    <div class="exc">
+      <span class="eyebrow">The User failed a shield</span>
+      <h4 aria-level="3">A $100,000 bond; $150,000 of harm</h4>
+      <div class="bar"><div class="seg bond" style="flex:100 0 0">Bond $100,000</div><div class="seg user" style="flex:50 0 0">User $50,000</div></div>
+      <div class="scale"><span>$0</span><span>$150,000</span></div>
+      <p>The harmed party still collects $100,000 from the bond at once. The User pays the $50,000 itself, and its bond is not restored.</p>
+    </div>
+  </div>
+  <figcaption><b>The example from the paper.</b> The bond pays first either way. The shields decide what happens above it.</figcaption>
+</figure>
+
+<div class="col">
+<p>Sharing the loss among careful parties is the point of the framework, not a gap in it. Once the ALCF tells every party what reasonable conduct is and what failing it costs, parties can contract around the remaining risk. A buyer may negotiate an agentic-failure clause, and a seller may refuse to deal with an agent at all. As outcomes become predictable, so do the pool’s losses, and the risk-based premiums Users pay fall with them.</p>
+<p>The bond’s cost is smaller than it appears. Collateral is not spent. It returns to the User with most of its yield, so the real cost is the gap between that yield and the User’s cost of capital, plus the premium. In exchange, the User buys a legal cap on its liability for an agent’s acts, and developers and intermediaries receive a defined safe harbor in place of open-ended exposure. Before Congress acts, wallet providers and developers can require the bond and attestation by contract, and state-chartered trust companies can serve as Trustees.</p>
+<p>The Bond Attestation proves that the agent is bonded, that the bond covers its reach, which Trustee holds it, and when it expires. Intermediaries and counterparties verify it before transacting. It is the ALCF’s answer to “know your agent,” and it can ride on the agent-identity standards the industry is already building.<sup class="fn"><a href="#fn18" id="ref18">18</a></sup> It discloses nothing more. The agent’s mandate goes only to the intermediary, and the User’s identity stays with the Trustee, which performs KYC and discloses it only to an intermediary, to a harmed party making a claim, or under lawful order.</p>
+<p>Intermediaries, the wallet providers and payment platforms through which an agent’s transactions are processed, are not in the chain of liability. However, intermediaries are the parties best positioned to see a rogue agent in real time. An intermediary is shielded where it (1) clearly discloses to Users that agents transact on its platform, (2) provides Users with the tools to set guardrails for agents on the platform, including scope of action, transaction limits, permitted counterparties, and a human verification threshold, (3) verifies the Bond Attestation, screens the payee, and checks each transaction against the disclosed mandate before processing it, and (4) halts or freezes an agent’s activity upon notice from the User, the developer, or the Trustee that the agent is compromised. An intermediary is anchored where it knew or reasonably should have known, measured against Treasury-published red flags, that it was processing transactions for a rogue agent, continued processing after notice, processed transactions for an agent without a valid attestation, or took part in illicit behavior.</p>
+<p>The Trustee screens the User, and the intermediary screens the destination address and counterparty against sanctions lists before releasing funds, as OFAC and the BSA already require for custodial intermediaries. The developer never holds funds, and the Trustee is a chartered trust company, so neither generally needs a money transmitter license. The intermediary keeps whatever license it already holds. An intermediary that fails a shield is anchored to the extent the failure contributed to the harm. The second shield also ties the intermediary’s liability to the User’s. A User cannot set reasonable parameters or a human verification requirement on a platform that does not offer them. Where an intermediary fails to provide guardrail tools, the loss the User would otherwise bear for lacking those shields shifts to the intermediary. For example, if a User with a $100,000 bond is unable to set a per-transaction limit because the platform does not offer the capability, and an attacker induces the agent to send the full $100,000 in a single transaction, the share of that loss the User would otherwise bear shifts to the intermediary.</p>
+<p>Not every agentic transaction, however, runs through an intermediary. An agent holding a self-custody wallet can transact directly with a decentralized protocol, and no one in that chain is positioned to check the Bond Attestation. The ALCF addresses this in two ways. First, any interface that routes an agent’s transactions to a protocol, such as a front end, an aggregator, or an API provider, is treated as an intermediary for that transaction, anchored only for routing without a valid attestation or after notice. Second, where an agent transacts without a bond, whether through a self-custody wallet or otherwise, the User forfeits its shields entirely and is liable for harm the agent causes. The protocol itself is not anchored. Code that executes a valid transaction is not a gatekeeper. Bonding is therefore mandatory wherever an intermediary is present and self-enforcing where one is not. A User may transact outside the system, but only by accepting uncapped liability to everyone its agent harms and losing its claim against developers and intermediaries for its own loss.</p>
+<p>Counterparties are treated like intermediaries. A counterparty is shielded where it verified the Bond Attestation, or relied on an intermediary’s verification, and transacted in good faith. It is anchored where it knew or reasonably should have known that it was dealing with a rogue agent, transacted with an agent without a valid attestation, or took part in illicit behavior. Where the agent’s decision logs show that it hallucinated a purchase or exceeded its mandate, the User may dispute the transaction within 90 days. Upon a valid dispute, the counterparty must unwind the transaction, and any loss it cannot recover in doing so is paid under the order of payment below.</p>
+</div>
+
+<figure class="wide">
+  <div class="ref">
+    <div class="rc"><span class="pos">In the chain · start</span><h4 aria-level="3">Developer</h4>
+      <div class="blk s"><span class="t">Shields (all six)</span><ul><li>Disclosure of capabilities and risks</li><li>Restriction mechanism against clearly illicit behavior</li><li>Compliance mechanism the User can configure</li><li>Untrusted data cannot change recipient, amount, or condition without out-of-band confirmation</li><li>Auditable configuration and decision logs</li><li>User can halt the agent on command</li></ul></div>
+      <div class="blk a"><span class="t">Anchors</span><ul><li>Missing any shield</li><li>Agent breaks one of its own disclosed restrictions other than on the User’s authenticated command</li></ul></div>
+      <div class="blk f"><span class="t">If shielded</span><p>Liability is channeled to the User.</p></div>
+    </div>
+    <div class="rc"><span class="pos">In the chain · end</span><h4 aria-level="3">User</h4>
+      <div class="blk s"><span class="t">Shields</span><ul><li>Reasonable scope, limits, and permitted counterparties</li><li>Human verification above a set amount</li><li>The bond, posted with the Trustee</li></ul></div>
+      <div class="blk a"><span class="t">Anchors</span><ul><li>Failing a shield</li><li>Knowing illicit use</li><li>Transacting unbonded: forfeits all shields</li></ul></div>
+      <div class="blk f"><span class="t">If shielded</span><p>Bond pays first; the pool covers the excess and restores the bond.</p></div>
+    </div>
+    <div class="rc"><span class="pos out">Outside the chain · gatekeeper</span><h4 aria-level="3">Intermediary</h4>
+      <div class="blk s"><span class="t">Shields</span><ul><li>Discloses that agents transact on the platform</li><li>Guardrail tools: scope, limits, counterparties, verification threshold</li><li>Verifies the attestation, screens the payee, checks the mandate</li><li>Halts or freezes on notice</li></ul></div>
+      <div class="blk a"><span class="t">Anchors</span><ul><li>Knew or should have known of a rogue agent (Treasury red flags)</li><li>Continued after notice</li><li>Processed an agent without a valid attestation</li><li>Took part in illicit behavior</li></ul></div>
+      <div class="blk f"><span class="t">Special rule</span><p>No guardrail tools: the share of loss the User would bear for those missing shields shifts to the intermediary.</p></div>
+    </div>
+    <div class="rc"><span class="pos out">Outside the chain · gatekeeper</span><h4 aria-level="3">Counterparty</h4>
+      <div class="blk s"><span class="t">Shields</span><ul><li>Verified the attestation, or relied on an intermediary’s verification</li><li>Transacted in good faith</li></ul></div>
+      <div class="blk a"><span class="t">Anchors</span><ul><li>Knew or should have known of a rogue agent</li><li>Dealt with an agent without a valid attestation</li><li>Took part in illicit behavior</li></ul></div>
+      <div class="blk f"><span class="t">When harmed</span><p>User disputes within 90 days; counterparty unwinds and collects its unrecoverable loss under the order of payment.</p></div>
+    </div>
+  </div>
+  <figcaption><b>Each party earns its shield by reasonable conduct taken in advance.</b> Fail a shield and you are anchored, to the extent the failure contributed to the harm.</figcaption>
+</figure>
+
+<div class="col">
+<p>The framework takes its name from what it channels, which is payment, not fault. Every loss runs through the same order of payment. A party harmed by an agent, whether a counterparty or a third party, is paid first and immediately from the User’s bond once the Trustee confirms the loss from intermediary and on-chain records, without waiting for anyone to establish fault. A payout later shown unfounded is clawed back and anchors the claimant. Anything beyond the bond is paid by the anchored parties, jointly and severally as to the harmed party, with contribution among them in proportion to fault, and a market-wide insurance pool pays what they cannot, recovering from anyone later found anchored. Where no party is anchored, the pool pays the loss and restores the User’s bond. The User then recovers from the anchored parties its own lost funds and what its bond paid out, less any debt the payout discharged. Recovery is in full if it held its shields and reduced by its own share of fault if it did not. As a condition of using the attestation system, every participant consents to send the User’s, counterparties’, and the pool’s claims to a Treasury-designated arbitration that must decide within 90 days on the agent’s decision logs and the intermediary’s records, rather than to years of litigation, though a User or a third party may elect court instead.</p>
+</div>
+
+<!-- ===== Interactive simulator ===== -->
+<figure class="wide" id="simulator" data-pagefind-ignore>
+<div class="sim">
+  <div>
+    <span class="eyebrow">Interactive · who pays the harmed party</span>
+    <h3 style="margin:.3rem 0 .4rem">The channel runs from Developer to User</h3>
+    <p class="lede">Liability begins with the product developer and is channeled to the User. Intermediaries and counterparties sit outside the chain: never liable by default, liable only on an anchor. Shields pass liability down the channel; anchors let harmed parties collect, jointly and severally. When every party is shielded, the User’s collateral pays first and the market-wide insurance pool covers anything above it. Set the harm and each party’s conduct and watch where the money comes from. The bond is the paper’s example: $100,000.</p>
+  </div>
+<section class="stage">
+  <div class="diagram" tabindex="0" role="group" aria-label="Diagram of the parties and the payment">
+    <svg viewBox="0 0 960 610" aria-label="ALCF liability and payment diagram">
+      <text class="colhead amber" x="150" y="32" text-anchor="middle">THE CHANNEL</text>
+      <path id="ch-1" class="chan" d="M150 166 L150 244"/>
+      <path id="ch-2" class="chan" d="M150 356 L150 416"/>
+      <path id="ch-3" class="chan" d="M150 474 L150 512"/>
+      <path class="ctl" d="M200 128 C 300 160, 380 240, 420 286"/>
+      <text x="300" y="186" class="colhead" transform="rotate(30 300 186)">BUILDS</text>
+      <path class="ctl" d="M206 300 L414 300"/>
+      <text x="290" y="292" class="colhead">DIRECTS</text>
+      <g class="gate"><rect x="568" y="160" width="372" height="210" rx="6"/><text x="754" y="182" text-anchor="middle">OUTSIDE THE CHAIN · GATEKEEPERS</text></g>
+      <path class="txp" id="txp" d="M466 300 C 520 300, 560 268, 604 268 L 786 268"/>
+      <circle class="tx" id="txdot" r="5"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#txp"/></animateMotion></circle>
+      <path id="p-dev" class="pay" d="M204 104 C 470 70, 690 400, 708 470"/>
+      <path id="p-inter" class="pay" d="M664 320 L 714 470"/>
+      <path id="p-cp" class="pay" d="M842 320 L 790 470"/>
+      <path id="p-user" class="pay" d="M200 324 C 360 400, 520 486, 610 500"/>
+      <path id="p-bond" class="pay" d="M230 445 C 400 450, 520 516, 610 516"/>
+      <path id="p-pool" class="pay" d="M230 541 C 400 560, 520 532, 610 532"/>
+      <g class="nd" id="n-developer" transform="translate(150 110)">
+        <path class="shieldArc" d="M-40 58 A62 62 0 0 0 40 58"/>
+        <circle class="ring" r="54"/>
+        <text class="lbl" y="-4">Developer</text>
+        <text class="sub" y="15">BUILDS · LICENSES · DEPLOYS</text>
+        <g class="anchorG" transform="translate(-70 0)"><path d="M0 -8 V8 M-9 2 C-9 8, 9 8, 9 2 M-6 -6 h12"/></g>
+      </g>
+      <g class="nd" id="n-user" transform="translate(150 300)">
+        <path class="shieldArc" d="M-40 58 A62 62 0 0 0 40 58"/>
+        <circle class="ring" r="54"/>
+        <text class="lbl" y="-4">User</text>
+        <text class="sub" y="15">DIRECTS · BENEFITS</text>
+        <g class="anchorG" transform="translate(-70 0)"><path d="M0 -8 V8 M-9 2 C-9 8, 9 8, 9 2 M-6 -6 h12"/></g>
+      </g>
+      <g class="agent" transform="translate(440 300)">
+        <circle class="halo" r="24"/>
+        <circle class="core" r="18"/>
+        <text class="lbl" y="-34">AGENT</text>
+      </g>
+      <g class="badge" id="badge" transform="translate(440 352)">
+        <rect x="-92" y="-14" width="184" height="40" rx="4"/>
+        <text id="badge1" y="1">BOND ATTESTATION</text>
+        <text id="badge2" y="15">$100,000 · TRUSTEE · EXPIRES</text>
+      </g>
+      <g class="nd" id="n-inter" transform="translate(656 268)">
+        <path class="shieldArc" d="M-40 -58 A62 62 0 0 1 40 -58"/>
+        <circle class="ring" r="52"/>
+        <text class="lbl" y="-4">Intermediary</text>
+        <text class="sub" y="15">WALLET · PLATFORM · FRONT END</text>
+        <g class="anchorG" transform="translate(0 -68)"><path d="M0 -8 V8 M-9 2 C-9 8, 9 8, 9 2 M-6 -6 h12"/></g>
+      </g>
+      <g class="nd" id="n-cp" transform="translate(846 268)">
+        <path class="shieldArc" d="M-40 -58 A62 62 0 0 1 40 -58"/>
+        <circle class="ring" r="52"/>
+        <text class="lbl" y="-4">Counterparty</text>
+        <text class="sub" y="15">MERCHANT · TRADER</text>
+        <g class="anchorG" transform="translate(0 -68)"><path d="M0 -8 V8 M-9 2 C-9 8, 9 8, 9 2 M-6 -6 h12"/></g>
+      </g>
+      <g class="box" id="b-bond">
+        <rect x="70" y="416" width="160" height="58" rx="4"/>
+        <text class="t" x="150" y="440">Collateral bond</text>
+        <text class="s" x="150" y="456">AGENTIC COLLATERAL TRUSTEE</text>
+        <text class="amtx" id="bondamt" x="150" y="469">$100,000 posted</text>
+      </g>
+      <g class="box" id="b-pool">
+        <rect x="70" y="512" width="160" height="58" rx="4"/>
+        <text class="t" x="150" y="536">Insurance pool</text>
+        <text class="s" x="150" y="552">FUNDED BY BOND YIELD</text>
+        <text class="amtx" id="poolamt" x="150" y="565">backstop</text>
+      </g>
+      <g class="victim" id="victim">
+        <rect x="610" y="470" width="300" height="84" rx="6"/>
+        <text class="t" id="vt" x="760" y="503">Harmed third party</text>
+        <text class="s" id="vs" x="760" y="523">HARM · $150,000</text>
+        <text class="s" id="vs2" x="760" y="540">RECOVERS IN FULL</text>
+      </g>
+      <g class="legend" transform="translate(268 18)">
+        <rect class="bg" width="270" height="100" rx="4"/>
+        <line class="lc" x1="14" y1="20" x2="36" y2="20"/><text x="46" y="24"><tspan class="k">Channel</tspan> liability path</text>
+        <line class="lp" x1="14" y1="42" x2="36" y2="42"/><text x="46" y="46"><tspan class="k">Payment</tspan> to the harmed party</text>
+        <line class="ls" x1="14" y1="64" x2="36" y2="64"/><text x="46" y="68"><tspan class="k">Shield</tspan> reasonable conduct</text>
+        <line class="la" x1="14" y1="86" x2="36" y2="86"/><text x="46" y="90"><tspan class="k">Anchor</tspan> liable regardless</text>
+      </g>
+    </svg>
+    <div class="payout" aria-live="polite">
+      <div class="payhead"><span class="eyebrow">Who pays the harmed party</span><span class="v" id="v-head"></span></div>
+      <div class="bar" id="bar"></div>
+      <div class="scale"><span>$0</span><span id="scale-max"></span></div>
+      <div class="paylist" id="paylist"></div>
+      <p class="why" id="why"></p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="card">
+      <span class="grp">Examples from the paper</span>
+      <div class="presets">
+        <button type="button" data-p="p5">$150,000 harm, everyone shielded</button>
+        <button type="button" data-p="p8">No guardrail tools on the platform</button>
+        <button type="button" data-p="p9">Hallucinated order, counterparty harmed</button>
+        <button type="button" data-p="p4">Agent breaks its own disclosed restriction</button>
+        <button type="button" data-p="illicit">User knowingly illicit</button>
+        <button type="button" data-p="unbonded">Unbonded agent slips through</button>
+      </div>
+    </div>
+    <div class="card">
+      <span class="grp">Who was harmed</span>
+      <div class="segc" id="victimSel">
+        <button type="button" aria-pressed="true" data-v="third">Third party</button>
+        <button type="button" aria-pressed="false" data-v="cp">Counterparty (disputed transaction)</button>
+      </div>
+      <span class="grp" id="amtlabel">Harm</span>
+      <div class="amt"><input type="range" id="harm" min="10000" max="300000" step="10000" value="150000" aria-labelledby="amtlabel"><output id="harmout" for="harm">$150,000</output></div>
+      <div class="flowto">Bond is sized to the agent’s reach: <span style="color:var(--fg)">$100,000</span>.</div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Party conduct">
+      <button type="button" class="tab" role="tab" id="t-developer" data-k="developer" aria-controls="c-developer" aria-selected="true"><i class="dot" id="dot-developer"></i>Developer</button>
+      <button type="button" class="tab" role="tab" id="t-user" data-k="user" aria-controls="c-user" aria-selected="false" tabindex="-1"><i class="dot" id="dot-user"></i>User</button>
+      <button type="button" class="tab" role="tab" id="t-inter" data-k="inter" aria-controls="c-inter" aria-selected="false" tabindex="-1"><i class="dot" id="dot-inter"></i>Intermediary</button>
+      <button type="button" class="tab" role="tab" id="t-cp" data-k="cp" aria-controls="c-cp" aria-selected="false" tabindex="-1"><i class="dot" id="dot-cp"></i>Counterparty</button>
+    </div>
+    <div class="card" id="c-developer" role="tabpanel" aria-labelledby="t-developer">
+      <div class="head"><h4 aria-level="3">Developer</h4><span class="st" id="s-developer"></span></div>
+      <span class="grp s">Shields (all six required)</span>
+      <label class="tg"><input type="checkbox" id="d1" checked><span>Clearly and adequately disclosed the model’s capabilities and risks to the User</span></label>
+      <label class="tg"><input type="checkbox" id="d2" checked><span>Restriction mechanism against clearly illicit behavior</span></label>
+      <label class="tg"><input type="checkbox" id="d3" checked><span>Compliance mechanism the User can configure</span></label>
+      <label class="tg"><input type="checkbox" id="d4" checked><span>Code prevents untrusted data from changing the recipient, amount, or payment condition unless the User confirms through a channel the AI cannot control</span></label>
+      <label class="tg"><input type="checkbox" id="d5" checked><span>Auditable records of the agent’s configuration and decision logs</span></label>
+      <label class="tg"><input type="checkbox" id="d6" checked><span>User can halt the agent on command</span></label>
+      <span class="grp a">Anchor</span>
+      <label class="tg a"><input type="checkbox" id="da"><span>Agent broke one of its own disclosed restrictions, other than on the User’s authenticated command</span></label>
+      <div class="flowto">All six shields and no anchor: liability is channeled to the User. Otherwise the limit was illusory and the developer is liable.</div>
+    </div>
+    <div class="card" id="c-user" role="tabpanel" aria-labelledby="t-user" hidden>
+      <div class="head"><h4 aria-level="3">User</h4><span class="st" id="s-user"></span></div>
+      <span class="grp s">Shields</span>
+      <label class="tg"><input type="checkbox" id="u1" checked><span>Set reasonable parameters: scope, limits, permitted counterparties</span></label>
+      <label class="tg"><input type="checkbox" id="u2" checked><span>Human verification above a set amount</span></label>
+      <label class="tg"><input type="checkbox" id="u3" checked><span>Posted the bond with the Trustee</span></label>
+      <div class="note" id="unote" hidden></div>
+      <span class="grp a">Anchor</span>
+      <label class="tg a"><input type="checkbox" id="ua"><span>Knowingly used the agent for illicit ends</span></label>
+      <div class="flowto">The bond pays first either way. Shields decide what happens above it: shielded, the pool covers the excess and restores the bond; unshielded or anchored, the User owes it personally.</div>
+    </div>
+    <div class="card" id="c-inter" role="tabpanel" aria-labelledby="t-inter" hidden>
+      <div class="head"><h4 aria-level="3">Intermediary</h4><span class="st" id="s-inter"></span></div>
+      <span class="grp s">Shields</span>
+      <label class="tg"><input type="checkbox" id="i1" checked><span>Discloses to Users that agents transact on the platform</span></label>
+      <label class="tg"><input type="checkbox" id="i2" checked><span>Gives Users guardrail tools: scope, limits, counterparties, verification threshold</span></label>
+      <label class="tg"><input type="checkbox" id="i3" checked><span>Verifies the Bond Attestation, screens the payee, and checks the mandate before processing</span></label>
+      <label class="tg"><input type="checkbox" id="i4" checked><span>Halts or freezes the agent on notice that it is compromised</span></label>
+      <div class="note" id="inote" hidden></div>
+      <span class="grp a">Anchor</span>
+      <label class="tg a"><input type="checkbox" id="ia"><span>Knew or should have known it served a rogue agent, or took part in illicit behavior</span></label>
+      <div class="flowto">Outside the chain. Liable only on an anchor. Failing to halt after notice or processing an unbonded agent is itself an anchor. Failing to offer guardrail tools shifts the User’s missing shields to the intermediary.</div>
+    </div>
+    <div class="card" id="c-cp" role="tabpanel" aria-labelledby="t-cp" hidden>
+      <div class="head"><h4 aria-level="3">Counterparty</h4><span class="st" id="s-cp"></span></div>
+      <span class="grp s">Shields</span>
+      <label class="tg"><input type="checkbox" id="c1" checked><span>Verified the Bond Attestation, or relied on the intermediary’s verification</span></label>
+      <label class="tg"><input type="checkbox" id="c2" checked><span>Transacted in good faith</span></label>
+      <div class="note" id="cnote" hidden></div>
+      <span class="grp a">Anchor</span>
+      <label class="tg a"><input type="checkbox" id="ca"><span>Knew or should have known it dealt with a rogue agent, or took part in illicit behavior</span></label>
+      <div class="flowto">Outside the chain. When harmed, a shielded counterparty unwinds the disputed transaction and collects its unrecoverable loss from the bond, then the pool. Anchored, it bears its own loss.</div>
+    </div>
+    <button type="button" class="reset" id="reset">Reset to everyone acting reasonably</button>
+  </div>
+</section>
+</div>
+<figcaption><b>Who pays, and from where.</b> An illustration of the order of payment. Where more than one party is anchored, the harmed party may collect in full from any of them; the bar shows an even split.</figcaption>
+</figure>
+
+<div class="col">
+<p>Finally, the ALCF does not displace any existing obligation. Intermediaries remain subject to the Bank Secrecy Act, sanctions screening, the GENIUS Act, and state money transmission law, and counterparties remain subject to the law that already governs them. The ALCF is a liability rule among private parties that sits on top of those regimes, and a violation of any of them in connection with an agentic transaction is an anchor where the violation contributed to the harm. No party may contract out of an anchor as against a consumer User or a third party. Institutions may reallocate fault shares among themselves, but not the order of payment. As federal law, the ALCF would preempt state law only where the two conflict, chiefly the default that agency law and UETA give an agent’s unauthorized transfer. It leaves Article 12’s take-free rule intact and relies on the freeze, not the purchaser, for recovery. Nor does it touch Regulation E’s limits on what a consumer bears for transfers from its own account, because where Regulation E applies, a consumer never bears more than it allows.</p>
+
+<h3>The Administering Agency: The Department of the Treasury</h3>
+<p>Although the ALCF operates as a liability rule among private parties, it needs an administrator. Someone must qualify the Trustees, set bond and attestation standards, run the insurance pool, and stand behind it. We propose the Department of the Treasury.</p>
+<p>The Treasury already sits at the center of the regime the ALCF builds on. Under the GENIUS Act, the Secretary of the Treasury chairs the Stablecoin Certification Review Committee.<sup class="fn"><a href="#fn19" id="ref19">19</a></sup> The Act also directed Treasury to seek public comment on new methods of detecting illicit activity involving digital assets, and in August 2025 Treasury did so,<sup class="fn"><a href="#fn20" id="ref20">20</a></sup> asking specifically about artificial intelligence and digital identity verification. The Bond Attestation is exactly that kind of tool. The Treasury houses the offices the attestation must speak to. FinCEN<sup class="fn"><a href="#fn21" id="ref21">21</a></sup> administers the Bank Secrecy Act, which the GENIUS Act<sup class="fn"><a href="#fn22" id="ref22">22</a></sup> already applies to permitted issuers, and OFAC administers sanctions. An attestation that ties an agent to a known, screened User lets intermediaries satisfy their existing KYC and sanctions obligations through the same credential, rather than through a parallel identity system built for agents.</p>
+<p>The Treasury has run this structure before. Under the Terrorism Risk Insurance Program,<sup class="fn"><a href="#fn23" id="ref23">23</a></sup> private insurers bear losses up to a deductible, the federal government shares losses above it, and Treasury recoups its payments through surcharges after the event. The ALCF follows the same design: the User’s bond is the first layer of payment, and the insurance pool is the shared layer. A capped Treasury line of credit, repaid through assessments on pool participants so that losses ultimately fall on the industry, not taxpayers, would stand behind the pool in a catastrophic event, and the Federal Insurance Office,<sup class="fn"><a href="#fn24" id="ref24">24</a></sup> which already helps administer the terrorism program, is the natural office to run it.</p>
+<p>The Treasury is the best-placed candidate, because its jurisdiction is not defined by asset class or charter. A single agentic transaction can touch a security and a payment stablecoin, as Meridian’s did, and the next may touch a commodity. The SEC, CFTC, OCC, and CFPB would each see only part of it. The Treasury does not currently have the authority to designate Trustees or run a pool, so Congress must act. The natural vehicle is an amendment to the GENIUS Act, which already makes the Treasury the coordinating agency for payment stablecoins. A standalone statute would serve equally well.</p>
+</div>
+
+<figure class="wide">
+  <div class="tre">
+    <div class="frame rows" tabindex="0" role="group" aria-label="Why the Department of the Treasury" style="padding:4px 16px">
+      <div class="row"><h4 aria-level="3">Already at the center</h4><p>Chairs the Stablecoin Certification Review Committee; houses FinCEN and OFAC, the offices the attestation must speak to.</p></div>
+      <div class="row"><h4 aria-level="3">Has run this structure</h4><p>The Terrorism Risk Insurance Program: a private first layer, a shared layer, and a backstop recouped through surcharges after the event.</p></div>
+      <div class="row"><h4 aria-level="3">Not tied to one asset class</h4><p>One agentic transaction can touch a security, a stablecoin, and a commodity. The SEC, CFTC, OCC, and CFPB would each see only part of it.</p></div>
+    </div>
+    <div class="ask">
+      <span class="eyebrow" style="color:rgba(255,255,255,.7)">The ask</span>
+      <h4 aria-level="3">Treasury should administer it under a GENIUS Act amendment</h4>
+      <p><span>Congress:</span> amend the GENIUS Act to give Treasury the authority to designate Trustees, set bond standards, and administer the pool and its backstop.</p>
+      <p><span>Treasury:</span> solicit comment on agent attestation standards now, on its own authority.</p>
+      <p><span>Issuers:</span> act on certified freeze requests, protected when they freeze in good faith.</p>
+    </div>
+  </div>
+  <figcaption><b>Why the Department of the Treasury.</b> Someone must qualify the Trustees, set bond and attestation standards, run the insurance pool, and stand behind it.</figcaption>
+</figure>
+
+<div class="col">
+<h2><span class="num">IV</span>Scenario Under Our Framework</h2>
+<p>Under the ALCF, the attack most likely never succeeds. Before Agent X could transact, Meridian would have posted a bond equal to the agent’s reach. Because every dollar of reach requires a dollar of bond, Meridian would not give an agent with one $5 million payment to make access to a $40 million wallet. It would fund the wallet for the trade, or set a $5 million limit, and post a $5 million bond. Even if every other control failed, Z could take at most $5 million, not $40 million. To earn its shield, Meridian would also set a list of permitted counterparties and a human verification threshold on the WalletCo wallet. Harbor’s settlement address would be on the list, and Z’s would not. Z’s forged confirmation can tell Agent X to send the money, but it cannot add Z to Meridian’s list or approve the transfer on Meridian’s behalf. And WalletCo, checking the transfer against the mandate disclosed to it with Agent X’s attestation, would see a payment to an address outside that mandate and hold it. Even if AgentCo’s own controls fail, the prompt injection succeeds only against the agent. It fails against the controls around it. The ALCF does not require an agent that can never be fooled. It requires the parties around it to assume that it can be.</p>
+</div>
+
+<figure class="wide">
+  <div class="frame" tabindex="0" role="group" aria-label="Where the loss lands">
+    <svg viewBox="0 0 1000 330" aria-label="Three outcomes compared: current law, the ALCF with its controls in place, and the ALCF on the facts as given">
+      <text class="sv-l" x="20" y="24">THE SAME ATTACK, THREE REGIMES</text>
+      <!-- row 1: current law -->
+      <text class="sv-t" x="20" y="64">Current law</text>
+      <text class="sv-s" x="20" y="82">Meridian bears the loss and still owes Harbor</text>
+      <rect x="330" y="46" width="600" height="26" rx="3" style="fill:var(--anchor)"/>
+      <text x="340" y="64" style="font-family:var(--mono);font-size:11px;fill:#fff">$40M lost by Meridian</text>
+      <rect x="330" y="76" width="75" height="14" rx="2" style="fill:var(--anchor);opacity:.55"/>
+      <text class="sv-s" x="412" y="88">+ $5M still owed to Harbor, which goes unpaid</text>
+      <!-- row 2: ALCF prevention -->
+      <text class="sv-t" x="20" y="146">ALCF, controls in place</text>
+      <text class="sv-s" x="20" y="164">reach capped by the bond; allowlist and threshold;</text><text class="sv-s" x="20" y="179">WalletCo holds an out-of-mandate payment</text>
+      <rect x="330" y="128" width="75" height="26" rx="3" style="fill:var(--charge)"/>
+      <text x="415" y="146" class="sv-s" style="fill:var(--charge)">at most $5M exposed, and the payment to Z is held before it leaves</text>
+      <!-- row 3: ALCF as given -->
+      <text class="sv-t" x="20" y="234">ALCF, facts as given</text>
+      <text class="sv-s" x="20" y="252">$40M reach, $40M bond, transfer goes through</text>
+      <rect x="330" y="216" width="75" height="26" rx="3" style="fill:var(--pool)"/>
+      <text x="340" y="234" style="font-family:var(--mono);font-size:11px;fill:#fff">$5M</text>
+      <text class="sv-s" x="415" y="234" style="fill:var(--pool)">Harbor paid from Meridian’s bond within days</text>
+      <rect x="330" y="248" width="600" height="26" rx="3" style="fill:var(--charge)"/>
+      <text x="340" y="266" style="font-family:var(--mono);font-size:11px;fill:#0b0e14">$40M borne by Meridian, AgentCo and WalletCo in proportion to fault</text>
+      <text class="sv-s" x="330" y="296">Whatever StableCo freezes comes off the top. The pool pays nothing on these facts: every dollar traces to a party that failed a shield.</text>
+      <!-- scale -->
+      <path d="M330 310 H930" style="stroke:var(--line)"/>
+      <text class="sv-l" x="330" y="324">$0</text><text class="sv-l" x="930" y="324" text-anchor="end">$40M</text>
+    </svg>
+  </div>
+  <figcaption><b>Where the loss lands.</b> Under current law the loss stays with Meridian. Under the ALCF the attack most likely fails, and if it succeeds anyway, Harbor is paid in days and the loss lands on the parties that failed a shield.</figcaption>
+</figure>
+
+<div class="col">
+<p>Suppose instead that the facts stay as given: Agent X can reach the full $40 million, Meridian has posted a $40 million bond, and the transfer goes through. Each party’s exposure turns on its shields and anchors. AgentCo’s position turns on design, not disclosure. Its fourth shield requires that a payee change or payment condition found in unauthenticated data be confirmed by the User through a channel inaccessible to the model. Agent X changed the settlement address on the forged confirmation’s word alone, so AgentCo fails that shield and is anchored, whatever its warnings said. Had Agent X been built to that rule, the injection would have failed against the agent itself. BridgeCo is not anchored. It neither processed the payment nor sent the forged message, and Z forged only its format. BridgeCo’s signed confirmations are what let an agent’s code tell an authenticated condition from a forged one.</p>
+<p>On our facts, WalletCo let Meridian set limits, and Meridian set them high enough to release the whole balance. If WalletCo also offered allowlists and a verification threshold, as we expect, and Meridian did not use them, Meridian lacks its shield and is anchored. If WalletCo did not offer those tools, that share of the loss shifts to WalletCo under the intermediary’s second shield. Either way, WalletCo is anchored on its own conduct. Should-have-known is measured against red flags Treasury would publish, which should include a whole-balance transfer to a never-seen address, and WalletCo released it without a hold.</p>
+<p>The GENIUS Act<sup class="fn"><a href="#fn25" id="ref25">25</a></sup> requires permitted issuers to have the technological capability to comply with lawful orders, including orders to freeze payment stablecoins. Today, Meridian would have to obtain such an order while Z moves the funds. Under the ALCF, WalletCo must halt Agent X on notice to keep the intermediary’s fourth shield, and the Trustee, on receiving Meridian’s claim, sends a standardized freeze request to StableCo through a channel Treasury designates. StableCo never processes the transfer and so is not an intermediary. Issuers must act on that certified request and are protected when they freeze in good faith. The freeze reaches only addresses traced to Z, lapses after 14 days unless a court or Treasury converts it into a lawful order, and leaves pooled or omnibus addresses to a court. Whatever the issuer freezes before the tokens reach a qualifying purchaser returns to Meridian first, which reduces the claim against any anchored party.</p>
+<p>Harbor is a good-faith counterparty that verified the attestation and delivered the shares. It collects the $5 million it is owed from Meridian’s bond through the Trustee, within days, without suing anyone or waiting for the stolen SCD to be traced, and Meridian’s obligation to Harbor is discharged to that extent. Because Meridian failed its shield, the pool did not restore that $5 million to its bond. Meridian’s own $40 million is a different question. The bond protects harmed parties from the User’s agent. It is not insurance for the User’s own funds. Meridian, AgentCo, and WalletCo are each anchored, so they bear the $40 million in proportion to fault, and whatever StableCo freezes comes off the top. The pool pays nothing, because every dollar of the loss traces to a party that failed a shield.</p>
+<p>The pool is reserved for a different case. Had every party held its shields, the attack would have failed. If some other attack succeeded anyway, no party would be anchored. Harbor would still be paid from the bond at once, the pool would restore Meridian’s bond in full, and Harbor’s loss would be borne by the market rather than by Meridian. The pool also pays where an anchored party cannot, such as an insolvent or unreachable developer, and recovers from it later. In every other case, the loss lands on a party that could have prevented it, which is where current law fails to place it. Harbor is paid in days rather than after litigation, Meridian’s loss lands on whichever party failed its shield, and Z, as under any regime, walks away, but with less of the money.</p>
+
+<h2><span class="num">V</span>Conclusion</h2>
+<p>Agents will be fooled. No developer can promise otherwise, and no regulator should demand it. The question the law has to answer is not whether a hijack happens, but who was in a position to stop it and who should bear the responsibility. The ALCF answers that question before the loss instead of after it, and it gives every party the same reason to make the attack fail.</p>
+
+<h2><span class="num">Notes</span>Sources</h2>
+<ol class="notes">
+  <li id="fn1"><span class="n"><a href="#ref1">1</a></span><span>Written by Or David Menashe (<a href="https://www.fordham.edu/school-of-law/">Fordham Law</a>), Zach Zager (<a href="https://www.brooklaw.edu/">Brooklyn Law</a>), and Jake Weintraub (<a href="https://www.brooklaw.edu/">Brooklyn Law</a>).<a class="back" href="#ref1" aria-label="Back to text">↩</a></span></li>
+  <li id="fn2"><span class="n"><a href="#ref2">2</a></span><span><a href="https://www.govinfo.gov/app/details/PLAW-119publ27">Guiding and Establishing National Innovation for U.S. Stablecoins Act, Pub. L. No. 119-27, 139 Stat. 419 (2025)</a> [hereinafter GENIUS Act].<a class="back" href="#ref2" aria-label="Back to text">↩</a></span></li>
+  <li id="fn3"><span class="n"><a href="#ref3">3</a></span><span><a href="https://www.sec.gov/files/rules/exorders/2026/34-106402.pdf">Order Granting Temporary Conditional Exemptive Relief for the Use of Certain Distributed Ledger Trading Venues for Tokenized NMS Stocks, Exchange Act Release No. 106402, File No. 4-927 (Sep. 17, 2026)</a>.<a class="back" href="#ref3" aria-label="Back to text">↩</a></span></li>
+  <li id="fn4"><span class="n"><a href="#ref4">4</a></span><span><a href="https://www.senate.gov/legislative/LIS/roll_call_votes/vote1192/vote_119_2_00234.htm">U.S. Senate Roll Call Vote No. 234, 119th Cong., 2d Sess. (Sep. 15, 2026)</a> (cloture on the motion to proceed to <a href="https://www.congress.gov/bill/119th-congress/house-bill/3633">H.R. 3633, 119th Cong. (2025)</a>).<a class="back" href="#ref4" aria-label="Back to text">↩</a></span></li>
+  <li id="fn5"><span class="n"><a href="#ref5">5</a></span><span>Brayden Lindrea, <a href="https://cointelegraph.com/news/crypto-user-convinced-ai-bot-transfer-47k">Crypto User Convinces AI Bot Freysa to Transfer $47K Prize Pool</a>, Cointelegraph (Nov. 29, 2024).<a class="back" href="#ref5" aria-label="Back to text">↩</a></span></li>
+  <li id="fn6"><span class="n"><a href="#ref6">6</a></span><span>See Press Release, Mastercard, <a href="https://www.businesswire.com/news/home/20250910602958/en/">Mastercard Unveils New Tools and Collaborations to Power Smarter, Safer Agentic Commerce</a> (Sep. 10, 2025).<a class="back" href="#ref6" aria-label="Back to text">↩</a></span></li>
+  <li id="fn7"><span class="n"><a href="#ref7">7</a></span><span>Press Release, Stripe, <a href="https://stripe.com/newsroom/news/stripe-openai-instant-checkout">Stripe Powers Instant Checkout in ChatGPT and Releases Agentic Commerce Protocol Codeveloped with OpenAI</a> (Sep. 29, 2025).<a class="back" href="#ref7" aria-label="Back to text">↩</a></span></li>
+  <li id="fn8"><span class="n"><a href="#ref8">8</a></span><span>Erik Reppel et al., <a href="https://www.coinbase.com/developer-platform/discover/launches/x402">Introducing x402: A New Standard for Internet-Native Payments</a>, Coinbase Developer Platform (May 6, 2025).<a class="back" href="#ref8" aria-label="Back to text">↩</a></span></li>
+  <li id="fn9"><span class="n"><a href="#ref9">9</a></span><span>See Hanzhi Liu et al., <a href="https://arxiv.org/abs/2604.08407">Your Agent Is Mine: Measuring Malicious Intermediary Attacks on the LLM Supply Chain</a> 1 (Apr. 9, 2026) (unpublished manuscript).<a class="back" href="#ref9" aria-label="Back to text">↩</a></span></li>
+  <li id="fn10"><span class="n"><a href="#ref10">10</a></span><span>Olivier Acuna, <a href="https://www.coindesk.com/tech/2026/04/13/ai-agents-are-set-to-power-crypto-payments-but-a-hidden-flaw-could-expose-wallets">AI Agents Are Set to Power Crypto Payments, but a Hidden Flaw Could Expose Wallets</a>, CoinDesk (Apr. 13, 2026) (reporting the claim of Chaofan Shou, a co-author of the study; the loss has not been independently verified).<a class="back" href="#ref10" aria-label="Back to text">↩</a></span></li>
+  <li id="fn11"><span class="n"><a href="#ref11">11</a></span><span><a href="https://www.law.cornell.edu/uscode/text/15/1693a">15 U.S.C. § 1693a(12)(A)</a>; <a href="https://www.law.cornell.edu/cfr/text/12/1005.2">12 C.F.R. § 1005.2(m)(1) (2026)</a>; <a href="https://www.law.cornell.edu/cfr/text/12/part-1005">id. pt. 1005, supp. I, cmts. 2(m)-2, 2(m)-3</a>.<a class="back" href="#ref11" aria-label="Back to text">↩</a></span></li>
+  <li id="fn12"><span class="n"><a href="#ref12">12</a></span><span>Electronic Fund Transfers Through Accounts Established Primarily for Personal, Family, or Household Purposes Using Emerging Payment Mechanisms, <a href="https://www.federalregister.gov/citation/90-FR-3723">90 Fed. Reg. 3723 (proposed Jan. 15, 2025)</a>, withdrawn, <a href="https://www.federalregister.gov/citation/90-FR-20568">90 Fed. Reg. 20568 (May 15, 2025)</a>.<a class="back" href="#ref12" aria-label="Back to text">↩</a></span></li>
+  <li id="fn13"><span class="n"><a href="#ref13">13</a></span><span>See generally <a href="https://www.govinfo.gov/app/details/PLAW-119publ27">GENIUS Act § 4(a)</a>.<a class="back" href="#ref13" aria-label="Back to text">↩</a></span></li>
+  <li id="fn14"><span class="n"><a href="#ref14">14</a></span><span><a href="https://www.law.cornell.edu/ucc/4A/4A-202">U.C.C. § 4A-202(b) (Am. L. Inst. &amp; Unif. L. Comm’n 2022)</a>; <a href="https://www.nysenate.gov/legislation/laws/UCC/4-A-202">N.Y. U.C.C. Law § 4-A-202(2) (McKinney 2026)</a>.<a class="back" href="#ref14" aria-label="Back to text">↩</a></span></li>
+  <li id="fn15"><span class="n"><a href="#ref15">15</a></span><span><a href="https://www.uniformlaws.org/committees/community-home?CommunityKey=1457c422-ddb7-40b0-8c76-39a1991651ac">U.C.C. §§ 12-102(a)(1)–(2), 12-104(e), (g) (Am. L. Inst. &amp; Unif. L. Comm’n 2022)</a>; see Christopher M. McDermott, <a href="https://www.hlc.com/en/publications/stablecoins-have-a-ucc-problem">Stablecoins Have a UCC Problem</a>, Moving Ahead (Feb. 20, 2025) (stablecoins “are likely to be characterized as CERs”).<a class="back" href="#ref15" aria-label="Back to text">↩</a></span></li>
+  <li id="fn16"><span class="n"><a href="#ref16">16</a></span><span><a href="https://www.ali.org/publications/restatement-law-third/agency">Restatement (Third) of Agency § 1.04 cmt. e (Am. L. Inst. 2006)</a>.<a class="back" href="#ref16" aria-label="Back to text">↩</a></span></li>
+  <li id="fn17"><span class="n"><a href="#ref17">17</a></span><span><a href="https://www.uniformlaws.org/committees/community-home?CommunityKey=2c04b76c-2b7d-4399-977e-d5876ba7e034">Unif. Elec. Transactions Act §§ 9, 10, 14(1) (Unif. L. Comm’n 1999)</a>; see also <a href="https://www.law.cornell.edu/uscode/text/15/7001">15 U.S.C. § 7001(h)</a>.<a class="back" href="#ref17" aria-label="Back to text">↩</a></span></li>
+  <li id="fn18"><span class="n"><a href="#ref18">18</a></span><span>See, e.g., Press Release, Visa, <a href="https://investor.visa.com/news/news-details/2025/Visa-Introduces-Trusted-Agent-Protocol-An-Ecosystem-Led-Framework-for-AI-Commerce/default.aspx">Visa Introduces Trusted Agent Protocol</a> (Oct. 14, 2025); Stavan Parikh &amp; Rao Surapaneni, <a href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol">Announcing Agent Payments Protocol (AP2)</a>, Google Cloud Blog (Sep. 16, 2025); Marco De Rossi et al., <a href="https://eips.ethereum.org/EIPS/eip-8004">ERC-8004: Trustless Agents</a> (Ethereum Improvement Proposal, draft Aug. 13, 2025).<a class="back" href="#ref18" aria-label="Back to text">↩</a></span></li>
+  <li id="fn19"><span class="n"><a href="#ref19">19</a></span><span><a href="https://www.govinfo.gov/app/details/PLAW-119publ27">GENIUS Act § 2(27)</a>; Dep’t of the Treasury, <a href="https://www.regulations.gov/docket/TREAS-DO-2026-0562">Forms and Procedures for Review of State Certifications by the Stablecoin Certification Review Committee, Treas. Docket No. TREAS-DO-2026-0562 (Sep. 30, 2026)</a>.<a class="back" href="#ref19" aria-label="Back to text">↩</a></span></li>
+  <li id="fn20"><span class="n"><a href="#ref20">20</a></span><span><a href="https://www.govinfo.gov/app/details/PLAW-119publ27">GENIUS Act § 9(a)</a>; <a href="https://www.federalregister.gov/citation/90-FR-40148">Request for Comment on Innovative Methods to Detect Illicit Activity Involving Digital Assets, 90 Fed. Reg. 40148 (Aug. 18, 2025)</a>.<a class="back" href="#ref20" aria-label="Back to text">↩</a></span></li>
+  <li id="fn21"><span class="n"><a href="#ref21">21</a></span><span><a href="https://www.law.cornell.edu/uscode/text/31/310">31 U.S.C. § 310</a>.<a class="back" href="#ref21" aria-label="Back to text">↩</a></span></li>
+  <li id="fn22"><span class="n"><a href="#ref22">22</a></span><span><a href="https://www.govinfo.gov/app/details/PLAW-119publ27">GENIUS Act § 4(a)(5)</a>.<a class="back" href="#ref22" aria-label="Back to text">↩</a></span></li>
+  <li id="fn23"><span class="n"><a href="#ref23">23</a></span><span><a href="https://home.treasury.gov/policy-issues/financial-markets-financial-institutions-and-fiscal-service/federal-insurance-office/terrorism-risk-insurance-program">Terrorism Risk Insurance Act of 2002, Pub. L. No. 107-297, §§ 102–103, 116 Stat. 2322</a> (codified as amended at <a href="https://www.law.cornell.edu/uscode/text/15/6701">15 U.S.C. § 6701 note</a>).<a class="back" href="#ref23" aria-label="Back to text">↩</a></span></li>
+  <li id="fn24"><span class="n"><a href="#ref24">24</a></span><span><a href="https://www.law.cornell.edu/uscode/text/31/313">31 U.S.C. § 313(c)</a>.<a class="back" href="#ref24" aria-label="Back to text">↩</a></span></li>
+  <li id="fn25"><span class="n"><a href="#ref25">25</a></span><span><a href="https://www.govinfo.gov/app/details/PLAW-119publ27">GENIUS Act §§ 2(16), 4(a)(6)</a>.<a class="back" href="#ref25" aria-label="Back to text">↩</a></span></li>
+</ol>
+</div>
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var BOND=100000;
+  var S={victim:'third'};
+  var names={developer:'Developer',user:'User',inter:'Intermediary',cp:'Counterparty'};
+  function c(id){return $(id).checked}
+  function money(n){return '$'+Math.round(n).toLocaleString('en-US')}
+  var DEV=['d1','d2','d3','d4','d5','d6'];
+
+  function sync(){
+    var bonded=c('u3'), tools=c('i2');
+    ['u1','u2'].forEach(function(id){var el=$(id);if(!tools){el.checked=false;el.disabled=true}else if(el.disabled){el.disabled=false;el.checked=true}});
+    $('unote').hidden=tools;
+    $('unote').textContent='The platform offers no guardrail tools, so the User could not set parameters or a verification threshold. That missing shield shifts to the intermediary.';
+    ['i3','c1'].forEach(function(id){var el=$(id);if(!bonded){el.checked=false;el.disabled=true}else if(el.disabled){el.disabled=false;el.checked=true}});
+    $('inote').hidden=bonded;$('inote').textContent='The agent was unbonded and the intermediary processed it anyway. That is an anchor.';
+    $('cnote').hidden=bonded;$('cnote').textContent='The agent was unbonded and the counterparty dealt with it anyway. That is an anchor.';
+    $('badge').classList.toggle('bad',!bonded);
+    $('badge1').textContent=bonded?'BOND ATTESTATION':'NO ATTESTATION';
+    $('badge2').textContent=bonded?'$100,000 · TRUSTEE · EXPIRES':'UNBONDED AGENT';
+    $('txdot').classList.toggle('bad',!bonded);
+    $('bondamt').textContent=bonded?'$100,000 posted':'nothing posted';
+    $('b-bond').classList.toggle('off',!bonded);
+  }
+
+  function compute(){
+    var H=+$('harm').value, bonded=c('u3');
+    var r={liable:{},anch:{},holds:{},segs:[],why:[],chan:[],pays:[],boxes:{},head:''};
+    var devShield=DEV.every(c);
+    var devLiable=!devShield||c('da');
+    var shift=!c('i2');
+    var userShield=c('u1')&&c('u2')&&bonded&&!c('ua');
+    var userShieldEff=(shift?true:(c('u1')&&c('u2')))&&bonded&&!c('ua');
+    var interAnch=c('ia')||!c('i4')||!bonded;
+    var interLiable=interAnch||shift;
+    var cpAnch=c('ca')||!c('c2')||!bonded;
+    r.anch={developer:c('da'),user:c('ua'),inter:interAnch,cp:cpAnch};
+    r.holds={developer:devShield&&!c('da'),user:userShield,inter:c('i1')&&c('i2')&&c('i3')&&c('i4')&&!interAnch,cp:c('c1')&&c('c2')&&!cpAnch};
+
+    r.chan.push('ch-1');
+    if(devLiable){r.liable.developer=1}
+    if(S.victim==='cp'&&cpAnch&&!devLiable&&!interLiable){
+      r.liable.cp=1;
+      r.segs.push({k:'own',v:H,l:'Counterparty bears its own loss'});
+      r.why.push('The counterparty was harmed but is anchored'+(!bonded?' (it dealt with an unbonded agent)':'')+', so it loses the protection of the bond and the pool and bears its own loss.');
+      r.head='Counterparty absorbs '+money(H);
+      return r;
+    }
+    var outside=[];
+    if(devLiable)outside.push('developer');
+    if(interLiable)outside.push('inter');
+    if(S.victim==='third'&&cpAnch)outside.push('cp');
+    if(c('ua')&&outside.length)outside.push('user');
+    if(outside.length){
+      outside.forEach(function(k){r.liable[k]=1;r.pays.push('p-'+k)});
+      var share=H/outside.length;
+      outside.forEach(function(k){r.segs.push({k:k,v:share,l:names[k]})});
+      if(devLiable)r.why.push(c('da')?'The agent broke one of its own disclosed restrictions without the User’s authenticated command. The limit was illusory, so the developer is liable.':'The developer cannot show all six shields, so liability stops at the developer and is not channeled to the User.');
+      if(interLiable){
+        if(shift&&!interAnch)r.why.push('The platform offered no guardrail tools, so the User could not set limits or verification. The liability the User would have borne for those missing shields shifts to the intermediary, and the User’s collateral is not drawn upon.');
+        else if(!bonded)r.why.push('The intermediary processed an unbonded agent, which anchors it.');
+        else if(!c('i4'))r.why.push('The intermediary kept processing after notice that the agent was compromised, which anchors it.');
+        else r.why.push('The intermediary knew or should have known it was serving a rogue agent, which anchors it.');
+      }
+      if(outside.indexOf('cp')>=0)r.why.push(!bonded?'The counterparty dealt with an unbonded agent, which anchors it.':'The counterparty knew or should have known it was dealing with a rogue agent, which anchors it.');
+      if(outside.indexOf('user')>=0)r.why.push('The User also knowingly acted illicitly and is jointly liable.');
+      if(outside.length>1)r.why.push('With more than one anchored party, the harmed party may collect the full amount from any of them, jointly and severally, with contribution among them in proportion to fault. The bar shows an even split for illustration.');
+      if(!devLiable)r.chan.push('ch-2');
+      r.head=(outside.length>1?'Jointly and severally: ':'')+outside.map(function(k){return names[k]}).join(', ');
+      if(S.victim==='cp')r.why.unshift('The User disputed the transaction within 90 days, so the counterparty unwound it. Its '+money(H)+' unrecoverable loss is collected from the anchored parties.');
+      return r;
+    }
+    r.chan.push('ch-2');r.liable.user=1;
+    if(S.victim==='cp')r.why.push('The User disputed the transaction within 90 days, so the counterparty unwound it. Its unrecoverable loss of '+money(H)+' is paid from the User’s bond, then the pool.');
+    else r.why.push('The developer held all six shields, so liability is channeled to the User.');
+    if(!bonded){
+      r.segs.push({k:'user',v:H,l:'User personally'});r.pays.push('p-user');
+      r.why.push('No bond was posted, so the User forfeits its shields and is personally liable for the full amount.');
+      r.head='User personally, '+money(H);return r;
+    }
+    var b=Math.min(H,BOND),ex=H-b;
+    r.segs.push({k:'bond',v:b,l:'Bond'});r.pays.push('p-bond');r.boxes.bond=1;
+    r.why.push('The harmed party collects '+money(b)+' from the collateral held by the Trustee, at once.');
+    if(ex>0){
+      r.chan.push('ch-3');
+      if(userShieldEff){r.segs.push({k:'pool',v:ex,l:'Pool'});r.pays.push('p-pool');r.boxes.pool=1;
+        r.why.push('The harm exceeds the bond by '+money(ex)+'. The User held every shield, so the pool pays the difference and restores the bond.');}
+      else{r.segs.push({k:'user',v:ex,l:'User personally'});r.pays.push('p-user');
+        r.why.push('The harm exceeds the bond by '+money(ex)+'. '+(c('ua')?'The User knowingly acted illicitly':'The User lacked a shield')+', so the pool does not backstop it, the bond is not restored, and the User owes the excess personally.');}
+    } else {
+      if(userShieldEff)r.why.push('The harm is within the bond. The User held every shield, so the pool restores the bond.');
+      else r.why.push('The harm is within the bond. The User lacked a shield, so the bond is not restored.');
+    }
+    r.head=r.segs.map(function(s){return s.l+' '+money(s.v)}).join(' + ');
+    return r;
+  }
+
+  function render(){
+    sync();
+    var r=compute(), H=+$('harm').value;
+    $('harmout').value=money(H);$('harmout').textContent=money(H);
+    $('scale-max').textContent=money(H);
+    document.querySelectorAll('.chan').forEach(function(e){e.classList.toggle('live',r.chan.indexOf(e.id)>=0)});
+    document.querySelectorAll('.pay').forEach(function(e){e.classList.toggle('live',r.pays.indexOf(e.id)>=0)});
+    $('b-bond').classList.toggle('live',!!r.boxes.bond);
+    $('b-pool').classList.toggle('live',!!r.boxes.pool);
+    var bondPaid=0,poolPaid=0;r.segs.forEach(function(s){if(s.k==='bond')bondPaid=s.v;if(s.k==='pool')poolPaid=s.v});
+    if(c('u3'))$('bondamt').textContent=bondPaid?('pays '+money(bondPaid)):'$100,000 posted';
+    $('poolamt').textContent=poolPaid?('pays '+money(poolPaid)):'backstop';
+    ['developer','user','inter','cp'].forEach(function(k){
+      var n=$('n-'+k),s=$('s-'+k),dot=$('dot-'+k),card=$('c-'+k);
+      var liable=!!r.liable[k], payer=r.pays.indexOf('p-'+k)>=0;
+      n.classList.toggle('holds',!!r.holds[k]);
+      n.classList.toggle('anch',!!r.anch[k]);
+      n.classList.toggle('liable',liable);
+      n.classList.toggle('payer',payer);
+      card.classList.toggle('active',liable);
+      s.className='st';
+      if(liable&&payer){s.textContent='liable · pays';s.classList.add('rests')}
+      else if(liable){s.textContent=k==='user'?'liability channeled here':'liable';s.classList.add('rests')}
+      else if(r.anch[k]){s.textContent='anchored';s.classList.add('anch')}
+      else if(r.holds[k]){s.textContent='shielded';s.classList.add('holds')}
+      else{s.textContent=(k==='inter'||k==='cp')?'shield down · not anchored':'shield down'}
+      dot.className='dot'+(liable?' rests':r.anch[k]?' anch':r.holds[k]?' holds':'');
+    });
+    $('vt').textContent=S.victim==='cp'?'Counterparty as victim':'Harmed third party';
+    $('vs').textContent=(S.victim==='cp'?'UNRECOVERABLE LOSS AFTER UNWIND · ':'HARM · ')+money(H);
+    var own=r.segs.some(function(s){return s.k==='own'}), pers=r.segs.some(function(s){return s.k==='user'});
+    $('vs2').textContent=own?'NO RECOVERY':pers?'PART DEPENDS ON USER’S ASSETS':'RECOVERS IN FULL';
+    var bar=$('bar');bar.innerHTML='';
+    var pl=$('paylist');pl.innerHTML='';
+    var colors={developer:'var(--charge)',inter:'var(--shield)',cp:'var(--cp)',bond:'var(--pool)',pool:'var(--pool2)',user:'var(--anchor)',own:'var(--own)'};
+    r.segs.forEach(function(s){
+      var d=document.createElement('div');d.className='seg '+s.k;d.style.flex=s.v+' 0 0';d.textContent=s.v/H>.3?(s.l+' '+money(s.v)):(s.v/H>.12?money(s.v):'');d.title=s.l+' '+money(s.v);bar.appendChild(d);
+      var li=document.createElement('span');li.innerHTML='<i style="background:'+colors[s.k]+'"></i>'+s.l+': '+money(s.v);pl.appendChild(li);
+    });
+    $('v-head').textContent=r.head;
+    $('why').textContent=r.why.join(' ');
+  }
+
+  function setVictim(v){S.victim=v;document.querySelectorAll('#victimSel button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-v')===v?'true':'false')});
+    $('amtlabel').textContent=v==='cp'?'Counterparty’s unrecoverable loss after unwinding':'Harm';}
+  function resetAll(){
+    document.querySelectorAll('.controls input[type=checkbox]').forEach(function(i){i.disabled=false;i.checked=!i.closest('label').classList.contains('a')});
+  }
+  var presets={
+    p5:function(){resetAll();setVictim('third');$('harm').value=150000},
+    p8:function(){resetAll();setVictim('third');$('i2').checked=false;$('harm').value=100000},
+    p9:function(){resetAll();setVictim('cp');$('harm').value=30000},
+    p4:function(){resetAll();setVictim('third');$('da').checked=true;$('harm').value=150000},
+    illicit:function(){resetAll();setVictim('third');$('ua').checked=true;$('harm').value=200000},
+    unbonded:function(){resetAll();setVictim('third');$('u3').checked=false;$('harm').value=120000}
+  };
+  document.querySelectorAll('.presets button').forEach(function(b){b.addEventListener('click',function(){presets[b.getAttribute('data-p')]();render()})});
+  document.querySelectorAll('#victimSel button').forEach(function(b){b.addEventListener('click',function(){setVictim(b.getAttribute('data-v'));render()})});
+  document.querySelectorAll('.controls input').forEach(function(i){i.addEventListener('input',render);i.addEventListener('change',render)});
+  $('reset').addEventListener('click',function(){resetAll();setVictim('third');$('harm').value=150000;render()});
+  var order=['developer','user','inter','cp'];
+  function selectTab(k,focus){order.forEach(function(o){var on=o===k,t=$('t-'+o);t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;$('c-'+o).hidden=!on});if(focus)$('t-'+k).focus()}
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click',function(){selectTab(t.getAttribute('data-k'))});
+    t.addEventListener('keydown',function(e){var i=order.indexOf(t.getAttribute('data-k')),n=null;
+      if(e.key==='ArrowRight')n=(i+1)%4;else if(e.key==='ArrowLeft')n=(i+3)%4;else if(e.key==='Home')n=0;else if(e.key==='End')n=3;
+      if(n!==null){e.preventDefault();selectTab(order[n],true)}});
+  });
+  order.forEach(function(k){$('n-'+k).addEventListener('click',function(){selectTab(k)})});
+  render();
+})();
+</script>
+
+</body>
+</html>
