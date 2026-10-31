@@ -1583,13 +1583,14 @@ p {
 /* Notes in the margin (wide screens, set by script): each one level with the line that points to it. */
 .article-main {
   position: relative;
+  /* The width of the margin where the notes are set: as wide as the screen allows (16 to 20rem), so the notes run to
+     fewer lines when there is room. A wide figure (see paper.css) reaches across the same margin. */
+  --side-width: clamp(16rem, calc(92vw - 52.5rem), 20rem);
 }
 .sidenotes {
   display: none;
 }
 .has-sidenotes .sidenotes {
-  /* As wide as the margin allows (16 to 20rem), so the notes run to fewer lines when there is room. */
-  --side-width: clamp(16rem, calc(92vw - 52.5rem), 20rem);
   display: block;
   position: absolute;
   top: 0;

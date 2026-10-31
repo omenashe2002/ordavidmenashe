@@ -128,9 +128,69 @@ function buildSidenotes() {
   main.append(sidenoteList);
 }
 
+interface Block {
+  top: number;
+  height: number;
+  count: number;
+  sum: number; // the total of (where each note wants to be, minus its place inside the block)
+  members: { index: number; offset: number }[];
+}
+
 /**
- * Puts each note level with its number. When notes would overlap they are stacked into one block, and the block is
- * centred on where its notes want to be, so no note ends up as far from its number as it would if every one were pushed down.
+ * Stacks the notes `indexes` (in page order) into the stretch of margin between `start` and `end`. When notes would overlap
+ * they are stacked into one block, and the block is centred on where its notes want to be, so no note ends up as far from its
+ * number as it would if every one were pushed down. Writes each note's place into `tops` and returns false, leaving `tops`
+ * alone, when the notes do not all fit between `start` and `end`.
+ */
+function stackNotes(indexes: number[], wanted: number[], heights: number[], start: number, end: number, tops: number[]): boolean {
+  const place = (want: number, height: number) => Math.max(start, Math.min(want, end - height));
+  const blocks: Block[] = [];
+  for (const index of indexes) {
+    let block: Block = { top: place(wanted[index], heights[index]), height: heights[index], count: 1, sum: wanted[index], members: [{ index, offset: 0 }] };
+    for (let previous = blocks[blocks.length - 1]; previous && previous.top + previous.height + NOTE_GAP > block.top; previous = blocks[blocks.length - 1]) {
+      blocks.pop();
+      const shift = previous.height + NOTE_GAP;
+      for (const member of block.members) previous.members.push({ index: member.index, offset: member.offset + shift });
+      previous.sum += block.sum - shift * block.count;
+      previous.count += block.count;
+      previous.height = shift + block.height;
+      previous.top = place(previous.sum / previous.count, previous.height);
+      block = previous;
+    }
+    blocks.push(block);
+  }
+  if (blocks.some((block) => block.top + block.height > end + 0.5)) return false;
+  for (const block of blocks) for (const member of block.members) tops[member.index] = Math.round(block.top + member.offset);
+  return true;
+}
+
+/**
+ * The stretches of margin that are free, as {start, end} measured from the top of the article. A wide figure (marked data-wide)
+ * reaches across the margin, so notes may not sit beside it: the margin is cut into the stretches between the figures.
+ * The caption under a figure is only as wide as the text, so notes may sit beside it.
+ */
+function freeStretches(mainTop: number): { start: number; end: number }[] {
+  const figures = [...(main?.querySelectorAll<HTMLElement>('[data-wide]') ?? [])]
+    .filter((figure) => figure.getClientRects().length > 0)
+    .map((figure) => {
+      const box = figure.getBoundingClientRect();
+      const caption = figure.querySelector(':scope > figcaption');
+      return { top: box.top - mainTop - NOTE_GAP, bottom: (caption ? caption.getBoundingClientRect().top : box.bottom) - mainTop + NOTE_GAP };
+    })
+    .sort((one, other) => one.top - other.top);
+  const stretches: { start: number; end: number }[] = [];
+  let start = 0;
+  for (const figure of figures) {
+    stretches.push({ start, end: figure.top });
+    start = figure.bottom;
+  }
+  stretches.push({ start, end: Infinity });
+  return stretches;
+}
+
+/**
+ * Puts each note level with its number, in the free stretches of margin (see freeStretches). A note stays in the stretch of
+ * margin beside the text that its number is in; if a stretch is too short for all its notes, the last ones move on to the next.
  */
 function layoutSidenotes() {
   layoutQueued = false;
@@ -140,37 +200,30 @@ function layoutSidenotes() {
   // A note whose number is inside a collapsed block is not shown until the block is opened.
   for (const note of all) note.sidenote!.hidden = note.ref.closest('details:not([open])') !== null;
   const shown = all.filter((note) => !note.sidenote!.hidden);
-  const wanted = shown.map((note) => note.ref.getBoundingClientRect().top - mainTop - 3);
+  const numberTops = shown.map((note) => note.ref.getBoundingClientRect().top - mainTop);
+  const wanted = numberTops.map((top) => top - 3);
   const heights = shown.map((note) => note.sidenote!.offsetHeight);
 
-  interface Block {
-    top: number;
-    height: number;
-    count: number;
-    sum: number; // the total of (where each note wants to be, minus its place inside the block)
-    members: { index: number; offset: number }[];
-  }
-  const blocks: Block[] = [];
-  shown.forEach((_, index) => {
-    let block: Block = { top: Math.max(0, wanted[index]), height: heights[index], count: 1, sum: wanted[index], members: [{ index, offset: 0 }] };
-    for (let previous = blocks[blocks.length - 1]; previous && previous.top + previous.height + NOTE_GAP > block.top; previous = blocks[blocks.length - 1]) {
-      blocks.pop();
-      const shift = previous.height + NOTE_GAP;
-      for (const member of block.members) previous.members.push({ index: member.index, offset: member.offset + shift });
-      previous.sum += block.sum - shift * block.count;
-      previous.count += block.count;
-      previous.height = shift + block.height;
-      previous.top = Math.max(0, previous.sum / previous.count);
-      block = previous;
-    }
-    blocks.push(block);
+  const stretches = freeStretches(mainTop);
+  const tops = shown.map(() => 0);
+  let carried: number[] = [];
+  stretches.forEach((stretch, position) => {
+    // The notes whose numbers are in the text beside this stretch, after any that did not fit in the one before.
+    const last = position === stretches.length - 1;
+    const next = last ? Infinity : stretches[position + 1].start;
+    const own = shown.map((_, index) => index).filter((index) => numberTops[index] >= stretch.start - NOTE_GAP && numberTops[index] < next - NOTE_GAP);
+    const list = [...carried, ...own];
+    carried = [];
+    // The last stretch has no end, so everything fits in it.
+    while (!last && list.length > 0 && !stackNotes(list, wanted, heights, stretch.start, stretch.end, tops)) carried.unshift(list.pop()!);
+    if (last) stackNotes(list, wanted, heights, stretch.start, stretch.end, tops);
   });
 
   let bottom = 0;
-  for (const block of blocks) {
-    for (const member of block.members) shown[member.index].sidenote!.style.top = `${Math.round(block.top + member.offset)}px`;
-    bottom = Math.max(bottom, block.top + block.height);
-  }
+  shown.forEach((note, index) => {
+    note.sidenote!.style.top = `${tops[index]}px`;
+    bottom = Math.max(bottom, tops[index] + heights[index]);
+  });
   // Keep the page long enough that the last notes do not hang below the article.
   main.style.minHeight = '';
   if (bottom > main.offsetHeight) main.style.minHeight = `${Math.ceil(bottom)}px`;

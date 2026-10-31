@@ -3,13 +3,14 @@ title: "Who Pays When the Agent Pays?"
 date: 2026-10-31
 description: "The Agentic Liability Channeling Framework (ALCF) for hijacked AI agents: who bears the loss when an AI agent is tricked into paying the wrong party, and how a bond, an attestation and an insurance pool fix it."
 tags: [Law, Crypto, AI]
+featured: true
 kicker: "Paul Hastings Fintech Crypto Legal Hackathon · Team Agent of Register · November 2026"
 citation: "Or David Menashe, Zach Zager & Jake Weintraub, *Who Pays When the Agent Pays? The Agentic Liability Channeling Framework for Hijacked AI Agents* (Nov. 2026) (unpublished manuscript), https://ordavidmenashe.com/papers/who-pays-when-the-agent-pays/."
 ---
 
 *The Agentic Liability Channeling Framework for Hijacked AI Agents*
 
-Written by Or David Menashe ([Fordham Law](https://www.fordham.edu/school-of-law/)), Zach Zager ([Brooklyn Law](https://www.brooklaw.edu/)), and Jake Weintraub ([Brooklyn Law](https://www.brooklaw.edu/)).
+Written by Or David Menashe (Fordham Law), Zach Zager (Brooklyn Law), and Jake Weintraub (Brooklyn Law).
 
 **[Read the full paper, with its figures and an interactive simulator →](/papers/who-pays-when-the-agent-pays/)**
 

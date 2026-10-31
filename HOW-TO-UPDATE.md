@@ -10,7 +10,7 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 |---|---|
 | An article | `src/content/writing/` (one file per article) |
 | A video | `src/content/videos/` (one file per video) |
-| A designed paper (such as Who Pays When the Agent Pays?) | `src/papers/` (the page itself) and `src/content/writing/` (its summary page) |
+| A designed paper (such as Who Pays When the Agent Pays?) | `src/papers/` (its words and figures) and `src/content/writing/` (its summary page) |
 | A weekly newsletter issue | `src/content/newsletter/` (one file per issue) |
 | The short introduction on the Videos page, and the sentence at the top of the newsletter page (If Only I Knew) | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
 | The top of the Home page | `src/content/pages/home.md` |
@@ -111,7 +111,16 @@ Issues are numbered automatically in date order, so the first one is Issue 1 (a 
 
 ## A designed paper
 
-A paper that has its own design, figures or interactive parts, such as *Who Pays When the Agent Pays?*, is published in two pieces. The summary page, `src/content/writing/who-pays-when-the-agent-pays.md`, is an ordinary article: it appears in the Writing list, in search, in the RSS feed and in link previews, and it holds the authors, the executive summary and a link to the full paper. The full paper is the page `src/papers/who-pays-when-the-agent-pays.html`, published at `ordavidmenashe.com/papers/who-pays-when-the-agent-pays/`. It is a page of its own, with its own fonts (kept in `public/fonts/paper/`), so edit only its words there and ask Claude for anything else. A new paper needs its page, a small file under `src/pages/papers/` that publishes it, and a summary article, so ask Claude to set it up.
+A paper that has its own figures or interactive parts, such as *Who Pays When the Agent Pays?*, is published in two pieces. The summary page, `src/content/writing/who-pays-when-the-agent-pays.md`, is an ordinary article: it appears in the Writing list, in search, in the RSS feed and in link previews, and it holds the authors, the executive summary and a link to the full paper. The full paper is published at `ordavidmenashe.com/papers/who-pays-when-the-agent-pays/`, and it looks like every other article on the site: the same header and footer, a contents list, "Cite this", the reading tools, and the footnotes set in the margin beside the text (they become a tap-to-open note on a phone). Its title, date, topics and citation are taken from the summary article, so they are written in one place.
+
+The full paper is made of a few files, all in `src/`:
+
+- `papers/who-pays-when-the-agent-pays/body.html`: the words and the figures. To fix a typo, edit the words here and commit. Each footnote number in the text is paired with its note in the list at the bottom of the file, so ask Claude to add, remove or renumber notes.
+- `papers/who-pays-when-the-agent-pays/simulator.js`: the program behind the interactive simulator.
+- `styles/paper.css`: how the figures look (they keep the fonts and colors they were designed with, which are kept in `public/fonts/paper/`).
+- `pages/papers/who-pays-when-the-agent-pays/index.astro`: the page that puts it together.
+
+A new paper needs the same set of files and a summary article, so ask Claude to set it up.
 
 ## Turn on the newsletter signup
 

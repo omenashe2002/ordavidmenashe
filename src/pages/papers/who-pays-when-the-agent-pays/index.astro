@@ -1,0 +1,90 @@
+---
+// The full paper "Who Pays When the Agent Pays?", set like the site's other articles (header, contents list, notes in the margin,
+// "Cite this", reading tools) with its figures and interactive simulator inside the text.
+//
+//   The words and the figures:   src/papers/who-pays-when-the-agent-pays/body.html
+//   The simulator's program:     src/papers/who-pays-when-the-agent-pays/simulator.js
+//   The figures' look:           src/styles/paper.css
+//   Title, date, topics, kicker and the citation are taken from the summary article, src/content/writing/who-pays-when-the-agent-pays.md,
+//   so they are written in one place.
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleBody from '../../../components/ArticleBody.astro';
+import NewsletterSignup from '../../../components/NewsletterSignup.astro';
+import { getPosts, readingMinutes, relatedPosts, shortTabTitle, type TocItem } from '../../../lib/posts';
+import { articleSchema, personSchema } from '../../../lib/seo';
+import { citationPieces } from '../../../lib/cite';
+import { SITE } from '../../../site';
+import body from '../../../papers/who-pays-when-the-agent-pays/body.html?raw';
+import simulator from '../../../papers/who-pays-when-the-agent-pays/simulator.js?raw';
+import '../../../styles/paper.css';
+
+const post = await getEntry('writing', 'who-pays-when-the-agent-pays');
+if (!post) {
+  throw new Error(
+    'The full paper takes its title, date and citation from the summary article src/content/writing/who-pays-when-the-agent-pays.md, but that file is missing. Put it back (or ask Claude to restore it).',
+  );
+}
+
+const path = '/papers/who-pays-when-the-agent-pays/';
+const ogImage = `/og/${post.id}.png`;
+
+// The contents list is read from the headings of the text: each "II." heading, with the smaller headings under it.
+const toc: TocItem[] = [];
+for (const [, level, slug, text] of body.matchAll(/<h([23]) id="([^"]+)">(.*?)<\/h\1>/g)) {
+  if (level === '2') toc.push({ slug, text, children: [] });
+  else if (toc.length > 0) toc[toc.length - 1].children.push({ slug, text });
+}
+toc.push({ slug: 'footnote-label', text: 'Footnotes', children: [] });
+
+// Reading time counts the words of the text, not the figures or the list of notes (the notes are read in the margin as needed).
+const readable = body
+  .replace(/<section data-footnotes[\s\S]*<\/section>/, '')
+  .replace(/<figure[\s\S]*?<\/figure>/g, '')
+  .replace(/<[^>]+>/g, ' ');
+const minutes = readingMinutes(readable);
+const showToc = toc.filter((item) => item.slug !== 'footnote-label').length >= 3;
+
+const related = relatedPosts(post, await getPosts());
+const cite = { pieces: citationPieces(post.data, new URL(path, Astro.site!).href), pdf: post.data.pdf, ssrn: post.data.ssrn };
+---
+
+<BaseLayout
+  title={post.data.title}
+  headTitle={shortTabTitle(post.data.title)}
+  description={post.data.description}
+  type="article"
+  publishedTime={post.data.date}
+  modifiedTime={post.data.updatedDate}
+  searchKind="Paper"
+  tags={post.data.tags}
+  image={ogImage}
+  imageAlt={`${post.data.title}, by Or Menashe, Zach Zager and Jake Weintraub`}
+  structuredData={[articleSchema(post, Astro.site!, path, ogImage), personSchema(Astro.site!)]}
+  menuPath="/writing/"
+  wide
+  inlineSignup
+>
+  <ArticleBody
+    title={post.data.title}
+    description={post.data.description}
+    date={post.data.date}
+    status={post.data.status}
+    draftDate={post.data.draftDate}
+    updatedDate={post.data.updatedDate}
+    tags={post.data.tags}
+    minutes={minutes}
+    cite={cite}
+    kicker={post.data.kicker}
+    toc={toc}
+    showToc={showToc}
+    related={related}
+    backHref="/writing/"
+    backLabel="All writing"
+  >
+    <Fragment set:html={body} />
+    {/* The simulator runs after the figures it controls, exactly as written, so it behaves as it did when designed. */}
+    <script is:inline set:html={simulator} />
+    <NewsletterSignup slot="after" id="article-signup" heading={SITE.newsletterName} blurb="The weekly newsletter, by email. It is free, and you can unsubscribe at any time." />
+  </ArticleBody>
+</BaseLayout>
