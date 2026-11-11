@@ -320,3 +320,6 @@
   font-size: var(--step--1);
   line-height: 1.5;
 }
+.prose .paper-byline + p {
+  margin-top: var(--space-4); /* the note about the hackathon under the authors */
+}
