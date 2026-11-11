@@ -3,7 +3,9 @@ import { SITE, NAV } from '../site';
 
 const { currentPath } = Astro.props;
 // A link counts as "current" when the page address starts with it (so /writing/some-post/ highlights Writing).
-const isCurrent = (href: string) => currentPath.startsWith(href);
+// When two links match (/writing/newsletter/ starts with /writing/ too), only the most specific one counts.
+const current = NAV.filter((item) => currentPath.startsWith(item.href)).sort((a, b) => b.href.length - a.href.length)[0]?.href;
+const isCurrent = (href: string) => href === current;
 ---
 
 <header class="site-header wrap">

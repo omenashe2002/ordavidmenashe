@@ -15,6 +15,7 @@ Your repository, https://github.com/omenashe2002/ordavidmenashe, is public: anyo
 | The short introduction on the Videos page, and the sentence at the top of the newsletter page (If Only I Knew) | `src/content/pages/videos.md` and `src/content/pages/newsletter.md` |
 | The top of the Home page | `src/content/pages/home.md` |
 | The About page | `src/content/pages/about.md` |
+| The Experience page (education, jobs, writing, certifications, interests; printable) | `src/content/pages/experience.md` |
 | "What I’m working on now" (the Now page) | `src/content/pages/now.md` |
 | The Colophon page (how the site is made) | `src/content/pages/colophon.md` |
 | Email, LinkedIn, newsletter name and signup, topics, footer disclaimer | `src/site.ts` |
@@ -103,11 +104,13 @@ Issues are numbered automatically in date order, so the first one is Issue 1 (a 
 ## Change the words on a page
 
 - **Home, top of the page:** open `home.md`. Between the two lines of dashes: `eyebrow:` is the small line above the headline, `headline:` is the big headline, `buttonText:` and `buttonLink:` are the dark button and where it goes, and `linkText:` and `linkLink:` are the quieter link beside it. Under `credentials:` each background item has a `label:` (small) and a `text:` (larger); copy a pair of lines to add one, or delete a pair to remove one. Keep the words in quotation marks. The sentence under the headline is the text below the second line of dashes.
+- **Experience (resume-style page at /experience/):** open `experience.md`. It is the only file you edit for that page, and it has no address or phone number in it on purpose, because this site is public. Under `groups:` there is one block per heading (Education, Experience, Writing). Each block has `entries:`, and each entry has a `name:` (the organization or school), and optionally `role:`, `place:`, `dates:` (shown in the left column), `href:` (makes the name a link) and `points:` (the bullet points, each on a line starting with a dash). To add a job, copy a whole entry (from its `- name:` line to its last `points:` line), paste it where it belongs (the newest first) and change the words. To remove one, delete its lines. Keep every value in quotation marks and keep the spaces at the start of each line exactly as they are. The lines under `details:` are Certifications, Skills and Interests. The words below the second line of dashes are the short introduction, and `updated:` is the month shown under it. Visitors can print the page or save it as a PDF with the button at the top. If you make a mistake, the build stops and the message says which line to fix.
 - **About:** open `about.md` and edit only the text below the second line of dashes. A line that starts with `## ` is a small section label.
 - **What I’m working on now (the Now page, with a short preview on About):** open `now.md`. Each line that starts with a dash is one item; add, change or delete lines. The About page shows the first two items and a link to the Now page, which shows them all. Change the month in the `updated:` line each time you refresh the list, because it appears under the list as "Updated October 2026". To hide the preview, the Now page and the footer link, delete `now.md` or delete every item. Write the month in the `updated:` line as words, for example `updated: "November 2026"`; a date such as `2026-11-15` is shown as "November 2026".
 - **The short bio on About:** visitors first see only the first paragraph of `about.md`, with a "Read the full bio" button for the rest. To show the whole bio at once, add the line `startShort: false` between the two lines of three dashes at the top of `about.md`. (With JavaScript turned off, the whole bio always shows.)
 - **Email, LinkedIn, footer disclaimer and the other lines in `site.ts`:** change only the words between the single quotation marks, and keep both quotation marks and the comma. Do not type a straight apostrophe (') inside the words, as in it's or doesn't. The site reads it as the end of the sentence and the build stops. Type the curly apostrophe instead (it’s, doesn’t), or reword. The LinkedIn address must start with https://; copy it from your browser's address bar while you are on your profile.
 - **Your photo** (it has a thin frame wherever it appears): open `src`, then `assets`, click **Add file**, then **Upload files**. GitHub keeps the file's name, so rename the new photo to exactly `or-menashe.jpg` on your computer first, then drop it in. It replaces the old one, and the Home page, About page and link-preview pictures all pick it up. It must be a real JPEG picture. A phone photo saved as HEIC stops the site from publishing, even if you rename the ending, so export it as JPEG first (in Photos or Preview, choose File, then Export). A portrait-shaped picture works best, about 4 across to 5 tall (for example 1000 by 1250 pixels, or larger). The site cuts it to that shape and keeps the top, so leave a little room above the head. A photo taken on a phone often carries the place and time it was taken inside the file. The website's own copies have that removed, but the file you upload stays in your public repository, and GitHub keeps every earlier version, so replacing it later does not erase it. Before you upload, take a screenshot of the photo and upload that instead, which carries none, or ask Claude to remove it first. If Vercel shows Error after a photo change, the picture is the likely cause.
+- **The main menu** (Writing, Newsletter, Videos, About, Contact): it is the `NAV` list in `site.ts`. Each line is a `label:` and an `href:`. Change only the words between the quotation marks; to hide an item, delete its whole line. The Experience and Now pages are linked from the footer, About and Home instead, to keep the menu short.
 - **Delete an article or a video:** open the file, click the trash can icon, and commit. Do not delete `home.md`, `about.md`, `site.ts` or the photo. To remove something from those pages, edit the words instead.
 
 ## A designed paper
@@ -156,13 +159,14 @@ Use GitHub's search box to find each phrase and check every file it lists.
 | a law student at Fordham Law | `about.md` (the `description:` line at the top) and `site.ts` | when you graduate |
 | forthcoming | `about.md`, and in `registered-agents-of-the-dao.md` the `kicker:` line, the `status:` line (change it to `published`), the `citation:` line (replace it with the full citation, adding the volume and first page the journal gives you) and the italic first paragraph. A search for the word also lists files under `src/lib` and `src/styles` and the `_template.md` files: leave those alone, and `content.config.ts` too | when the note is published |
 | The current draft is on this site | `about.md` | when the note is published, or if you hide, rename or delete the article (the link would break) |
-| Senior Notes Editor | `about.md`, `now.md`, and `home.md` (`credentials:`) | when your term as editor ends |
-| Wyoming Stable Token Commission | `about.md`, `now.md`, and `home.md` (`credentials:`) | when that role ends |
-| DeFi Education Fund | `about.md` and `now.md` | when you start, and again when it ends |
-| Fidelity National Financial | `about.md` | next summer |
-| Harvey | `about.md` and `home.md` (`credentials:`) | when that role ends |
-| Legal IQ | `about.md` | if you stop working on it |
-| (not searchable) the `updated:` line in `now.md` | `now.md` | each time you change that list |
+| Senior Notes Editor | `about.md`, `now.md`, `experience.md`, and `home.md` (`credentials:`) | when your term as editor ends |
+| Wyoming Stable Token Commission | `about.md`, `now.md`, `experience.md`, and `home.md` (`credentials:`) | when that role ends |
+| DeFi Education Fund | `about.md`, `now.md` and `experience.md` | when you start, and again when it ends |
+| Entrepreneurial Law Clinic | `about.md`, `now.md` and `experience.md` | when the spring semester starts, and again when it ends |
+| Fidelity National Financial | `about.md` and `experience.md` | next summer |
+| Harvey | `about.md`, `home.md` (`credentials:`) and `experience.md` | when that role ends |
+| Legal IQ | `about.md` and `experience.md` | if you stop working on it |
+| (not searchable) the `updated:` line in `now.md` and in `experience.md` | `now.md`, `experience.md` | each time you change those lists |
 
 ## Turn on visitor counts
 

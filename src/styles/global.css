@@ -352,7 +352,7 @@ p {
 .site-header ul {
   display: flex;
   flex-wrap: wrap;
-  column-gap: clamp(0.9rem, 3.8vw, 1.6rem);
+  column-gap: clamp(0.7rem, 3.2vw, 1.6rem);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -449,6 +449,10 @@ p {
 @media (max-width: 40rem) {
   .footer-top {
     grid-template-columns: minmax(0, 1fr);
+  }
+  /* The last column (colophon and the light/dark choice) gets a whole row, so its three choices fit on one line. */
+  .footer-columns > :last-child {
+    grid-column: 1 / -1;
   }
 }
 .theme-toggle {
@@ -1236,6 +1240,11 @@ p {
 .proof-text {
   display: block;
 }
+.proof-more {
+  margin-top: var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
 
 .selected,
 .latest {
@@ -1970,8 +1979,16 @@ p {
   .sidenotes,
   .article-tools,
   .cite-actions,
+  .xp-actions,
   .tag-filter {
     display: none !important;
+  }
+  .xp-entry,
+  .xp-details > div {
+    break-inside: avoid;
+  }
+  .xp-group .section-head {
+    break-after: avoid;
   }
   body {
     min-height: 0;
@@ -2252,6 +2269,15 @@ p {
     min-width: 2.75rem;
     justify-content: center;
   }
+  /* The magnifying glass sits at the right of the site name, so the row of menu links below it has room for every link. */
+  .site-header {
+    position: relative;
+  }
+  .search-item {
+    position: absolute;
+    top: 0.8rem;
+    right: 0;
+  }
 }
 .search-dialog {
   position: fixed;
@@ -2517,6 +2543,23 @@ p {
   font-size: var(--step--1);
   font-weight: 500;
 }
+/* A quiet row of links under the bio, shown whether the bio is short or full. */
+.about-next {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
+  margin: var(--space-5) 0 0;
+  padding: var(--space-3) 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+}
+.about-next a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 500;
+}
 .about-main .prose > p:first-child {
   font-size: var(--step-1);
   line-height: 1.45;
@@ -2606,6 +2649,127 @@ p {
   }
   .now {
     margin-top: var(--space-5);
+  }
+}
+
+/* Experience: dates in the left column and the entry beside them, like the lists of writing */
+.experience-page h1 {
+  margin: var(--space-6) 0;
+}
+.xp-intro {
+  max-width: var(--measure);
+}
+.xp-lede {
+  color: var(--muted);
+  font-size: var(--step-1);
+  line-height: 1.45;
+}
+.xp-lede p {
+  margin: 0 0 var(--space-3);
+}
+.xp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-5);
+  margin: 0;
+}
+.xp-updated {
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+.xp-group {
+  margin-top: var(--section);
+}
+.xp-list,
+.xp-points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.xp-entry {
+  display: grid;
+  grid-template-columns: minmax(8.5rem, 11rem) minmax(0, 44rem);
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--rule);
+}
+.xp-entry:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.xp-dates {
+  margin: 0;
+  padding-top: 0.35em;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.xp-what h3 {
+  margin: 0;
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.xp-what h3 a {
+  color: var(--text);
+  text-decoration-color: var(--rule);
+}
+.xp-what h3 a:hover {
+  color: var(--accent);
+}
+.xp-role {
+  margin: 0.15rem 0 0.6rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.xp-points li {
+  position: relative;
+  margin: 0 0 0.45rem;
+  padding-left: 1.1em;
+  font-size: var(--step-small);
+  line-height: 1.5;
+}
+.xp-points li::before {
+  content: '';
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.4em;
+  height: 1px;
+  background: var(--muted);
+}
+.xp-details {
+  display: grid;
+  max-width: 55rem;
+  margin: 0;
+}
+.xp-details > div {
+  display: grid;
+  grid-template-columns: minmax(8.5rem, 11rem) minmax(0, 1fr);
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule);
+}
+.xp-details dt {
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  line-height: 1.7;
+}
+.xp-details dd {
+  margin: 0;
+  font-size: var(--step-small);
+}
+@media (max-width: 44rem) {
+  .xp-entry,
+  .xp-details > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .xp-dates {
+    padding-top: 0;
   }
 }
 

@@ -6,12 +6,15 @@ import Portrait from '../components/Portrait.astro';
 import { getEntry, render } from 'astro:content';
 import { SITE } from '../site';
 import { getPosts } from '../lib/posts';
+import { getIssues } from '../lib/issues';
 import { personSchema, websiteSchema } from '../lib/seo';
 
 const posts = await getPosts();
 const featured = posts.filter((post) => post.data.featured).slice(0, 2);
 const shown = new Set(featured.map((post) => post.id));
 const latest = posts.filter((post) => !shown.has(post.id)).slice(0, 3);
+// The newest issue of the weekly newsletter.
+const issues = (await getIssues()).filter((issue) => issue.data.issue !== 0).slice(0, 1);
 
 // The words at the top of the page come from src/content/pages/home.md.
 const home = await getEntry('pages', 'home');
@@ -52,6 +55,13 @@ const top = home.data;
       </ul>
     )
   }
+  {
+    top?.credentials && top.credentials.length > 0 && (
+      <p class="more-link proof-more">
+        <a href="/experience/">Experience and education &rarr;</a>
+      </p>
+    )
+  }
 
   {
     featured.length > 0 && (
@@ -65,6 +75,18 @@ const top = home.data;
             <a href="/writing/">All writing &rarr;</a>
           </p>
         )}
+      </section>
+    )
+  }
+
+  {
+    issues.length > 0 && (
+      <section class="latest" aria-labelledby="latest-issue">
+        <h2 class="section-head" id="latest-issue">{SITE.newsletterName}, the newsletter</h2>
+        <PostList posts={issues} level={3} basePath="/writing/newsletter/" />
+        <p class="more-link">
+          <a href="/writing/newsletter/">All issues &rarr;</a>
+        </p>
       </section>
     )
   }
