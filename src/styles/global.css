@@ -1298,6 +1298,10 @@ p {
   max-width: 36em;
   margin-bottom: var(--space-4);
 }
+.featured-note {
+  margin-bottom: var(--space-4);
+  font-weight: 600;
+}
 .featured-tags {
   margin-bottom: var(--space-4);
   color: var(--muted);

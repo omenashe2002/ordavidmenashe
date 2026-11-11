@@ -44,7 +44,7 @@ function checkDate(file: string, raw: string) {
 
 /** The settings each kind of file understands, in the order they are usually written. */
 const KNOWN_SETTINGS: Record<string, string[]> = {
-  writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker', 'status', 'draftDate', 'updatedDate', 'citation', 'pdf', 'ssrn'],
+  writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker', 'note', 'status', 'draftDate', 'updatedDate', 'citation', 'pdf', 'ssrn'],
   newsletter: ['title', 'date', 'description', 'issue', 'tags', 'draft'],
   videos: ['title', 'date', 'url', 'description', 'credit', 'group', 'draft'],
   pages: ['title', 'description', 'startShort', 'updated', 'eyebrow', 'headline', 'buttonText', 'buttonLink', 'linkText', 'linkLink', 'credentials'],
@@ -189,7 +189,7 @@ export function checkContentFolder(folder: string) {
         }
         written.add(first);
       }
-      const setting = /^(title|description|date|draftDate|updatedDate|kicker|credit|group|citation|eyebrow|headline|buttonText|buttonLink|linkText|linkLink|updated):\s*(.*)$/.exec(line);
+      const setting = /^(title|description|date|draftDate|updatedDate|kicker|note|credit|group|citation|eyebrow|headline|buttonText|buttonLink|linkText|linkLink|updated):\s*(.*)$/.exec(line);
       if (!setting) continue;
       const [, key, value] = setting;
       if (key === 'citation') {
@@ -201,7 +201,7 @@ export function checkContentFolder(folder: string) {
         }
       }
       if (['date', 'draftDate', 'updatedDate'].includes(key)) checkDate(file, value);
-      else if (['credit', 'group', 'citation', 'kicker'].includes(key) && value.trim() === '') {
+      else if (['credit', 'group', 'citation', 'kicker', 'note'].includes(key) && value.trim() === '') {
         fail(file, `The ${key} line is empty. Put the words between quotation marks, or delete the whole ${key} line.`);
       } else if (quotationProblem(value) === 'double') {
         fail(file, `The ${key} has a quotation mark inside its quotation marks. Use curly quotes inside (\u201clike this\u201d), or wrap the whole ${key} in single quotation marks.`);

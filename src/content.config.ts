@@ -74,6 +74,7 @@ const writing = defineCollection({
       draft: z.boolean({ error: 'draft must be true or false, with no quotation marks' }).default(false), // true = keep it unpublished while you write
       featured: z.boolean({ error: 'featured must be true or false, with no quotation marks' }).default(false), // true = shown as a large panel on the Home page and the Writing page
       kicker: z.string().optional(), // a short line above the title (article page and featured panels), for example: Forthcoming in the Fordham Journal
+      note: z.string().trim().min(1, { error: 'The note line is empty. Write the note between quotation marks, or delete the whole note line.' }).optional(), // a short note shown on the article's large panels (Home and Writing pages), for example an award
       status: z
         .preprocess((value) => (typeof value === 'string' ? value.trim().toLowerCase() : value), z.enum(STATUSES, { error: `status must be one of: ${STATUSES.join(', ')}` }))
         .optional(), // shows a small label (Draft, Forthcoming, Published) beside the dates
