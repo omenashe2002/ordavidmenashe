@@ -1,0 +1,70 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { personSchema } from '../../lib/seo';
+
+// Everything on this page is written in src/content/pages/experience.md (see HOW-TO-UPDATE.md, "The Experience page").
+const page = await getEntry('pages', 'experience');
+if (!page) throw new Error('Missing file: src/content/pages/experience.md');
+const Intro = page.body?.trim() ? (await render(page)).Content : undefined;
+const { groups = [], details = [], updated } = page.data;
+const slug = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+
+<BaseLayout title={page.data.title} description={page.data.description} wide structuredData={[personSchema(Astro.site!)]}>
+  <div class="experience-page">
+    <h1>{page.data.title}</h1>
+    <div class="xp-intro">
+      {Intro && <div class="xp-lede"><Intro /></div>}
+      <p class="xp-actions" data-pagefind-ignore>
+        <button class="text-button" type="button" data-print data-needs-js hidden>Print or save as PDF</button>
+        {updated && <span class="xp-updated">Updated {updated}</span>}
+      </p>
+    </div>
+    {
+      groups.map((group) => (
+        <section class="xp-group" aria-labelledby={`xp-${slug(group.heading)}`}>
+          <h2 class="section-head" id={`xp-${slug(group.heading)}`}>{group.heading}</h2>
+          <ul class="xp-list">
+            {group.entries.map((entry) => (
+              <li class="xp-entry">
+                <p class="xp-dates">{entry.dates}</p>
+                <div class="xp-what">
+                  <h3>{entry.href ? <a href={entry.href}>{entry.name}</a> : entry.name}</h3>
+                  {(entry.role || entry.place) && <p class="xp-role">{[entry.role, entry.place].filter(Boolean).join(' · ')}</p>}
+                  {entry.points && entry.points.length > 0 && (
+                    <ul class="xp-points">
+                      {entry.points.map((point) => <li>{point}</li>)}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+    {
+      details.length > 0 && (
+        <section class="xp-group" aria-labelledby="xp-more">
+          <h2 class="section-head" id="xp-more">Certifications, skills and interests</h2>
+          <dl class="xp-details">
+            {details.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  import '../../scripts/ui';
+  document.addEventListener('click', (event) => {
+    if ((event.target as Element | null)?.closest('[data-print]')) window.print();
+  });
+</script>

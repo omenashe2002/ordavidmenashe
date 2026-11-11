@@ -11,7 +11,7 @@ The site is built with Astro, a tool that turns text files into ordinary web pag
 
 ## Typefaces
 
-The text is set in EB Garamond, a revival of the sixteenth-century Garamond types. Labels, dates, and buttons are set in Instrument Sans. Both are free under the SIL Open Font License, and both are served from this site, not from a third party.
+The text is set in EB Garamond, a revival of the sixteenth-century Garamond types. Labels, dates, and buttons are set in Instrument Sans. Both are free under the SIL Open Font License, and both are served from this site, not from a third party. The charts and the simulator in the paper *Who Pays When the Agent Pays?* keep the typefaces they were designed with, Newsreader and IBM Plex, which are also free under that license and also served from this site.
 
 ## Color
 

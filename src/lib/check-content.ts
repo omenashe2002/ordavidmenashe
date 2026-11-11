@@ -47,7 +47,7 @@ const KNOWN_SETTINGS: Record<string, string[]> = {
   writing: ['title', 'date', 'description', 'tags', 'draft', 'featured', 'kicker', 'note', 'status', 'draftDate', 'updatedDate', 'citation', 'pdf', 'ssrn'],
   newsletter: ['title', 'date', 'description', 'issue', 'tags', 'draft'],
   videos: ['title', 'date', 'url', 'description', 'credit', 'group', 'draft'],
-  pages: ['title', 'description', 'startShort', 'updated', 'eyebrow', 'headline', 'buttonText', 'buttonLink', 'linkText', 'linkLink', 'credentials'],
+  pages: ['title', 'description', 'startShort', 'updated', 'eyebrow', 'headline', 'buttonText', 'buttonLink', 'linkText', 'linkLink', 'credentials', 'groups', 'details'],
 };
 
 /** How many single-letter changes turn one word into another (for "Did you mean ...?"). */
@@ -152,6 +152,31 @@ function checkDetails(file: string, body: string[]) {
   if (open > 0) fail(file, 'A collapsible block was opened with <details> but never closed with </details>. Add a line </details> after the last paragraph of the block.');
 }
 
+/**
+ * The indented lines of a list in a page's settings (the entries of the Experience page, or the row of credentials on the Home page).
+ * Each value must be in quotation marks, because a colon or a # sign in the words would otherwise stop the build with a message
+ * only a programmer could read.
+ */
+function checkListLines(file: string, block: string[]) {
+  for (const line of block) {
+    const item = /^\s+(?:-\s+)?(?:([A-Za-z]+)\s*:\s*)?(.*?)\s*$/.exec(line);
+    if (!item || !/^\s+/.test(line) || /^\s*#/.test(line)) continue;
+    const [, key, value] = item;
+    if (value === '' || /^[[{|>&*]/.test(value)) continue; // a heading of a list ("entries:", "points:") or a block the site does not check
+    const label = key ? `The ${key} line` : 'The list item';
+    const shown = key ? `${key}: "${value}"` : `- "${value}"`;
+    if (!/^["']/.test(value)) {
+      if (/:(\s|$)/.test(value) || /\s#/.test(value)) {
+        fail(file, `${label} "${value.slice(0, 60)}" contains a colon or a # sign, so it must be wrapped in quotation marks, like this: ${shown}`);
+      }
+    } else if (quotationProblem(value) === 'double') {
+      fail(file, `${label} "${value.slice(0, 60)}" has a quotation mark inside its quotation marks. Use curly quotes inside (\u201clike this\u201d), or wrap the whole line in single quotation marks.`);
+    } else if (quotationProblem(value) === 'single') {
+      fail(file, `${label} "${value.slice(0, 60)}" has an apostrophe inside single quotation marks. Wrap the whole line in double quotation marks instead.`);
+    }
+  }
+}
+
 export function checkContentFolder(folder: string) {
   const root = path.resolve(folder);
   if (!fs.existsSync(root)) return;
@@ -215,6 +240,7 @@ export function checkContentFolder(folder: string) {
         fail(file, `The ${key} contains a colon, so it must be wrapped in quotation marks, like this: ${key}: "${value}"`);
       }
     }
+    if (path.basename(root) === 'pages') checkListLines(file, lines.slice(1, end));
     if (['writing', 'newsletter'].includes(path.basename(root))) {
       checkFootnotes(file, lines.slice(end + 1));
       checkDetails(file, lines.slice(end + 1));

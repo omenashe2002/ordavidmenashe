@@ -13,6 +13,7 @@ export function personSchema(site: URL) {
     sameAs: [SITE.linkedin],
     description: SITE.description,
     affiliation: { '@type': 'EducationalOrganization', name: 'Fordham University School of Law' },
+    alumniOf: [{ '@type': 'CollegeOrUniversity', name: 'University of Maryland' }],
     knowsAbout: ['Digital assets', 'Decentralized finance', 'Artificial intelligence', 'Law'],
   };
 }

@@ -18,4 +18,4 @@ credentials:
     text: "Harvey"
 ---
 
-I am a third-year law student at Fordham Law. I write long-form analysis on how courts, regulators, and code assign accountability.
+I am a third-year law student at Fordham Law. I write long-form analysis, and a weekly newsletter, on how courts, regulators, and code assign accountability.

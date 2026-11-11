@@ -11,7 +11,7 @@ export const SITE = {
   name: 'Or Menashe',
   tagline: 'Law, digital assets, and AI',
   description:
-    'Long-form writing and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
+    'Long-form writing, a weekly newsletter, and occasional videos on digital assets, DeFi, AI, and law by Or Menashe, a law student at Fordham Law.',
   email: 'ordavidmenashe@gmail.com',
   // The name of the weekly newsletter. It is the title of the newsletter page and appears in the footer and above the
   // signup forms. Keep it between the quotation marks, and write it the same way in your newsletter service.
@@ -27,6 +27,7 @@ export const SITE = {
 
 export const NAV = [
   { label: 'Writing', href: '/writing/' },
+  { label: 'Newsletter', href: '/writing/newsletter/' },
   { label: 'Videos', href: '/videos/' },
   { label: 'About', href: '/about/' },
   { label: 'Contact', href: '/contact/' },

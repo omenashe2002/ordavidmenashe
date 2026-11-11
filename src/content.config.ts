@@ -165,6 +165,27 @@ const pages = defineCollection({
     linkText: z.string().optional(), // the quieter link beside the button
     linkLink: z.string().optional(),
     credentials: z.array(z.object({ label: z.string(), text: z.string() })).optional(), // the row under the headline
+    // experience.md only: the lists on the Experience page. Each group (Education, Experience, ...) has entries.
+    groups: z
+      .array(
+        z.strictObject({
+          heading: z.string({ error: 'Each group on the Experience page needs a heading line, for example: heading: "Experience"' }),
+          entries: z.array(
+            z.strictObject({
+              name: z.string({ error: 'Each entry needs a name line (the organization or the school), for example: name: "Fordham University School of Law"' }),
+              href: z.string().optional(), // makes the name a link
+              role: z.string().optional(), // the position or degree, shown under the name
+              place: z.string().optional(),
+              dates: z.string().optional(), // shown in the left column
+              points: z.array(z.string()).optional(), // the bullet points
+            }),
+            { error: 'Each group needs a list of entries (the lines that start with a dash under "entries:").' },
+          ),
+        }),
+      )
+      .optional(),
+    // experience.md only: short lines at the end, such as Certifications, Skills and Interests.
+    details: z.array(z.strictObject({ label: z.string(), text: z.string() })).optional(),
   }),
 });
 
