@@ -12,6 +12,8 @@ citation: "Or David Menashe, Zach Zager & Jake Weintraub, *Who Pays When the Age
 
 Written by Or David Menashe (Fordham Law), Zach Zager (Brooklyn Law), and Jake Weintraub (Brooklyn Law).
 
+This submission won first place in the 2nd Paul Hastings Fintech Crypto Legal Hackathon.
+
 **[Read the full paper, with its figures and an interactive simulator →](/papers/who-pays-when-the-agent-pays/)**
 
 ## Executive Summary
