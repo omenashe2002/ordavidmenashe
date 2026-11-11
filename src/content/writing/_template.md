@@ -16,6 +16,8 @@ draft: false   # true keeps the article off the website while you write it (the 
 # featured: true
 # Optional: a short line above the title, for example: Forthcoming in the Fordham Journal. Delete the # and the space after it to use it.
 # kicker: "A short line above the title"
+# Optional: a short note shown on the large panel of a featured article, for example an award. Delete the # and the space after it to use it.
+# note: "This submission won first place in a competition."
 # Optional: to show a small label and the stages of a piece, delete the # and the space after it on the lines you want,
 # so each line starts with a word. status is one of: draft, forthcoming, published.
 # status: draft
